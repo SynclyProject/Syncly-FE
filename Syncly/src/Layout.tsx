@@ -5,7 +5,9 @@ const RootLayout = () => {
   return (
     <div className="flex flex-col">
       <Topbar />
-      <Outlet />
+      <div className="flex">
+        <Outlet />
+      </div>
     </div>
   );
 };
