@@ -7,8 +7,8 @@ import Icon from "./Icon";
  *
  * 두가지 색상의 버튼을 선택하여 사용할 수 있습니다.
  *
- * @param {string} color - 색상 선택 ("main" | "sub" | "success")
- * @param {string} iconName - 아이콘 이름 (선택택)
+ * @param {string} color - 색상 선택 ("main" | "sub" | "success"| "unable")
+ * @param {string} iconName - 아이콘 이름 (선택)
  */
 type TButtonColorProps = {
   colorType: "main" | "sub" | "success" | "unable";
