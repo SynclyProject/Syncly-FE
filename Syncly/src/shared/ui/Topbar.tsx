@@ -2,7 +2,7 @@ import Icon from "./Icon";
 
 const Topbar = () => {
   return (
-    <div className="bg-white">
+    <div>
       <h3>Syncly</h3>
       <div>
         <Icon name="Bell" />

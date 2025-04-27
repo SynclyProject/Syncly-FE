@@ -1,5 +1,5 @@
 import scrollbarHide from "tailwind-scrollbar-hide";
-const px0_200 = Array.from({ length: 1001 }, (_, idx) => `${idx}px`);
+const px0_200 = Array.from({ length: 1001 }, (_, idx) => [`${idx}px`]);
 
 /** @type {import('tailwindcss').Config} */
 export default {
