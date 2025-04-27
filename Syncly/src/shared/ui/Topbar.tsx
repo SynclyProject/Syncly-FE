@@ -2,11 +2,11 @@ import Icon from "./Icon";
 
 const Topbar = () => {
   return (
-    <div>
-      <h3>Syncly</h3>
-      <div>
+    <div className="bg-white w-full h-[70px] px-[30px] flex justify-between items-center border-[#E0E0E0]">
+      <p className="text-xl font-bold">Syncly</p>
+      <div className="flex gap-[10px]">
         <Icon name="Bell" />
-        <Icon name="Vector" />
+        <Icon name="User_Circle" />
         <Icon name="Log_Out" />
       </div>
     </div>
