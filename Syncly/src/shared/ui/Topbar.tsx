@@ -4,7 +4,7 @@ const Topbar = () => {
   return (
     <div>
       <h1>Syncly</h1>
-      <div>
+      <div className="flex">
         <Icon name="Bell" />
         <Icon name="Vector" />
         <Icon name="Log_Out" />
