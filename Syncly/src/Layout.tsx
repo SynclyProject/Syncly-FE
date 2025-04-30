@@ -6,9 +6,9 @@ const RootLayout = () => {
   const location = useLocation();
   const hideSidebar = location.pathname === "/login";
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full overflow-hidden">
       <TopBar />
-      <div className="flex">
+      <div className="flex h-full overflow-hidden">
         {!hideSidebar && <SideBar />}
         <Outlet />
       </div>
