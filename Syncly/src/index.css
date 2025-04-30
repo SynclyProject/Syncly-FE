@@ -15,9 +15,15 @@
   position: relative;
 
   background-color: #f4f4f4;
-
+  color: #2b2b2b;
+  overflow-x: hidden;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body,
+#root {
+  height: 100%;
 }
