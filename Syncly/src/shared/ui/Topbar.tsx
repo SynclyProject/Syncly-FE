@@ -2,8 +2,8 @@ import Icon from "./Icon";
 
 const TopBar = () => {
   return (
-    <div className="w-full h-[70px] bg-[#FFFFFF] px-[30px] flex justify-between items-center border-[#E0E0E0]">
-      <p className="text-[20px] font-bold">Syncly</p>
+    <div className="w-full h-[70px] bg-[#FFFFFF] px-[30px] flex justify-between items-center border border-[#E0E0E0]">
+      <p className="text-[20px] font-[600]">Syncly</p>
       <div className="flex gap-[10px]">
         <button className="bg-transparent border-none cursor-pointer">
           <Icon name="Bell" />
