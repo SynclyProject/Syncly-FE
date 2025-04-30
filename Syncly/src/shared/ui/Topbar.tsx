@@ -1,6 +1,6 @@
 import Icon from "./Icon";
 
-const Topbar = () => {
+const TopBar = () => {
   return (
     <div className="w-full h-[70px] bg-[#FFFFFF] px-[30px] flex justify-between items-center border-[#E0E0E0]">
       <p className="text-[20px] font-bold">Syncly</p>
@@ -19,4 +19,4 @@ const Topbar = () => {
   );
 };
 
-export default Topbar;
+export default TopBar;

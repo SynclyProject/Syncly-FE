@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
-import Topbar from "./shared/ui/Topbar";
+import TopBar from "./shared/ui/Topbar";
 
 const RootLayout = () => {
   return (
     <div className="flex flex-col">
-      <Topbar />
+      <TopBar />
       <div className="flex">
         <Outlet />
       </div>
