@@ -1,5 +1,17 @@
 import { InputHTMLAttributes } from "react";
 
+/**
+ * Input Component
+ *
+ * Input을 사용할 수 있는 Input Component입니다.
+ *
+ * 33가지 상태를를 선택하여 사용할 수 있습니다.
+ *
+ * @param {string} state - 색상 선택 ("default" | "success"| "failed")
+ * @param {string} title - Input 제목
+ * @param {string} placeholder - Input의 placeholder
+ */
+
 type TInputStyleProps = {
   state: "default" | "success" | "failed";
 };
