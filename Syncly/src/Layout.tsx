@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import TopBar from "./shared/ui/Topbar";
-import SideBar from "./shared/ui/Sidebar";
+import SideBar from "./shared/ui/Sidebar/Sidebar";
 
 const RootLayout = () => {
   return (
