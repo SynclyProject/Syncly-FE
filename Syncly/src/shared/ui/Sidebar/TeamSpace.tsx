@@ -2,6 +2,7 @@ import TeamSpaceData from "../../api/mock/teamSpace";
 import Space from "./Space";
 import { useNavigate } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
+import InputSpace from "./InputSpace";
 
 const TeamSpace = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const TeamSpace = () => {
           onClick={() => navigate("/")}
         />
       ))}
+      <InputSpace />
     </div>
   );
 };
