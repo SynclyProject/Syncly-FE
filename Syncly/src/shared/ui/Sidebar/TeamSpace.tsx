@@ -3,13 +3,30 @@ import Space from "./Space";
 import { useNavigate } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
 import InputSpace from "./InputSpace";
+import { useState } from "react";
 
-const TeamSpace = () => {
+interface TeamSpaceProps {
+  showInput: boolean;
+  setShowInput: (show: boolean) => void;
+}
+
+const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
   const navigate = useNavigate();
+  const [teams, setTeams] = useState<TTeamSpace[]>(TeamSpaceData);
+  const handleAddTeam = (text: string) => {
+    if (!text.trim()) return;
+    const newTeam: TTeamSpace = {
+      id: teams.length + 1,
+      text,
+    };
+    setTeams((prev) => [...prev, newTeam]);
+    setShowInput(false);
+  };
+
   return (
     <div className="flex flex-col gap-[8px]">
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
-      {TeamSpaceData.map((space: TTeamSpace) => (
+      {teams.map((space: TTeamSpace) => (
         <Space
           key={space.id}
           state="team"
@@ -18,7 +35,12 @@ const TeamSpace = () => {
           onClick={() => navigate("/")}
         />
       ))}
-      <InputSpace />
+      {showInput && (
+        <InputSpace
+          onAdd={handleAddTeam}
+          onCancel={() => setShowInput(false)}
+        />
+      )}
     </div>
   );
 };
