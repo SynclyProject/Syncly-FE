@@ -13,7 +13,7 @@ interface ISpaceProps extends TSpaceStateProps {
 const Space = ({ state, iconName, text, onClick }: ISpaceProps) => {
   return (
     <div
-      className="flex items-center px-[16px] gap-[16px] rounded-[8px] cursor-pointer bg-[#FFF] hover:bg-[#DEE4ED]"
+      className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] cursor-pointer bg-white hover:bg-[#DEE4ED]"
       onClick={onClick}
     >
       {state === "my" ? (

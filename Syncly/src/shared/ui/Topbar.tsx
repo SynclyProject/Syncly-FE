@@ -6,7 +6,7 @@ const TopBar = () => {
   const location = useLocation();
   const hideIcon = location.pathname === "/login";
   return (
-    <div className="w-full bg-[#FFFFFF] px-[30px] flex justify-between items-center border border-[#E0E0E0]">
+    <div className="w-full h-[70px] bg-white px-7 flex justify-between items-center border border-[#E0E0E0]">
       <p
         className="text-[20px] font-[600] cursor-pointer"
         onClick={() => navigate("/")}
