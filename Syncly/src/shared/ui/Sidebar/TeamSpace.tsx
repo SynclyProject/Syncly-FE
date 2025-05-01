@@ -1,23 +1,22 @@
-import Space from "../Space";
+import TeamSpaceData from "../../api/mock/teamSpace";
+import Space from "./Space";
 import { useNavigate } from "react-router-dom";
+import { TTeamSpace } from "../../type/teamSpaceType";
 
 const TeamSpace = () => {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col gap-[8px]">
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
-      <Space
-        state="team"
-        iconName="attachment"
-        text="UMC"
-        onClick={() => navigate("/")}
-      />
-      <Space
-        state="team"
-        iconName="folder_open"
-        text="Project"
-        onClick={() => navigate("/")}
-      />
+      {TeamSpaceData.map((space: TTeamSpace) => (
+        <Space
+          key={space.id}
+          state="team"
+          iconName="attachment"
+          text={space.text}
+          onClick={() => navigate("/")}
+        />
+      ))}
     </div>
   );
 };
