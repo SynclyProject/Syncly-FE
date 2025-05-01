@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Icon from "../Icon";
 import SideModal from "./SideModal";
 import { TTeamSpace } from "../../type/teamSpaceType";
@@ -25,6 +25,12 @@ const Space = ({
 }: ISpaceProps) => {
   const [modalShow, setModalShow] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const toggleModal = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setModalShow((prevState) => !prevState);
+  };
 
   const handleIconClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -33,14 +39,17 @@ const Space = ({
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+
       if (
         modalShow &&
-        modalRef.current &&
-        !modalRef.current.contains(e.target as Node)
+        !modalRef.current?.contains(target) &&
+        !buttonRef.current?.contains(target)
       ) {
         setModalShow(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [modalShow]);
@@ -49,7 +58,7 @@ const Space = ({
     <>
       <div
         className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] cursor-pointer bg-white hover:bg-[#DEE4ED]"
-        onClick={onClick}
+        onClick={(e) => (onClick(), toggleModal(e))}
       >
         {state === "my" ? (
           <Icon name={iconName} />
@@ -66,7 +75,7 @@ const Space = ({
               <Icon name="Vector" />
             </button>
             {modalShow && (
-              <div className="absolute top-[-9px] left-8">
+              <div className="absolute top-[-9px] left-8" ref={modalRef}>
                 <SideModal spaceId={spaceId} setTeams={setTeams} />
               </div>
             )}
