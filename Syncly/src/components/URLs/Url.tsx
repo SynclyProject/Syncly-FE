@@ -9,12 +9,12 @@ interface IUrlProps extends TUrlStateProps {
 
 const Url = ({ state, text }: IUrlProps) => {
   return (
-    <div className="flex w-full h-[48px] items-center bg-white border-t-[#F4F4F4] gap-2">
+    <div className="flex w-full h-[48px] px-[5px] items-center bg-white border-t border-t-[#E0E0E0] gap-2">
       <Icon name="url" />
       {state == "input" ? (
         <>
           <input
-            className="flex-1 focus:outline-none"
+            className="flex-1 font-medium focus:outline-none"
             placeholder="Enter a link..."
           />
           <Icon name="plus_blue" />
