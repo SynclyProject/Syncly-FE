@@ -1,9 +1,10 @@
-import UrlInput from "../components/URLs/urlInput";
+import Url from "../components/URLs/Url";
 
 const HomePage = () => {
   return (
     <div>
-      <UrlInput />
+      <Url state="input" />
+      <Url state="url" text="website.net" />
     </div>
   );
 };
