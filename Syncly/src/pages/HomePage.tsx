@@ -1,5 +1,11 @@
+import UrlInput from "../components/URLs/urlInput";
+
 const HomePage = () => {
-  return <div>Homepage</div>;
+  return (
+    <div>
+      <UrlInput />
+    </div>
+  );
 };
 
 export default HomePage;
