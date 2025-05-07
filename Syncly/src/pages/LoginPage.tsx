@@ -3,6 +3,17 @@ import Button from '../shared/ui/Button';
 
 const LoginPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
+  
+  //send버튼 팝업 handleButtonClick()으로 send버튼, 팝업 한 번에
+  const handleSendClick = () => {
+    alert('인증메일이 전송되었습니다');
+  };
+  const handleButtonClick = () => {
+    setShowCodeInput(true);
+    handleSendClick();
+  };
+
+
 
   return (
     <div className="w-full h-screen bg-white flex justify-center pt-0">
@@ -20,7 +31,7 @@ const LoginPage = () => {
             placeholder="Enter your email address..."
             className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
           />
-          <Button colorType="main" onClick={() => setShowCodeInput(true)}>
+          <Button colorType="main" onClick={handleButtonClick}>
             Send
           </Button>
         </div>
