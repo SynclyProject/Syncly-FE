@@ -13,6 +13,7 @@ const URLs = ({ title, urls, onUpdateUrls }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [urlList, setUrlList] = useState<string[]>(urls);
   const [inputValue, setInputValue] = useState("");
+  const [showAll, setShowAll] = useState(false);
 
   const handleAddUrl = (url: string) => {
     if (url.trim()) {
@@ -26,6 +27,10 @@ const URLs = ({ title, urls, onUpdateUrls }: IURLsProps) => {
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
+  };
+
+  const handleShowAll = () => {
+    setShowAll(!showAll);
   };
 
   return (
@@ -56,9 +61,20 @@ const URLs = ({ title, urls, onUpdateUrls }: IURLsProps) => {
             onCancel={() => setShowInput(false)}
           />
         )}
-        {urlList.map((url: string, index: number) => (
-          <Url key={index} state="url" text={url} />
-        ))}
+
+        {urlList
+          .slice(0, showAll ? urlList.length : 2)
+          .map((url: string, index: number) => (
+            <Url key={index} state="url" text={url} />
+          ))}
+        {urlList.length > 2 && (
+          <button
+            className="flex items-center justify-center cursor-pointer"
+            onClick={handleShowAll}
+          >
+            <Icon name={showAll ? "Chevron_Up_Duo" : "Chevron_Down_Duo"} />
+          </button>
+        )}
       </div>
     </div>
   );
