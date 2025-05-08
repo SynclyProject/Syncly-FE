@@ -12,11 +12,14 @@ interface IUrlProps extends TUrlStateProps {
   onCancel?: () => void;
 }
 
-const Url = ({ state, text, value, onChange, onAdd }: IUrlProps) => {
+const Url = ({ state, text, value, onChange, onAdd, onCancel }: IUrlProps) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && onAdd) {
       onAdd(value || "");
     }
+  };
+  const handleBlur = () => {
+    if (!value?.trim()) onCancel?.();
   };
 
   return (
@@ -30,6 +33,7 @@ const Url = ({ state, text, value, onChange, onAdd }: IUrlProps) => {
             value={value}
             onChange={(e) => onChange?.(e.target.value)}
             onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
           />
           <Icon name="plus_blue" onClick={() => onAdd?.(value || "")} />
         </>
