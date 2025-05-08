@@ -1,19 +1,25 @@
 import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
 import Url from "./Url";
-import { useState } from "react";
+import URLsModal from "./URLsModal";
+import { TMySpaceURLs } from "../../shared/type/mySpaceType";
+import { useState, useRef, useEffect } from "react";
 
 interface IURLsProps {
   title: string;
   urls: string[];
+  urlsId: number;
+  setURLs: React.Dispatch<React.SetStateAction<TMySpaceURLs[]>>;
   onUpdateUrls?: (newUrls: string[]) => void;
 }
 
-const URLs = ({ title, urls, onUpdateUrls }: IURLsProps) => {
+const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [urlList, setUrlList] = useState<string[]>(urls);
   const [inputValue, setInputValue] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const handleAddUrl = (url: string) => {
     if (url.trim()) {
@@ -33,12 +39,38 @@ const URLs = ({ title, urls, onUpdateUrls }: IURLsProps) => {
     setShowAll(!showAll);
   };
 
+  const handleIconClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setModalShow(true);
+  };
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+
+      if (modalShow && !modalRef.current?.contains(target)) {
+        setModalShow(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [modalShow]);
+
   return (
     <div className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]">
       <div className="flex gap-4 h-[52px] items-center justify-between">
-        <div className="flex gap-5 items-center">
+        <div className="flex gap-5 items-center ">
           <p className="text-2xl">{title}</p>
-          <Icon name="Vector" />
+          <button
+            className="bg-transparent border-none cursor-pointer relative"
+            onClick={handleIconClick}
+          >
+            <Icon name="Vector" />
+          </button>
+          {modalShow && (
+            <div className="absolute top-[-10px] left-[150px]" ref={modalRef}>
+              <URLsModal urlsId={urlsId} setURLs={setURLs} />
+            </div>
+          )}
         </div>
         <div className="flex gap-4">
           <Button

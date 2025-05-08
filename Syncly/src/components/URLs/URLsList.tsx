@@ -34,7 +34,13 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
       {urlsList && (
         <div className="flex flex-col gap-5 w-full">
           {urlsList.map((urls: TMySpaceURLs) => (
-            <URLs key={urls.id} title={urls.title} urls={urls.urls} />
+            <URLs
+              key={urls.id}
+              title={urls.title}
+              urls={urls.urls}
+              urlsId={urls.id}
+              setURLs={setUrlsList}
+            />
           ))}
         </div>
       )}
