@@ -18,12 +18,8 @@ const Icon = ({ name }: IconProps) => {
     : `/icons/${name}.svg`;
 
   return (
-    <div className="flex items-center">
-      <img
-        className="w-auto h-auto rounded"
-        src={iconPath}
-        alt={`${name} icon`}
-      />
+    <div className="flex items-center justify-center w-6 h-6">
+      <img className="w-auto h-auto" src={iconPath} alt={`${name} icon`} />
     </div>
   );
 };

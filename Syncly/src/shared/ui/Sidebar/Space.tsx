@@ -27,10 +27,10 @@ const Space = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const toggleModal = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setModalShow((prevState) => !prevState);
-  };
+  // const toggleModal = (e: React.MouseEvent<HTMLElement>) => {
+  //   e.stopPropagation();
+  //   setModalShow((prevState) => !prevState);
+  // };
 
   const handleIconClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -58,7 +58,7 @@ const Space = ({
     <>
       <div
         className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] cursor-pointer bg-white hover:bg-[#DEE4ED]"
-        onClick={(e) => (onClick(), toggleModal(e))}
+        onClick={() => onClick()}
       >
         {state === "my" ? (
           <Icon name={iconName} />

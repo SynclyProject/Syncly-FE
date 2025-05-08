@@ -23,9 +23,12 @@ const InputSpace = ({ onAdd, onCancel }: IInputSpaceProps) => {
 
   return (
     <div className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] bg-white">
-      <Icon name="supervised_user_circle_gray" />
+      <button className="bg-transparent border-none">
+        <Icon name="supervised_user_circle_gray" />
+      </button>
+
       <input
-        className="flex-1 text-[#828282] focus:outline-none"
+        className="flex-1 w-full text-[#828282] focus:outline-none"
         value={inputValue}
         placeholder="text..."
         onChange={(e) => setInputValue(e.target.value)}
