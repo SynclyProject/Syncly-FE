@@ -24,7 +24,7 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
 
   return (
     <div className="flex flex-col gap-5 w-full">
-      {!urlsList && (
+      {urlsList.length === 0 && (
         <URLsInput onAdd={handleAddUrls} onCancel={() => setShowInput(false)} />
       )}
       {showInput && (
