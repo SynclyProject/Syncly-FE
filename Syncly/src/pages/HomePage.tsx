@@ -1,4 +1,4 @@
-import Navigate from "../components/navigate";
+import Navigate from "../components/Navigate";
 import URLsInput from "../components/URLs/URLsInput";
 import Button from "../shared/ui/Button";
 
