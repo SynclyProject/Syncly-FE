@@ -1,4 +1,5 @@
 import Icon from "../../shared/ui/Icon";
+import { TUrl } from "../../shared/type/mySpaceType";
 
 type TUrlStateProps = {
   state: "input" | "url";
@@ -10,9 +11,20 @@ interface IUrlProps extends TUrlStateProps {
   onChange?: (value: string) => void;
   onAdd?: (url: string) => void;
   onCancel?: () => void;
+  id?: number;
+  setUrlList?: React.Dispatch<React.SetStateAction<TUrl[]>>;
 }
 
-const Url = ({ state, text, value, onChange, onAdd, onCancel }: IUrlProps) => {
+const Url = ({
+  state,
+  text,
+  value,
+  onChange,
+  onAdd,
+  onCancel,
+  id,
+  setUrlList,
+}: IUrlProps) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && onAdd) {
       onAdd(value || "");
@@ -40,7 +52,16 @@ const Url = ({ state, text, value, onChange, onAdd, onCancel }: IUrlProps) => {
       ) : (
         <>
           <p className="flex-1 text-[16px] font-semibold">{text}</p>
-          <Icon name="Trash_Full" />
+          <button
+            className="cursor-pointer"
+            onClick={() => {
+              if (setUrlList) {
+                setUrlList((prev) => prev.filter((url) => url.id !== id));
+              }
+            }}
+          >
+            <Icon name="Trash_Full" />
+          </button>
         </>
       )}
     </div>

@@ -2,20 +2,20 @@ import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
 import Url from "./Url";
 import URLsModal from "./URLsModal";
-import { TMySpaceURLs } from "../../shared/type/mySpaceType";
+import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
 import { useState, useRef, useEffect } from "react";
 
 interface IURLsProps {
   title: string;
-  urls: string[];
+  urls: TUrl[];
   urlsId: number;
   setURLs: React.Dispatch<React.SetStateAction<TMySpaceURLs[]>>;
-  onUpdateUrls?: (newUrls: string[]) => void;
+  onUpdateUrls?: (newUrls: TUrl[]) => void;
 }
 
 const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
-  const [urlList, setUrlList] = useState<string[]>(urls);
+  const [urlList, setUrlList] = useState<TUrl[]>(urls);
   const [inputValue, setInputValue] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [modalShow, setModalShow] = useState(false);
@@ -24,7 +24,7 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
 
   const handleAddUrl = (url: string) => {
     if (url.trim()) {
-      const newUrlList = [...urlList, url];
+      const newUrlList = [...urlList, { id: urlList.length + 1, url }];
       setUrlList(newUrlList);
       onUpdateUrls?.(newUrlList);
       setShowInput(false);
@@ -111,11 +111,15 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
           />
         )}
 
-        {urlList
-          .slice(0, showAll ? urlList.length : 2)
-          .map((url: string, index: number) => (
-            <Url key={index} state="url" text={url} />
-          ))}
+        {urlList.slice(0, showAll ? urlList.length : 2).map((url: TUrl) => (
+          <Url
+            key={url.id}
+            state="url"
+            text={url.url}
+            id={url.id}
+            setUrlList={setUrlList}
+          />
+        ))}
         {urlList.length > 2 && (
           <button
             className="flex items-center justify-center cursor-pointer"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../shared/ui/Button";
 import Url from "./Url";
-import { TMySpaceURLs } from "../../shared/type/mySpaceType";
+import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
 
 interface IURLsInputProps {
   onAdd: (urls: TMySpaceURLs) => void;
@@ -10,12 +10,16 @@ interface IURLsInputProps {
 
 const URLsInput = ({ onAdd, onCancel }: IURLsInputProps) => {
   const [title, setTitle] = useState("");
-  const [urls, setUrls] = useState<string[]>([]);
+  const [urls, setUrls] = useState<TUrl[]>([]);
   const [currentUrl, setCurrentUrl] = useState("");
 
   const handleAddUrl = () => {
     if (currentUrl.trim()) {
-      setUrls([...urls, currentUrl]);
+      const newUrl: TUrl = {
+        id: urls.length + 1, // 임시 ID 생성
+        url: currentUrl,
+      };
+      setUrls([...urls, newUrl]);
       setCurrentUrl("");
     }
   };
@@ -27,7 +31,7 @@ const URLsInput = ({ onAdd, onCancel }: IURLsInputProps) => {
   const handleSubmit = () => {
     if (!title.trim() || !urls.length) return;
     const newUrls: TMySpaceURLs = {
-      id: 0,
+      id: urls.length + 1, // 임시 ID 생성
       title: title,
       urls: urls,
     };
@@ -68,8 +72,8 @@ const URLsInput = ({ onAdd, onCancel }: IURLsInputProps) => {
           onChange={handleUrlChange}
           onAdd={handleAddUrl}
         />
-        {urls.map((url, index) => (
-          <Url key={index} state="url" text={url} />
+        {urls.map((url) => (
+          <Url key={url.id} state="url" text={url.url} />
         ))}
       </div>
     </div>

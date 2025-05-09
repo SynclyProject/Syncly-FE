@@ -2,12 +2,18 @@ const URLsListData = [
   {
     id: 1,
     title: "UMC",
-    urls: ["naver.com", "google.com"],
+    urls: [
+      { id: 1, url: "naver.com" },
+      { id: 2, url: "google.com" },
+    ],
   },
   {
     id: 2,
     title: "Project",
-    urls: ["naver.com", "google.com"],
+    urls: [
+      { id: 1, url: "naver.com" },
+      { id: 2, url: "google.com" },
+    ],
   },
 ];
 
