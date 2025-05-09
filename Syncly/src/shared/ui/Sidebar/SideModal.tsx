@@ -7,7 +7,7 @@ interface ISideModalProps {
 
 const SideModal = ({ spaceId, setTeams }: ISideModalProps) => {
   return (
-    <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[0.3px] border-[#E0E0E0]">
+    <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
       <p className="text-[##828282]">팀원 추가</p>
       <p className="text-[##828282]">팀스페이스 이름 변경</p>
       <p
