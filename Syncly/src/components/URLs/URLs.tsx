@@ -20,6 +20,7 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
   const [showAll, setShowAll] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const iconRef = useRef<HTMLButtonElement>(null);
 
   const handleAddUrl = (url: string) => {
     if (url.trim()) {
@@ -43,6 +44,17 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
     e.stopPropagation();
     setModalShow(true);
   };
+
+  const modalPosition = () => {
+    if (iconRef.current) {
+      const iconReact = iconRef.current.getBoundingClientRect();
+      return {
+        left: `${iconReact.right - 350}px`,
+      };
+    }
+    return { left: "0px" };
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -58,16 +70,21 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
   return (
     <div className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]">
       <div className="flex gap-4 h-[52px] items-center justify-between">
-        <div className="flex gap-5 items-center ">
+        <div className="flex gap-5 items-center relative">
           <p className="text-2xl">{title}</p>
           <button
-            className="bg-transparent border-none cursor-pointer relative"
+            className="bg-transparent border-none cursor-pointer "
             onClick={handleIconClick}
+            ref={iconRef}
           >
             <Icon name="Vector" />
           </button>
           {modalShow && (
-            <div className="absolute top-[-10px] left-[150px]" ref={modalRef}>
+            <div
+              className="absolute top-[-10px]"
+              ref={modalRef}
+              style={modalPosition()}
+            >
               <URLsModal urlsId={urlsId} setURLs={setURLs} />
             </div>
           )}
