@@ -64,6 +64,17 @@ const LoginPage = () => {
     alert('회원가입이 완료되었습니다!');
   };
   
+  //코드인증 
+  const [isVerified, setIsVerified] = useState(false);
+
+  //인증성공시 setIsVerified(true) 호출
+  const handleVerifyClick = () => {
+    // 실제론 서버에 인증 코드 보내는 로직이 들어가야 함
+    // 여기선 성공했다고 가정함
+    setIsVerified(true);
+    alert("이메일 인증 완료!");
+  };
+  
 
   return (
     <div className="w-full h-screen bg-white flex justify-center pt-0">
@@ -101,7 +112,7 @@ const LoginPage = () => {
             />
             <Button colorType="main">Verify</Button>
           {/*에러메세지*/}
-          {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+          {errors.code && <p className="text-red-500 text-xs">{errors.code.message}</p>}
           </div>
         )}
 
@@ -127,7 +138,7 @@ const LoginPage = () => {
           className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
         />
         {/*에러메세지*/}
-        {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+        {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
 
         {/* Confirm Password */}
         <input
@@ -137,7 +148,7 @@ const LoginPage = () => {
           className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
         />
         {/*에러메세지*/}
-        {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+        {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword.message}</p>}
 
 
         {/* Submit */}
