@@ -64,7 +64,7 @@ const LoginPage = () => {
     alert('회원가입이 완료되었습니다!');
   };
   
-  //코드인증 
+  //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
 
   //인증성공시 setIsVerified(true) 호출
@@ -72,9 +72,11 @@ const LoginPage = () => {
     // 실제론 서버에 인증 코드 보내는 로직이 들어가야 함
     // 여기선 성공했다고 가정함
     setIsVerified(true);
-    alert("이메일 인증 완료");
+    alert("이메일 인증 완료!");
   };
   
+  //닉네임 인증 필드 상태
+  const [nickname, setNickname] = useState("");
 
   return (
     <div className="w-full h-screen bg-white flex justify-center pt-0">
@@ -117,15 +119,20 @@ const LoginPage = () => {
         )}
 
         {/* Nickname */}
-        <label className="text-[#585858] text-sm font-light mt-2">Nickname</label>
-        <input
-        {...register("nickname")}
-        type="text"
-        placeholder="Enter your nickname..."
-        className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-        />
-        {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
-
+        {isVerified && (
+          <div className="flex flex-col gap-2">
+            <label className="text-[#585858] text-sm font-light mt-2">Nickname</label>
+            <input
+            {...register("nickname")}
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="Enter your nickname..."
+            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+            />
+            {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
+          </div>
+        )}
 
         {/* Password */}
         <label className="text-[#585858] text-sm font-light mt-2">
