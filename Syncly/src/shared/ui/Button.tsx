@@ -17,7 +17,7 @@ interface IButtonProps
   extends TButtonColorProps,
     ButtonHTMLAttributes<HTMLButtonElement> {
   iconName?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Button = ({

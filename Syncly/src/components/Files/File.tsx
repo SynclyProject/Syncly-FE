@@ -11,7 +11,7 @@ interface IFileProps extends TTypeProps {
 
 const File = ({ type, title, date, user }: IFileProps) => {
   return (
-    <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t-[#F4F4F4">
+    <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0">
       <Icon name={type} />
       <p className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold">
         {title}

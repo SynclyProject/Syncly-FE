@@ -31,8 +31,8 @@ const LoginPage = () => {
   
     nickname: yup
       .string()
-      .min(2, '닉네임은 최소 2자 이상')
-      .max(12, '최대 12자까지 가능해요')
+      .min(2, '최소 2자 이상')
+      .max(12, '최대 12자')
       .required('닉네임을 입력해주세요.'),
   
     password: yup
@@ -58,6 +58,7 @@ const LoginPage = () => {
     resolver: yupResolver(schema),
   });
   
+  //Onsubmit함수
   const onSubmit = (data: any) => {
     console.log('제출된 데이터:', data);
     alert('회원가입이 완료되었습니다!');
@@ -103,6 +104,17 @@ const LoginPage = () => {
           {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
           </div>
         )}
+
+        {/* Nickname */}
+        <label className="text-[#585858] text-sm font-light mt-2">Nickname</label>
+        <input
+        {...register("nickname")}
+        type="text"
+        placeholder="Enter your nickname..."
+        className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+        />
+        {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
+
 
         {/* Password */}
         <label className="text-[#585858] text-sm font-light mt-2">
