@@ -79,108 +79,114 @@ const LoginPage = () => {
   const [nickname, setNickname] = useState("");
 
   return (
-    <div className="w-full h-screen bg-white flex justify-center pt-0">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-[459px] flex flex-col gap-4 pt-24"> 
-        {/* Title */}
-        <h1 className="text-center text-black text-6xl font-bold leading-[50px]">
-          Sign up
-        </h1>
+    <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
+      <div className="w-full max-w-md px-4 pt-10">
+      
+        <form onSubmit={handleSubmit(onSubmit)} className="w-[459px] flex flex-col gap-4 pt-24"> 
+          {/* Title */}
+          <h1 className="text-center text-black text-6xl font-bold leading-[50px]">
+            Sign up
+          </h1>
 
-        {/* Email */}
-        <label className="text-[#585858] text-sm font-light">Email</label>
-        <div className="flex gap-2">
-          <input
-            {...register("email")}
-            type="email"
-            placeholder="Enter your email address..."
-            className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-          />
-          <Button colorType="main" onClick={handleButtonClick}>
-            Send
-          </Button>
-
-          {/*에러메세지*/}
-          {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
-        </div>
-
-        {/* Code Input */}
-        {showCodeInput && (
+          {/* Email */}
+          <label className="text-[#585858] text-sm font-light">Email</label>
           <div className="flex gap-2">
             <input
-              {...register("code")} 
-              type="text"
-              placeholder="Code"
+              {...register("email")}
+              type="email"
+              placeholder="Enter your email address..."
               className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
             />
-            <Button type= "button" colorType={isVerified ? 'success' : 'main'} onClick={handleVerifyClick}>Verify</Button>
-          {/*에러메세지*/}
-          {errors.code && <p className="text-red-500 text-xs">{errors.code.message}</p>}
-          </div>
-        )}
+            <Button colorType="main" onClick={handleButtonClick}>
+              Send
+            </Button>
 
-        {/* Nickname */}
-        {isVerified && (
-          <div className="flex flex-col gap-2">
-            <label className="text-[#585858] text-sm font-light mt-2">Nickname</label>
-            <input
-            {...register("nickname")}
-            type="text"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder="Enter your nickname..."
+            {/*에러메세지*/}
+            {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+          </div>
+
+          {/* Code Input */}
+          {showCodeInput && (
+            <div className="flex gap-2">
+              <input
+                {...register("code")} 
+                type="text"
+                placeholder="Code"
+                className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+              />
+              <Button type= "button" colorType={isVerified ? 'success' : 'main'} onClick={handleVerifyClick}>Verify</Button>
+            {/*에러메세지*/}
+            {errors.code && <p className="text-red-500 text-xs">{errors.code.message}</p>}
+            </div>
+          )}
+
+          {/* Nickname */}
+          {isVerified && (
+            <div className="flex flex-col gap-2">
+              <label className="text-[#585858] text-sm font-light mt-2">Nickname</label>
+              <input
+              {...register("nickname")}
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="Enter your nickname..."
+              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+              />
+              {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
+            </div>
+          )}
+
+          {/* Password */}
+          <label className="text-[#585858] text-sm font-light mt-2">
+            Password
+          </label>
+          <input
+            {...register("password")}
+            type="password"
+            placeholder="Enter your password..."
             className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-            />
-            {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
+          />
+          {/*에러메세지*/}
+          {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
+
+          {/* Confirm Password */}
+          <input
+            {...register("confirmPassword")}
+            type="password"
+            placeholder="Confirm your password..."
+            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+          />
+          {/*에러메세지*/}
+          {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword.message}</p>}
+
+
+          {/* Submit */}
+          <button type= "submit" className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium">
+            Start with Syncly !
+          </button>
+
+          {/* Divider */}
+          <div className="h-px bg-[#E6E6E6]" />
+
+          {/* Google Sign-In */}
+          <div className="flex items-center gap-4 border border-[#E6E6E6] px-4 py-2 rounded-[8px] bg-white cursor-pointer">
+            <img src="https://placehold.co/24x24" className="w-6 h-6" alt="Google" />
+            <span className="text-black text-sm font-medium leading-6 font-['inter']">
+              Continue with Google
+            </span>
           </div>
-        )}
 
-        {/* Password */}
-        <label className="text-[#585858] text-sm font-light mt-2">
-          Password
-        </label>
-        <input
-          {...register("password")}
-          type="password"
-          placeholder="Enter your password..."
-          className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-        />
-        {/*에러메세지*/}
-        {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
+          {/* Policy Text */}
+          <p className="text-center text-[#585858] text-xs font-extralight mt-2">
+            By clicking “Continue with Google/Email” above, <br />
+            you acknowledge that you have read and understood, and agree to
+            Syncly’s Privacy Policy.
+          </p>
+        </form>
 
-        {/* Confirm Password */}
-        <input
-          {...register("confirmPassword")}
-          type="password"
-          placeholder="Confirm your password..."
-          className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-        />
-        {/*에러메세지*/}
-        {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword.message}</p>}
-
-
-        {/* Submit */}
-        <button type= "submit" className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium">
-          Start with Syncly !
-        </button>
-
-        {/* Divider */}
-        <div className="h-px bg-[#E6E6E6]" />
-
-        {/* Google Sign-In */}
-        <div className="flex items-center gap-4 border border-[#E6E6E6] px-4 py-2 rounded-[8px] bg-white cursor-pointer">
-          <img src="https://placehold.co/24x24" className="w-6 h-6" alt="Google" />
-          <span className="text-black text-sm font-medium leading-6 font-['inter']">
-            Continue with Google
-          </span>
-        </div>
-
-        {/* Policy Text */}
-        <p className="text-center text-[#585858] text-xs font-extralight mt-2">
-          By clicking “Continue with Google/Email” above, <br />
-          you acknowledge that you have read and understood, and agree to
-          Syncly’s Privacy Policy.
-        </p>
-      </form>
+        {/*바닥 여유 공간용*/}
+        <div className="h-32" />
+      </div>
     </div>
   );
 };
