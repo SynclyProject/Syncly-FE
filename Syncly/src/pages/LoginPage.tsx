@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import Button from '../shared/ui/Button';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 
 const LoginPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -13,11 +17,56 @@ const LoginPage = () => {
     handleSendClick();
   };
 
+  //yup스키마 설정
+  const schema = yup.object().shape({
+    email: yup
+      .string()
+      .email('이메일 형식이 올바르지 않습니다.')
+      .required('이메일은 필수입니다.'),
+  
+    code: yup
+      .string()
+      .matches(/^\d{6}$/, '인증 코드는 6자리 숫자입니다.')
+      .required('인증 코드를 입력해주세요.'),
+  
+    nickname: yup
+      .string()
+      .min(2, '닉네임은 최소 2자 이상')
+      .max(12, '최대 12자까지 가능해요')
+      .required('닉네임을 입력해주세요.'),
+  
+    password: yup
+      .string()
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
+        '비밀번호는 8~20자, 영문/숫자/특수문자 포함입니다.'
+      )
+      .required('비밀번호를 입력해주세요.'),
+  
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
+      .required('비밀번호 확인'),
+  });
 
+  //useForm() react-hook-form 설정
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  
+  const onSubmit = (data: any) => {
+    console.log('제출된 데이터:', data);
+    alert('회원가입이 완료되었습니다!');
+  };
+  
 
   return (
     <div className="w-full h-screen bg-white flex justify-center pt-0">
-      <div className="w-[459px] flex flex-col gap-4 pt-24">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-[459px] flex flex-col gap-4 pt-24"> 
         {/* Title */}
         <h1 className="text-center text-black text-6xl font-bold leading-[50px]">
           Sign up
@@ -27,6 +76,7 @@ const LoginPage = () => {
         <label className="text-[#585858] text-sm font-light">Email</label>
         <div className="flex gap-2">
           <input
+            {...register("email")}
             type="email"
             placeholder="Enter your email address..."
             className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
@@ -34,17 +84,23 @@ const LoginPage = () => {
           <Button colorType="main" onClick={handleButtonClick}>
             Send
           </Button>
+
+          {/*에러메세지*/}
+          {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
         </div>
 
         {/* Code Input */}
         {showCodeInput && (
           <div className="flex gap-2">
             <input
+              {...register("code")} 
               type="text"
               placeholder="Code"
               className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
             />
             <Button colorType="main">Verify</Button>
+          {/*에러메세지*/}
+          {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
           </div>
         )}
 
@@ -53,20 +109,27 @@ const LoginPage = () => {
           Password
         </label>
         <input
+          {...register("password")}
           type="password"
           placeholder="Enter your password..."
           className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
         />
+        {/*에러메세지*/}
+        {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
 
         {/* Confirm Password */}
         <input
+          {...register("confirmPassword")}
           type="password"
           placeholder="Confirm your password..."
           className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
         />
+        {/*에러메세지*/}
+        {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+
 
         {/* Submit */}
-        <button className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium">
+        <button type= "submit" className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium">
           Start with Syncly !
         </button>
 
@@ -87,9 +150,10 @@ const LoginPage = () => {
           you acknowledge that you have read and understood, and agree to
           Syncly’s Privacy Policy.
         </p>
-      </div>
+      </form>
     </div>
   );
 };
 
 export default LoginPage;
+
