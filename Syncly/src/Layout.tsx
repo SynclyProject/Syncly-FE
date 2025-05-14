@@ -4,7 +4,8 @@ import SideBar from "./shared/ui/Sidebar/Sidebar";
 
 const RootLayout = () => {
   const location = useLocation();
-  const hideSidebar = location.pathname === "/login";
+  const hideSidebar = location.pathname === "/login" || location.pathname === "/signup";
+  
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <TopBar />

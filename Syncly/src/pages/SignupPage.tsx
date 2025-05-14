@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   
 
@@ -229,5 +229,5 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;
 
