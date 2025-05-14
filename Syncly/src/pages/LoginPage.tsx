@@ -8,14 +8,6 @@ import * as yup from 'yup';
 const LoginPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   
-  //send버튼 팝업 handleButtonClick()으로 send버튼, 팝업 한 번에
-  const handleSendClick = () => {
-    alert('인증메일이 전송되었습니다');
-  };
-  const handleButtonClick = () => {
-    setShowCodeInput(true);
-    handleSendClick();
-  };
 
   //yup스키마 설정
   const schema = yup.object().shape({
@@ -31,9 +23,9 @@ const LoginPage = () => {
   
     nickname: yup
       .string()
-      .min(2, '최소 2자 이상')
-      .max(12, '최대 12자')
-      .required('닉네임을 입력해주세요.'),
+      .min(2,)
+      .max(12,)
+      .required('최소 2자, 최대 12자'),
   
     password: yup
       .string()
@@ -53,11 +45,29 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    trigger, 
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  //send버튼 팝업 handleButtonClick()으로 send버튼, 팝업 한 번에
+/*  const handleSendClick = () => {
+    alert('인증메일이 전송되었습니다');
+  };
+  const handleButtonClick = () => {
+    setShowCodeInput(true);
+    handleSendClick();
+  };
+  */
+  const handleButtonClick = async () => {
+    const isValid = await trigger("email"); // email 필드만 검증
+    if (!isValid) return; // 유효하지 않으면 중단
   
+    setShowCodeInput(true);
+    alert("인증메일이 전송되었습니다");
+  };
+
   //Onsubmit함수
   const onSubmit = (data: any) => {
     console.log('제출된 데이터:', data);
@@ -67,10 +77,18 @@ const LoginPage = () => {
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
 
-  //인증성공시 setIsVerified(true) 호출
+  /*인증성공시 setIsVerified(true) 호출
   const handleVerifyClick = () => {
     // 실제론 서버에 인증 코드 보내는 로직이 들어가야 함
     // 여기선 성공했다고 가정함
+    setIsVerified(true);
+    alert("이메일 인증 완료!");
+  };
+  */
+  const handleVerifyClick = async () => {
+    const isValid = await trigger("code"); // 코드 필드 검증
+    if (!isValid) return; // 유효하지 않으면 인증 안 함
+  
     setIsVerified(true);
     alert("이메일 인증 완료!");
   };
@@ -113,8 +131,13 @@ const LoginPage = () => {
                 type="text"
                 placeholder="Code"
                 className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // Enter로 인한 submit 방지
+                  }
+                }}
               />
-              <Button type= "button" colorType={isVerified ? 'success' : 'main'} onClick={handleVerifyClick}>Verify</Button>
+              <Button type="button" colorType={isVerified ? 'success' : 'main'} onClick={handleVerifyClick}>Verify</Button>
             {/*에러메세지*/}
             {errors.code && <p className="text-red-500 text-xs">{errors.code.message}</p>}
             </div>
@@ -130,6 +153,11 @@ const LoginPage = () => {
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               placeholder="Enter your nickname..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault(); // Enter로 인한 submit 방지
+                }
+              }}
               className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
               />
               {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
@@ -145,6 +173,11 @@ const LoginPage = () => {
             type="password"
             placeholder="Enter your password..."
             className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Enter로 인한 submit 방지
+              }
+            }}
           />
           {/*에러메세지*/}
           {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
@@ -155,6 +188,11 @@ const LoginPage = () => {
             type="password"
             placeholder="Confirm your password..."
             className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Enter로 인한 submit 방지
+              }
+            }}
           />
           {/*에러메세지*/}
           {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword.message}</p>}
