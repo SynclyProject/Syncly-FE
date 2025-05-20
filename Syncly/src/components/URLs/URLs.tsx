@@ -24,7 +24,7 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
 
   const handleAddUrl = (url: string) => {
     if (url.trim()) {
-      const newUrlList = [...urlList, { id: urlList.length + 1, url }];
+      const newUrlList = [...urlList, { id: urlList.length + 1, url: [url] }];
       setUrlList(newUrlList);
       onUpdateUrls?.(newUrlList);
       setShowInput(false);
@@ -101,7 +101,7 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
       </div>
       <p className="text-[#828282] text-[16px] font-semibold">Source</p>
       <div className="flex flex-col">
-        {showInput && (
+        {(urlList.length === 0 || showInput) && (
           <Url
             state="input"
             value={inputValue}
@@ -115,7 +115,7 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
           <Url
             key={url.id}
             state="url"
-            text={url.url}
+            text={url.url[0]}
             id={url.id}
             setUrlList={setUrlList}
           />

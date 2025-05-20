@@ -6,5 +6,5 @@ export type TMySpaceURLs = {
 
 export type TUrl = {
   id: number;
-  url: string;
+  url: string[];
 };

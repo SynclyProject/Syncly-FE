@@ -1,4 +1,4 @@
-import URLsListData from "../../shared/api/mock/URLsList";
+//import URLsListData from "../../shared/api/mock/URLsList";
 import { TMySpaceURLs } from "../../shared/type/mySpaceType";
 import { useState } from "react";
 import URLsInput from "./URLsInput";
@@ -10,7 +10,7 @@ interface IURLsListProps {
 }
 
 const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
-  const [urlsList, setUrlsList] = useState<TMySpaceURLs[]>(URLsListData);
+  const [urlsList, setUrlsList] = useState<TMySpaceURLs[]>([]);
 
   const handleAddUrls = (urls: TMySpaceURLs) => {
     if (!urls.title.trim()) return;

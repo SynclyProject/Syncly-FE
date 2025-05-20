@@ -1,4 +1,4 @@
-import TeamSpaceData from "../../api/mock/teamSpace";
+//import TeamSpaceData from "../../api/mock/teamSpace";
 import Space from "./Space";
 import { useNavigate } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
@@ -12,7 +12,7 @@ interface TeamSpaceProps {
 
 const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
   const navigate = useNavigate();
-  const [teams, setTeams] = useState<TTeamSpace[]>(TeamSpaceData);
+  const [teams, setTeams] = useState<TTeamSpace[]>([]);
   const handleAddTeam = (text: string) => {
     if (!text.trim()) return;
     const newTeam: TTeamSpace = {
@@ -37,7 +37,7 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
           spaceId={space.id}
         />
       ))}
-      {showInput && (
+      {(teams.length === 0 || showInput) && (
         <InputSpace
           onAdd={handleAddTeam}
           onCancel={() => setShowInput(false)}

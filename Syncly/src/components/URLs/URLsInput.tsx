@@ -17,7 +17,7 @@ const URLsInput = ({ onAdd, onCancel }: IURLsInputProps) => {
     if (currentUrl.trim()) {
       const newUrl: TUrl = {
         id: urls.length + 1, // 임시 ID 생성
-        url: currentUrl,
+        url: [currentUrl],
       };
       setUrls([...urls, newUrl]);
       setCurrentUrl("");
@@ -29,7 +29,7 @@ const URLsInput = ({ onAdd, onCancel }: IURLsInputProps) => {
   };
 
   const handleSubmit = () => {
-    if (!title.trim() || !urls.length) return;
+    if (!title.trim()) return;
     const newUrls: TMySpaceURLs = {
       id: urls.length + 1, // 임시 ID 생성
       title: title,
@@ -73,7 +73,7 @@ const URLsInput = ({ onAdd, onCancel }: IURLsInputProps) => {
           onAdd={handleAddUrl}
         />
         {urls.map((url) => (
-          <Url key={url.id} state="url" text={url.url} />
+          <Url key={url.id} state="url" text={url.url[0]} />
         ))}
       </div>
     </div>
