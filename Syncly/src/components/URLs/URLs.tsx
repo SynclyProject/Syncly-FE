@@ -19,6 +19,8 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
   const [inputValue, setInputValue] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+  const [editTitle, setEditTitle] = useState(false);
+  const [editTitleValue, setEditTitleValue] = useState(title);
   const modalRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLButtonElement>(null);
 
@@ -30,6 +32,18 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
       setShowInput(false);
       setInputValue("");
     }
+  };
+  const handleTitleChange = (value: string) => {
+    setEditTitleValue(value);
+  };
+  const handleTitleSubmit = () => {
+    if (!editTitleValue.trim()) return;
+    setURLs((prev) =>
+      prev.map((url) =>
+        url.id === urlsId ? { ...url, title: editTitleValue } : url
+      )
+    );
+    setEditTitle(false);
   };
 
   const handleInputChange = (value: string) => {
@@ -71,7 +85,24 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
     <div className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]">
       <div className="flex gap-4 h-[52px] items-center justify-between">
         <div className="flex gap-5 items-center relative">
-          <p className="text-2xl">{title}</p>
+          {editTitle ? (
+            <input
+              className="text-2xl border-none focus:outline-none"
+              value={editTitleValue}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleTitleSubmit();
+                }
+              }}
+              onBlur={() => setEditTitle(false)}
+            />
+          ) : (
+            <p className="text-2xl" onClick={() => setEditTitle(true)}>
+              {title}
+            </p>
+          )}
+
           <button
             className="bg-transparent border-none cursor-pointer "
             onClick={handleIconClick}
@@ -85,7 +116,12 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
               ref={modalRef}
               style={modalPosition()}
             >
-              <URLsModal urlsId={urlsId} setURLs={setURLs} />
+              <URLsModal
+                urlsId={urlsId}
+                setURLs={setURLs}
+                editTitle={editTitle}
+                setEditTitle={setEditTitle}
+              />
             </div>
           )}
         </div>

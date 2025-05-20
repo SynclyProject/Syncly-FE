@@ -6,10 +6,11 @@ import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
 interface IURLsInputProps {
   onAdd: (urls: TMySpaceURLs) => void;
   onCancel: () => void;
+  initialValue?: string;
 }
 
-const URLsInput = ({ onAdd, onCancel }: IURLsInputProps) => {
-  const [title, setTitle] = useState("");
+const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
+  const [title, setTitle] = useState(initialValue);
   const [urls, setUrls] = useState<TUrl[]>([]);
   const [currentUrl, setCurrentUrl] = useState("");
 
