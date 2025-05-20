@@ -16,11 +16,14 @@ const TopBar = () => {
         Syncly
       </p>
       {!hideIcon && (
-        <div className="flex gap-[10px]">
+        <div className="flex gap-[16px]">
           <button className="bg-transparent border-none cursor-pointer">
             <Icon name="Bell" />
           </button>
-          <button className="bg-transparent border-none cursor-pointer">
+          <button
+            className="bg-transparent border-none cursor-pointer"
+            onClick={() => navigate("/my-page")}
+          >
             <Icon name="User_Circle" />
           </button>
           <button className="bg-transparent border-none cursor-pointer">

@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import MyURLsPage from "./pages/MyURLsPage";
 import MyFilesPage from "./pages/MyFilesPage";
+import MyPage from "./pages/MyPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "my-files",
         element: <MyFilesPage />,
+      },
+      {
+        path: "my-page",
+        element: <MyPage />,
       },
     ],
   },
