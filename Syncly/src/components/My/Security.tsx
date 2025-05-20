@@ -8,7 +8,7 @@ const Security = () => {
       <div className="max-w-[400px] flex flex-col justify-center gap-4">
         <p className="text-[20px] text-[#828282]">이메일</p>
         <input
-          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px]"
+          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px] outline-none"
           type="text"
           value={email}
         />
@@ -16,17 +16,17 @@ const Security = () => {
       <div className="max-w-[400px] flex flex-col justify-center gap-4">
         <p className="text-[20px] text-[#828282]">비밀번호</p>
         <input
-          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px]"
+          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px] outline-none"
           type="text"
           placeholder="현재 비밀번호"
         />
         <input
-          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px]"
+          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px] outline-none"
           type="text"
           placeholder="변경 비밀번호"
         />
         <input
-          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px]"
+          className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px] outline-none"
           type="text"
           placeholder="변경 비밀번호 재입력"
         />

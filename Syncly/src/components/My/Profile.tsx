@@ -12,7 +12,7 @@ const Profile = () => {
         <div className="flex flex-col justify-center gap-4">
           <p className="text-[24px] text-[#828282]">선호하는 이름</p>
           <input
-            className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px]"
+            className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px] outline-none"
             type="text"
             value={name}
           />
