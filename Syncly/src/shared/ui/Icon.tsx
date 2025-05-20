@@ -10,19 +10,21 @@
 
 interface IconProps {
   name: string;
+  onClick?: () => void;
 }
 
-const Icon = ({ name }: IconProps) => {
+const Icon = ({ name, onClick }: IconProps) => {
   const iconPath = name.endsWith(".svg")
     ? `/icons/${name}`
     : `/icons/${name}.svg`;
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center justify-center w-6 h-6">
       <img
-        className="w-auto h-auto rounded"
+        className="w-auto h-auto"
         src={iconPath}
         alt={`${name} icon`}
+        onClick={onClick}
       />
     </div>
   );

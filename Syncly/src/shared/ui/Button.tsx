@@ -37,7 +37,7 @@ const Button = ({
 
   return (
     <button
-      className={`flex items-center gap-[8px] px-[16px] rounded-[8px] h-[40px] text-[16px] ${colorStyle[colorType]} ${className}`}
+      className={`flex items-center gap-[8px] px-[16px] py-[5px] rounded-[8px] text-[16px] ${colorStyle[colorType]} ${className} hover:cursor-pointer`}
       onClick={onClick}
       {...props}
     >
