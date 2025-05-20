@@ -11,7 +11,7 @@ import Icon from "./Icon";
  * @param {string} iconName - 아이콘 이름 (선택)
  */
 type TButtonColorProps = {
-  colorType: "main" | "sub" | "success" | "unable";
+  colorType: "main" | "sub" | "success" | "unable" | "white";
 };
 interface IButtonProps
   extends TButtonColorProps,
@@ -32,12 +32,13 @@ const Button = ({
     main: `bg-[#028090] text-[#FFFFFF] border-none`,
     sub: `bg-[#456990] text-[#FFFFFF] border-none`,
     success: `bg-[#44A257] text-[#FFFFFF] border-none`,
-    unable: `bg-[#FDF5F2] text-[#EB5757] border-[#E0E0E0]`,
+    unable: `bg-[#FDF5F2] text-[#EB5757] border border-[#E0E0E0]`,
+    white: `bg-[#FFFFFF] text-[#828282] border border-[#E0E0E0]`,
   };
 
   return (
     <button
-      className={`flex items-center gap-[8px] px-[16px] py-[5px] rounded-[8px] text-[16px] ${colorStyle[colorType]} ${className} hover:cursor-pointer`}
+      className={`flex items-center gap-[8px] px-3 py-2 rounded-[8px] text-[16px] ${colorStyle[colorType]} ${className} hover:cursor-pointer`}
       onClick={onClick}
       {...props}
     >

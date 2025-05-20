@@ -21,7 +21,7 @@ const Icon = ({ name, onClick }: IconProps) => {
   return (
     <div className="flex items-center justify-center w-6 h-6">
       <img
-        className="w-auto h-auto"
+        className="w-auto h-auto rounded-full"
         src={iconPath}
         alt={`${name} icon`}
         onClick={onClick}
