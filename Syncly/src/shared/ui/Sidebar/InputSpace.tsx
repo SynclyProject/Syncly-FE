@@ -4,10 +4,15 @@ import Icon from "../Icon";
 interface IInputSpaceProps {
   onAdd: (text: string) => void;
   onCancel: () => void;
+  initialValue?: string;
 }
 
-const InputSpace = ({ onAdd, onCancel }: IInputSpaceProps) => {
-  const [inputValue, setInputValue] = useState("");
+const InputSpace = ({
+  onAdd,
+  onCancel,
+  initialValue = "",
+}: IInputSpaceProps) => {
+  const [inputValue, setInputValue] = useState(initialValue);
   const handleSubmit = () => {
     if (inputValue.trim()) {
       onAdd(inputValue);

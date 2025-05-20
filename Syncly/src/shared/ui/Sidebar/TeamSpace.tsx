@@ -18,6 +18,7 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     const newTeam: TTeamSpace = {
       id: teams.length + 1,
       text,
+      isEdit: false,
     };
     setTeams((prev) => [...prev, newTeam]);
     setShowInput(false);

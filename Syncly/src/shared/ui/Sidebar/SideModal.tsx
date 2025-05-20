@@ -3,13 +3,27 @@ import { TTeamSpace } from "../../type/teamSpaceType";
 interface ISideModalProps {
   spaceId: number;
   setTeams: React.Dispatch<React.SetStateAction<TTeamSpace[]>>;
+  editTeam: boolean;
+  setEditTeam: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SideModal = ({ spaceId, setTeams }: ISideModalProps) => {
+const SideModal = ({
+  spaceId,
+  setTeams,
+  editTeam,
+  setEditTeam,
+}: ISideModalProps) => {
   return (
     <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
       <p className="text-[##828282]">팀원 추가</p>
-      <p className="text-[##828282]">팀스페이스 이름 변경</p>
+      <p
+        className="text-[##828282]"
+        onClick={() => {
+          setEditTeam(!editTeam);
+        }}
+      >
+        팀스페이스 이름 변경
+      </p>
       <p
         className="text-[#F45B69]"
         onClick={() => {
