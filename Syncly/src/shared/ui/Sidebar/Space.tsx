@@ -12,8 +12,8 @@ interface ISpaceProps extends TSpaceStateProps {
   iconName: string;
   text: string;
   onClick: () => void;
-  spaceId: number;
-  setTeams: React.Dispatch<React.SetStateAction<TTeamSpace[]>>;
+  spaceId?: number;
+  setTeams?: React.Dispatch<React.SetStateAction<TTeamSpace[]>>;
 }
 
 const Space = ({
@@ -36,9 +36,11 @@ const Space = ({
 
   const handleTeamNameChange = (text: string) => {
     if (!text.trim()) return;
-    setTeams((prev) =>
-      prev.map((team) => (team.id === spaceId ? { ...team, text } : team))
-    );
+    if (spaceId && setTeams) {
+      setTeams((prev) =>
+        prev.map((team) => (team.id === spaceId ? { ...team, text } : team))
+      );
+    }
     setEditTeam(false);
   };
 
@@ -93,12 +95,14 @@ const Space = ({
               </button>
               {modalShow && (
                 <div className="absolute top-[-9px] left-8" ref={modalRef}>
-                  <SideModal
-                    spaceId={spaceId}
-                    setTeams={setTeams}
-                    editTeam={editTeam}
-                    setEditTeam={setEditTeam}
-                  />
+                  {spaceId && setTeams && (
+                    <SideModal
+                      spaceId={spaceId}
+                      setTeams={setTeams}
+                      editTeam={editTeam}
+                      setEditTeam={setEditTeam}
+                    />
+                  )}
                 </div>
               )}
             </div>

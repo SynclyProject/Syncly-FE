@@ -3,7 +3,8 @@ import RootLayout from "./Layout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-
+import MyURLsPage from "./pages/MyURLsPage";
+import MyFilesPage from "./pages/MyFilesPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -20,8 +21,16 @@ const router = createBrowserRouter([
       },
       {
         path: "signup",
-        element: <SignupPage />
-      }
+        element: <SignupPage />,
+      },
+      {
+        path: "my-urls",
+        element: <MyURLsPage />,
+      },
+      {
+        path: "my-files",
+        element: <MyFilesPage />,
+      },
     ],
   },
 ]);
