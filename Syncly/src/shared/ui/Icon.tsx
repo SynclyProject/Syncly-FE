@@ -19,7 +19,7 @@ const Icon = ({ name, onClick }: IconProps) => {
     : `/icons/${name}.svg`;
 
   return (
-    <div className="flex items-center justify-center w-6 h-6">
+    <div className="flex items-center justify-center">
       <img
         className="w-auto h-auto rounded-full"
         src={iconPath}
