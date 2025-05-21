@@ -4,7 +4,9 @@ import Icon from "./Icon";
 const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const hideIcon = location.pathname === "/login";
+  const hideIcon =
+    location.pathname === "/login" || location.pathname === "/signup";
+
   return (
     <div className="w-full h-[70px] bg-white px-7 flex justify-between items-center border border-[#E0E0E0]">
       <p
@@ -14,11 +16,14 @@ const TopBar = () => {
         Syncly
       </p>
       {!hideIcon && (
-        <div className="flex gap-[10px]">
+        <div className="flex gap-[16px]">
           <button className="bg-transparent border-none cursor-pointer">
             <Icon name="Bell" />
           </button>
-          <button className="bg-transparent border-none cursor-pointer">
+          <button
+            className="bg-transparent border-none cursor-pointer"
+            onClick={() => navigate("/my-page")}
+          >
             <Icon name="User_Circle" />
           </button>
           <button className="bg-transparent border-none cursor-pointer">

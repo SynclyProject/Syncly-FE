@@ -10,13 +10,13 @@ const MySpace = () => {
         state="my"
         iconName="attachment"
         text="URLs"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/my-urls")}
       />
       <Space
         state="my"
         iconName="folder_open"
         text="Files"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/my-files")}
       />
     </div>
   );
