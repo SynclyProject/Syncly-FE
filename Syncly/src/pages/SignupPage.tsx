@@ -129,22 +129,28 @@ const SignupPage = () => {
 
           {/* Code Input */}
           {showCodeInput && (
-            <div className="flex gap-2">
-              <input
-                {...register("code")} 
-                type="text"
-                placeholder="Code"
-                className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault(); // Enter로 인한 submit 방지
-                  }
-                }}
-              />
-              <Button type="button" colorType={isVerified ? 'success' : 'main'} onClick={handleVerifyClick}>Verify</Button>
-            {/*에러메세지*/}
-            {errors.code && <p className="text-red-500 text-xs">{errors.code.message}</p>}
-            </div>
+
+            <>
+              <div className="flex gap-2">
+                <input
+                  {...register("code")} 
+                  type="text"
+                  placeholder="Code"
+                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // Enter로 인한 submit 방지
+                    }
+                  }}
+                />
+                <Button type="button" colorType={isVerified ? 'success' : 'main'} onClick={handleVerifyClick}>Verify</Button>
+
+              </div>
+              <div>
+              {/*에러메세지*/}
+              {errors.code && <p className="text-red-500 text-xs">{errors.code.message}</p>}                
+              </div>
+            </>
           )}
 
           {/* Nickname */}
