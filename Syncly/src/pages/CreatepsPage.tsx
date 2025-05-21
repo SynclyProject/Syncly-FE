@@ -21,11 +21,6 @@ const CreatepsPage = () => {
       .matches(/^\d{6}$/, '인증 코드는 6자리 숫자입니다.')
       .required('인증 코드를 입력해주세요.'),
   
-    nickname: yup
-      .string()
-      .min(2,)
-      .max(12,)
-      .required('최소 2자, 최대 12자'),
   
     password: yup
       .string()
@@ -51,15 +46,8 @@ const CreatepsPage = () => {
     resolver: yupResolver(schema),
   });
 
-  //send버튼 팝업 handleButtonClick()으로 send버튼, 팝업 한 번에
-/*  const handleSendClick = () => {
-    alert('인증메일이 전송되었습니다');
-  };
-  const handleButtonClick = () => {
-    setShowCodeInput(true);
-    handleSendClick();
-  };
-  */
+
+
   const handleButtonClick = async () => {
     const isValid = await trigger("email"); // email 필드만 검증
     if (!isValid) return; // 유효하지 않으면 중단
@@ -71,20 +59,13 @@ const CreatepsPage = () => {
   //Onsubmit함수
   const onSubmit = (data: any) => {
     console.log('제출된 데이터:', data);
-    alert('회원가입이 완료되었습니다!');
+    alert('비밀번호가 재설정되었습니다.');
   };
   
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
 
-  /*인증성공시 setIsVerified(true) 호출
-  const handleVerifyClick = () => {
-    // 실제론 서버에 인증 코드 보내는 로직이 들어가야 함
-    // 여기선 성공했다고 가정함
-    setIsVerified(true);
-    alert("이메일 인증 완료!");
-  };
-  */
+
   const handleVerifyClick = async () => {
     const isValid = await trigger("code"); // 코드 필드 검증
     if (!isValid) return; // 유효하지 않으면 인증 안 함
@@ -93,8 +74,7 @@ const CreatepsPage = () => {
     alert("이메일 인증 완료!");
   };
   
-  //닉네임 인증 필드 상태
-  const [nickname, setNickname] = useState("");
+
 
   return (
     <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
@@ -102,8 +82,8 @@ const CreatepsPage = () => {
       
         <form onSubmit={handleSubmit(onSubmit)} className="w-[459px] flex flex-col gap-4 pt-24"> 
           {/* Title */}
-          <h1 className="text-center text-black text-6xl font-bold leading-[50px]">
-            Sign up
+          <h1 className=" text-black text-5xl font-bold leading-[60px] whitespace-nowrap">
+            Create new password
           </h1>
 
           {/* Email */}
@@ -140,27 +120,6 @@ const CreatepsPage = () => {
               <Button type="button" colorType={isVerified ? 'success' : 'main'} onClick={handleVerifyClick}>Verify</Button>
             {/*에러메세지*/}
             {errors.code && <p className="text-red-500 text-xs">{errors.code.message}</p>}
-            </div>
-          )}
-
-          {/* Nickname */}
-          {isVerified && (
-            <div className="flex flex-col gap-2">
-              <label className="text-[#585858] text-sm font-light mt-2">Nickname</label>
-              <input
-              {...register("nickname")}
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              placeholder="Enter your nickname..."
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault(); // Enter로 인한 submit 방지
-                }
-              }}
-              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-              />
-              {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
             </div>
           )}
 
