@@ -3,11 +3,12 @@ import Button from '../shared/ui/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
-  
+  const navigate = useNavigate();
 
   //yup스키마 설정
   const schema = yup.object().shape({
@@ -72,6 +73,8 @@ const SignupPage = () => {
   const onSubmit = (data: any) => {
     console.log('제출된 데이터:', data);
     alert('회원가입이 완료되었습니다!');
+    navigate('/login');
+
   };
   
   //이메일 인증 & 코드 인증
@@ -91,6 +94,7 @@ const SignupPage = () => {
   
     setIsVerified(true);
     alert("이메일 인증 완료!");
+    
   };
   
   //닉네임 인증 필드 상태
