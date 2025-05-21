@@ -159,7 +159,7 @@ const CreatepsPage = () => {
 
           {/* Submit */}
           <button type= "submit" className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium">
-            Start with Syncly !
+            Create new password
           </button>
 
           {/* Divider */}
