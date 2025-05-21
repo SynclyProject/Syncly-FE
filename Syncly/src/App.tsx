@@ -3,6 +3,7 @@ import RootLayout from "./Layout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import CreatepsPage from "./pages/CreatepsPage";
 import MyURLsPage from "./pages/MyURLsPage";
 import MyFilesPage from "./pages/MyFilesPage";
 import MyPage from "./pages/MyPage";
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignupPage />,
+      },
+      {
+        path: "createps",
+        element: <CreatepsPage />,
       },
       {
         path: "my-urls",

@@ -5,7 +5,7 @@ const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const hideIcon =
-    location.pathname === "/login" || location.pathname === "/signup";
+    location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "/createps";
 
   return (
     <div className="w-full h-[70px] bg-white px-7 flex justify-between items-center border border-[#E0E0E0]">
