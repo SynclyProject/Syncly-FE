@@ -112,20 +112,24 @@ const SignupPage = () => {
 
           {/* Email */}
           <label className="text-[#585858] text-sm font-light">Email</label>
-          <div className="flex gap-2">
-            <input
-              {...register("email")}
-              type="email"
-              placeholder="Enter your email address..."
-              className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
-            />
-            <Button colorType="main" onClick={handleButtonClick}>
-              Send
-            </Button>
+          <>
+              <div className="flex gap-2">
+                <input
+                  {...register("email")}
+                  type="email"
+                  placeholder="Enter your email address..."
+                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+                />
+                <Button colorType="main" onClick={handleButtonClick}>
+                  Send
+                </Button>
 
-            {/*에러메세지*/}
-            {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
-          </div>
+              </div>
+              <div>
+              {/*에러메세지*/}
+              {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
+              </div>
+            </>
 
           {/* Code Input */}
           {showCodeInput && (
