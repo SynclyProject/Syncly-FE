@@ -3,11 +3,12 @@ import Button from '../shared/ui/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
-  
+  const navigate = useNavigate();
 
   //yup스키마 설정
   const schema = yup.object().shape({
@@ -91,6 +92,7 @@ const SignupPage = () => {
   
     setIsVerified(true);
     alert("이메일 인증 완료!");
+    navigate('/login');
   };
   
   //닉네임 인증 필드 상태
