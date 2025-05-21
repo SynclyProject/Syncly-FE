@@ -73,6 +73,8 @@ const SignupPage = () => {
   const onSubmit = (data: any) => {
     console.log('제출된 데이터:', data);
     alert('회원가입이 완료되었습니다!');
+    navigate('/login');
+
   };
   
   //이메일 인증 & 코드 인증
@@ -92,7 +94,7 @@ const SignupPage = () => {
   
     setIsVerified(true);
     alert("이메일 인증 완료!");
-    navigate('/login');
+    
   };
   
   //닉네임 인증 필드 상태
