@@ -3,9 +3,10 @@ import Button from '../shared/ui/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
 
   const schema = yup.object().shape({
     email: yup
@@ -36,6 +37,7 @@ const {
 const onSubmit = (data: any) => {
     console.log('제출된 데이터:', data);
     alert('로그인 성공!');
+    navigate('/');
 };
 
   
