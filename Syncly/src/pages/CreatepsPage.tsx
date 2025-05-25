@@ -11,7 +11,25 @@ const CreatepsPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
 
+    //이메일 인증 & 코드 인증
+  const [isVerified, setIsVerified] = useState(false);
+
+
+  const handleVerifyClick = async () => {
+    const isValid = await trigger("code"); // 코드 필드 검증
+    if (!isValid) return; // 유효하지 않으면 인증 안 함
   
+    setIsVerified(true);
+    alert("이메일 인증 완료!");
+  };
+
+  const handleSendClick = async () => {
+    const isValid = await trigger("email"); // email 필드만 검증
+    if (!isValid) return; // 유효하지 않으면 중단
+  
+    setShowCodeInput(true);
+    alert("인증메일이 전송되었습니다");
+  };  
   //useForm() react-hook-form 설정
   const {
     register,
@@ -24,13 +42,7 @@ const CreatepsPage = () => {
 
 
 
-  const handleButtonClick = async () => {
-    const isValid = await trigger("email"); // email 필드만 검증
-    if (!isValid) return; // 유효하지 않으면 중단
-  
-    setShowCodeInput(true);
-    alert("인증메일이 전송되었습니다");
-  };
+
 
   //Onsubmit함수
   const onSubmit = (data: any) => {
@@ -39,18 +51,7 @@ const CreatepsPage = () => {
     navigate('/login');
   };
   
-  //이메일 인증 & 코드 인증
-  const [isVerified, setIsVerified] = useState(false);
 
-
-  const handleVerifyClick = async () => {
-    const isValid = await trigger("code"); // 코드 필드 검증
-    if (!isValid) return; // 유효하지 않으면 인증 안 함
-  
-    setIsVerified(true);
-    alert("이메일 인증 완료!");
-  };
-  
 
 
   return (
@@ -73,7 +74,7 @@ const CreatepsPage = () => {
                   placeholder="Enter your email address..."
                   className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
                 />
-                <Button colorType="main" onClick={handleButtonClick}>
+                <Button colorType="main" onClick={handleSendClick}>
                   Send
                 </Button>
 
