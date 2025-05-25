@@ -4,38 +4,14 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import {CreatePsSchema} from '../shared/schema';
+
 
 const CreatepsPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
 
-  //yup스키마 설정
-  const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email('이메일 형식이 올바르지 않습니다.')
-      .required('이메일은 필수입니다.'),
   
-    code: yup
-      .string()
-      .matches(/^\d{6}$/, '인증 코드는 6자리 숫자입니다.')
-      .required('인증 코드를 입력해주세요.'),
-  
-  
-    password: yup
-      .string()
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
-        '영문,숫자,특수문자 포함 8-20자'
-      )
-      .required('비밀번호를 입력해주세요.'),
-  
-    confirmPassword: yup
-      .string()
-      .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
-      .required('비밀번호 확인'),
-  });
-
   //useForm() react-hook-form 설정
   const {
     register,
@@ -43,7 +19,7 @@ const CreatepsPage = () => {
     trigger, 
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(CreatePsSchema),
   });
 
 
