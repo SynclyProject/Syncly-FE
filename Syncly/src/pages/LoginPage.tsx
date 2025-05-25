@@ -90,7 +90,7 @@ const onSubmit = (data: any) => {
 
           {/* Google Sign-In */}
           <div className="flex items-center gap-4 border border-[#E6E6E6] px-4 py-2 rounded-[8px] bg-white cursor-pointer">
-            <img src="https://placehold.co/24x24" className="w-6 h-6" alt="Google" />
+            <img src="/google-logo.png" className="w-6 h-6" alt="Google" />
             <span className="text-black text-sm font-medium leading-6 font-['inter']">
               Continue with Google
             </span>
