@@ -4,41 +4,26 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import {LoginSchema} from '../shared/schema'
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email('이메일 형식이 올바르지 않습니다.')
-      .required('이메일을 입력하세요.'),
-  
-  
-    password: yup
-      .string()
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
-        //'영문,숫자,특수문자 포함 8-20자'
-      )
-      .required('비밀번호를 입력해주세요.'),
-  
 
-  });
 
-const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
- 
-const onSubmit = (data: any) => {
-    console.log('제출된 데이터:', data);
-    alert('로그인 성공!');
-    navigate('/my-urls');
-};
+  const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm({
+      resolver: yupResolver(LoginSchema),
+    });
+  
+  const onSubmit = (data: any) => {
+      console.log('제출된 데이터:', data);
+      alert('로그인 성공!');
+      navigate('/my-urls');
+  };
 
   
 

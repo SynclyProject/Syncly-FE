@@ -5,61 +5,45 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
+import { SignUpSchema } from '../shared/schema';
 
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
+  //이메일 인증 & 코드 인증
+  const [isVerified, setIsVerified] = useState(false);
+  //닉네임 인증 필드 상태
+  const [nickname, setNickname] = useState("");
+  const handleVerifyClick = async () => {
+      const isValid = await trigger("code"); // 코드 필드 검증
+      if (!isValid) return; // 유효하지 않으면 인증 안 함
+    
+      setIsVerified(true);
+      alert("이메일 인증 완료!");
+      
+    };
 
-  //yup스키마 설정
-  const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email('이메일 형식이 올바르지 않습니다.')
-      .required('이메일은 필수입니다.'),
   
-    code: yup
-      .string()
-      .matches(/^\d{6}$/, '인증 코드는 6자리 숫자입니다.')
-      .required('인증 코드를 입력해주세요.'),
-  
-    nickname: yup
-      .string()
-      .min(2,)
-      .max(12,)
-      .required('닉네임을 적어주세요. (최소 2자, 최대 12자)'),
-  
-    password: yup
-      .string()
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
-        '영문,숫자,특수문자 포함 8-20자'
-      )
-      .required('비밀번호를 입력해주세요.'),
-  
-    confirmPassword: yup
-      .string()
-      .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
-      .required('비밀번호 확인'),
-  });
 
   //useForm() react-hook-form 설정
   const {
     register,
     handleSubmit,
     trigger, 
+    getValues,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(SignUpSchema),
   });
 
 
-  const handleButtonClick = async () => {
+  const handleSendClick = async () => {
     const isValid = await trigger("email"); // email 필드만 검증
     if (!isValid) return; // 유효하지 않으면 중단
   
-    setShowCodeInput(true);
-    alert("인증메일이 전송되었습니다");
+    /*setShowCodeInput(true);
+    alert("인증메일이 전송되었습니다");*/
 
     //API
     try{
@@ -74,12 +58,14 @@ const SignupPage = () => {
 
       );
 
-      /*if (response.data.isSuccess){
+      if (response.data.isSuccess){
         setShowCodeInput(true);
         alert("인증메일이 전송되었습니다!")
-      }*/
+      }
 
     }catch(error:any){  
+
+
       if(error.response?.data?.code === "MEMBER409_01"){
         alert("이미 가입된 이메일입니다.")
       }else { 
@@ -96,21 +82,8 @@ const SignupPage = () => {
 
   };
   
-  //이메일 인증 & 코드 인증
-  const [isVerified, setIsVerified] = useState(false);
 
-
-  const handleVerifyClick = async () => {
-    const isValid = await trigger("code"); // 코드 필드 검증
-    if (!isValid) return; // 유효하지 않으면 인증 안 함
   
-    setIsVerified(true);
-    alert("이메일 인증 완료!");
-    
-  };
-  
-  //닉네임 인증 필드 상태
-  const [nickname, setNickname] = useState("");
 
   return (
     <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
@@ -132,7 +105,7 @@ const SignupPage = () => {
                   placeholder="Enter your email address..."
                   className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
                 />
-                <Button colorType="main" onClick={handleButtonClick}>
+                <Button colorType="main" onClick={handleSendClick}>
                   Send
                 </Button>
 
