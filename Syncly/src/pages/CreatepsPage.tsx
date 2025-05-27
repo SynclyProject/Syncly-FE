@@ -4,66 +4,14 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import {CreatePsSchema} from '../shared/schema';
+
 
 const CreatepsPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
 
-  //yup스키마 설정
-  const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email('이메일 형식이 올바르지 않습니다.')
-      .required('이메일은 필수입니다.'),
-  
-    code: yup
-      .string()
-      .matches(/^\d{6}$/, '인증 코드는 6자리 숫자입니다.')
-      .required('인증 코드를 입력해주세요.'),
-  
-  
-    password: yup
-      .string()
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
-        '영문,숫자,특수문자 포함 8-20자'
-      )
-      .required('비밀번호를 입력해주세요.'),
-  
-    confirmPassword: yup
-      .string()
-      .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
-      .required('비밀번호 확인'),
-  });
-
-  //useForm() react-hook-form 설정
-  const {
-    register,
-    handleSubmit,
-    trigger, 
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-
-
-  const handleButtonClick = async () => {
-    const isValid = await trigger("email"); // email 필드만 검증
-    if (!isValid) return; // 유효하지 않으면 중단
-  
-    setShowCodeInput(true);
-    alert("인증메일이 전송되었습니다");
-  };
-
-  //Onsubmit함수
-  const onSubmit = (data: any) => {
-    console.log('제출된 데이터:', data);
-    alert('비밀번호가 재설정되었습니다.');
-    navigate('/login');
-  };
-  
-  //이메일 인증 & 코드 인증
+    //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
 
 
@@ -74,7 +22,36 @@ const CreatepsPage = () => {
     setIsVerified(true);
     alert("이메일 인증 완료!");
   };
+
+  const handleSendClick = async () => {
+    const isValid = await trigger("email"); // email 필드만 검증
+    if (!isValid) return; // 유효하지 않으면 중단
   
+    setShowCodeInput(true);
+    alert("인증메일이 전송되었습니다");
+  };  
+  //useForm() react-hook-form 설정
+  const {
+    register,
+    handleSubmit,
+    trigger, 
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(CreatePsSchema),
+  });
+
+
+
+
+
+  //Onsubmit함수
+  const onSubmit = (data: any) => {
+    console.log('제출된 데이터:', data);
+    alert('비밀번호가 재설정되었습니다.');
+    navigate('/login');
+  };
+  
+
 
 
   return (
@@ -97,7 +74,7 @@ const CreatepsPage = () => {
                   placeholder="Enter your email address..."
                   className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
                 />
-                <Button colorType="main" onClick={handleButtonClick}>
+                <Button colorType="main" onClick={handleSendClick}>
                   Send
                 </Button>
 
@@ -177,7 +154,7 @@ const CreatepsPage = () => {
 
           {/* Google Sign-In */}
           <div className="flex items-center gap-4 border border-[#E6E6E6] px-4 py-2 rounded-[8px] bg-white cursor-pointer">
-            <img src="https://placehold.co/24x24" className="w-6 h-6" alt="Google" />
+            <img src="/google-logo.png" className="w-6 h-6" alt="Google" />
             <span className="text-black text-sm font-medium leading-6 font-['inter']">
               Continue with Google
             </span>
