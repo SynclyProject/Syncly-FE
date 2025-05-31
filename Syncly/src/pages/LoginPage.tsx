@@ -69,6 +69,8 @@ const LoginPage = () => {
           </button>
           <div className="flex flex-col gap-1 mb-1"></div>
 
+        </form>
+
           {/* Forgot Password Link */}
           <button
             onClick={() => navigate('/createps')}
@@ -104,7 +106,7 @@ const LoginPage = () => {
         {/*바닥 여유 공간용*/}
         <div className="h-32" />
 
-        </form>
+        
       </div>
     </div>
   );
