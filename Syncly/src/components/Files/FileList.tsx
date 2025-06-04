@@ -60,6 +60,8 @@ const FileList = ({
                 title={file.title}
                 date={file.date}
                 user={file.user}
+                fileId={file.id}
+                setFileList={setFileList}
               />
             ))}
         </div>
@@ -71,6 +73,8 @@ const FileList = ({
             title={file.title}
             date={file.date}
             user={file.user}
+            fileId={file.id}
+            setFileList={setFileList}
           />
         ))
       ) : (
@@ -81,6 +85,7 @@ const FileList = ({
 
       {showInput && (
         <FileInput
+          type="folder"
           user={"userProfile"}
           onAdd={handleAddFile}
           onCancel={() => setShowInput(false)}

@@ -1,7 +1,10 @@
 import Icon from "../../shared/ui/Icon";
 import { useState } from "react";
 
-interface IFileInputProps {
+type TTypeProps = {
+  type: "folder" | "image" | "file" | "video";
+};
+interface IFileInputProps extends TTypeProps {
   user: string;
   onAdd: (text: string) => void;
   onCancel: () => void;
@@ -9,6 +12,7 @@ interface IFileInputProps {
 }
 
 const FileInput = ({
+  type,
   user,
   onAdd,
   onCancel,
@@ -28,10 +32,11 @@ const FileInput = ({
     if (!inputValue.trim()) onCancel();
   };
   const today = new Date().toISOString().split("T")[0];
+  const iconName = type + "_gray";
 
   return (
     <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0]">
-      <Icon name="Folder_input" />
+      <Icon name={iconName} />
       <input
         className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold outline-none"
         placeholder="폴더명"
