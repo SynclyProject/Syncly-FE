@@ -5,8 +5,10 @@ import Icon from "../../shared/ui/Icon";
 
 const FileSearch = ({
   setSearchValue,
+  setSort,
 }: {
   setSearchValue: (value: string) => void;
+  setSort: (value: boolean) => void;
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [inputValue, setInputValue] = useState(searchParams.get("mq") ?? "");
@@ -65,8 +67,18 @@ const FileSearch = ({
             className="absolute bottom-[-105px] left-0 flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
             ref={modalRef}
           >
-            <p className="text-[#828282] cursor-pointer">최신순</p>
-            <p className="text-[#828282] cursor-pointer">가나다순</p>
+            <p
+              className="text-[#828282] cursor-pointer"
+              onClick={() => setSort(false)}
+            >
+              최신순
+            </p>
+            <p
+              className="text-[#828282] cursor-pointer"
+              onClick={() => setSort(true)}
+            >
+              가나다순
+            </p>
           </div>
         )}
       </div>

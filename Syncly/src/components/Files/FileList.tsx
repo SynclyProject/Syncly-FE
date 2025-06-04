@@ -4,15 +4,19 @@ import { TFilesType, TFiles } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useState } from "react";
 
+interface IFileListProps {
+  searchValue: string;
+  setShowInput: (boolean: boolean) => void;
+  showInput: boolean;
+  sort: boolean;
+}
+
 const FileList = ({
   searchValue,
   setShowInput,
   showInput,
-}: {
-  searchValue: string;
-  setShowInput: (boolean: boolean) => void;
-  showInput: boolean;
-}) => {
+  sort,
+}: IFileListProps) => {
   const [fileList, setFileList] = useState<TFiles[]>(FilesData);
   const filteredFiles = fileList.filter((file) =>
     file.title.toLowerCase().includes(searchValue.toLowerCase())
@@ -35,6 +39,7 @@ const FileList = ({
     setFileList([...fileList, newFile]);
   };
 
+  console.log(sort);
   return (
     <div className="flex flex-col w-full bg-white rounded-[8px] px-5">
       <div className="w-full h-[56px] bg-white flex items-center gap-[63px]">
@@ -43,7 +48,23 @@ const FileList = ({
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
       </div>
-      {filesToShow.length > 0 ? (
+      {sort ? (
+        <div>
+          {[...fileList]
+            .sort((a, b) =>
+              a.title.toLowerCase().localeCompare(b.title.toLowerCase())
+            )
+            .map((file) => (
+              <File
+                key={file.id}
+                type={file.type as TFilesType}
+                title={file.title}
+                date={file.date}
+                user={file.user}
+              />
+            ))}
+        </div>
+      ) : filesToShow.length > 0 ? (
         filesToShow.map((file) => (
           <File
             key={file.id}
@@ -58,6 +79,7 @@ const FileList = ({
           {noDataMessage}
         </p>
       )}
+
       {showInput && (
         <FileInput
           user={"userProfile"}

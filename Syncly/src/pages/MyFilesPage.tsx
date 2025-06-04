@@ -7,6 +7,7 @@ import useDebounce from "../hooks/useDebounce";
 
 const MyFilesPage = () => {
   const [showInput, setShowInput] = useState(false);
+  const [sort, setSort] = useState(false);
   const [mq, setMq] = useState("");
   const useDebouncedValue = useDebounce(mq, 500);
   return (
@@ -16,11 +17,12 @@ const MyFilesPage = () => {
       </div>
       <div className="w-full flex flex-col gap-5">
         <FilePath setShowInput={setShowInput} />
-        <FileSearch setSearchValue={setMq} />
+        <FileSearch setSearchValue={setMq} setSort={setSort} />
         <FileList
           searchValue={useDebouncedValue}
           setShowInput={setShowInput}
           showInput={showInput}
+          sort={sort}
         />
       </div>
     </div>
