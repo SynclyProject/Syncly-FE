@@ -42,7 +42,7 @@ const FilePath = ({
         />
         {filePlusModal && (
           <div
-            className="absolute bottom-[-100px] right-0 flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
+            className="absolute bottom-[-105px] right-0 flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
             ref={modalRef}
           >
             <p
