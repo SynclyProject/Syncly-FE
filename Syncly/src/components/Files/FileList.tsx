@@ -4,7 +4,15 @@ import { TFilesType, TFiles } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useState } from "react";
 
-const FileList = ({ searchValue }: { searchValue: string }) => {
+const FileList = ({
+  searchValue,
+  setShowInput,
+  showInput,
+}: {
+  searchValue: string;
+  setShowInput: (boolean: boolean) => void;
+  showInput: boolean;
+}) => {
   const [fileList, setFileList] = useState<TFiles[]>(FilesData);
   const filteredFiles = fileList.filter((file) =>
     file.title.toLowerCase().includes(searchValue.toLowerCase())
@@ -19,7 +27,7 @@ const FileList = ({ searchValue }: { searchValue: string }) => {
     if (!text.trim()) return;
     const newFile: TFiles = {
       id: fileList.length + 1,
-      type: "file",
+      type: "folder",
       title: text,
       date: new Date().toISOString().split("T")[0],
       user: "userProfile",
@@ -50,11 +58,13 @@ const FileList = ({ searchValue }: { searchValue: string }) => {
           {noDataMessage}
         </p>
       )}
-      <FileInput
-        user={"userProfile"}
-        onAdd={handleAddFile}
-        onCancel={() => {}}
-      />
+      {showInput && (
+        <FileInput
+          user={"userProfile"}
+          onAdd={handleAddFile}
+          onCancel={() => setShowInput(false)}
+        />
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 
 const MyFilesPage = () => {
+  const [showInput, setShowInput] = useState(false);
   const [mq, setMq] = useState("");
   const useDebouncedValue = useDebounce(mq, 500);
   return (
@@ -14,9 +15,13 @@ const MyFilesPage = () => {
         <Navigate state="files" />
       </div>
       <div className="w-full flex flex-col gap-5">
-        <FilePath />
+        <FilePath setShowInput={setShowInput} />
         <FileSearch setSearchValue={setMq} />
-        <FileList searchValue={useDebouncedValue} />
+        <FileList
+          searchValue={useDebouncedValue}
+          setShowInput={setShowInput}
+          showInput={showInput}
+        />
       </div>
     </div>
   );
