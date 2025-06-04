@@ -82,8 +82,6 @@ const FileSearch = ({
           </div>
         )}
       </div>
-
-      <Button colorType="white" iconName="search" />
     </div>
   );
 };

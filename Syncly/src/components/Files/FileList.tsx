@@ -39,7 +39,6 @@ const FileList = ({
     setFileList([...fileList, newFile]);
   };
 
-  console.log(sort);
   return (
     <div className="flex flex-col w-full bg-white rounded-[8px] px-5">
       <div className="w-full h-[56px] bg-white flex items-center gap-[63px]">
