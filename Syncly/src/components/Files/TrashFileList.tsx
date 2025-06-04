@@ -83,6 +83,7 @@ const TrashFileList = ({
           user={"userProfile"}
           onAdd={handleAddFile}
           onCancel={() => setShowInput(false)}
+          type="folder"
         />
       )}
     </div>
