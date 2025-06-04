@@ -79,7 +79,7 @@ const File = ({ type, title, date, user, fileId, setFileList }: IFileProps) => {
 
             {modalShow && (
               <div
-                className="w-[160px] absolute bottom-[-105px] right-0 flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
+                className="z-10 w-[160px] absolute top-0 right-[30px] flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
                 ref={modalRef}
               >
                 <p className="text-[#828282] cursor-pointer flex-nowrap">
