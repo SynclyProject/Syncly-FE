@@ -1,5 +1,6 @@
 import Button from "../../shared/ui/Button";
 import { useRef, useState, useEffect } from "react";
+import AddFile from "./AddFile";
 
 const FilePath = ({
   setShowInput,
@@ -7,6 +8,7 @@ const FilePath = ({
   setShowInput: (boolean: boolean) => void;
 }) => {
   const [filePlusModal, setFilePlusModal] = useState(false);
+  const [addFileModal, setAddFileModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -51,9 +53,17 @@ const FilePath = ({
             >
               폴더 생성
             </p>
-            <p className="text-[#828282] cursor-pointer flex-nowrap">
+            <p
+              className="text-[#828282] cursor-pointer flex-nowrap"
+              onClick={() => setAddFileModal(true)}
+            >
               파일 추가
             </p>
+          </div>
+        )}
+        {addFileModal && (
+          <div className="fixed inset-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50">
+            <AddFile setAddFileModal={setAddFileModal} />
           </div>
         )}
       </div>
