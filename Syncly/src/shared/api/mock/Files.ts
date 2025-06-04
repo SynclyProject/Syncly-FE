@@ -1,4 +1,6 @@
-const FilesData = [
+import { TFiles } from "../../type/FilesType";
+
+const FilesData: TFiles[] = [
   {
     id: 1,
     type: "folder",

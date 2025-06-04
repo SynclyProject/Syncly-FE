@@ -1,16 +1,31 @@
 import FilesData from "../../shared/api/mock/Files";
 import File from "./File";
-import { TFilesType } from "../../shared/type/FilesType";
-// import Icon from "../../shared/ui/Icon";
+import { TFilesType, TFiles } from "../../shared/type/FilesType";
+import FileInput from "./FileInput";
+import { useState } from "react";
+
 const FileList = ({ searchValue }: { searchValue: string }) => {
-  const filteredFiles = FilesData.filter((file) =>
+  const [fileList, setFileList] = useState<TFiles[]>(FilesData);
+  const filteredFiles = fileList.filter((file) =>
     file.title.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  const filesToShow = searchValue ? filteredFiles : FilesData;
+  const filesToShow = searchValue ? filteredFiles : fileList;
   const noDataMessage = searchValue
     ? "검색된 파일이 없습니다."
     : "저장한 파일이 없습니다.";
+
+  const handleAddFile = (text: string) => {
+    if (!text.trim()) return;
+    const newFile: TFiles = {
+      id: fileList.length + 1,
+      type: "file",
+      title: text,
+      date: new Date().toISOString().split("T")[0],
+      user: "userProfile",
+    };
+    setFileList([...fileList, newFile]);
+  };
 
   return (
     <div className="flex flex-col w-full bg-white rounded-[8px] px-5">
@@ -35,15 +50,11 @@ const FileList = ({ searchValue }: { searchValue: string }) => {
           {noDataMessage}
         </p>
       )}
-      {/* {FilesData.map((file) => (
-        <File
-          key={file.id}
-          type={file.type as TFilesType}
-          title={file.title}
-          date={file.date}
-          user={file.user}
-        />
-      ))} */}
+      <FileInput
+        user={"userProfile"}
+        onAdd={handleAddFile}
+        onCancel={() => {}}
+      />
     </div>
   );
 };
