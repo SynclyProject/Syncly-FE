@@ -6,9 +6,11 @@ import Icon from "../../shared/ui/Icon";
 const FileSearch = ({
   setSearchValue,
   setSort,
+  setTrash,
 }: {
   setSearchValue: (value: string) => void;
   setSort: (value: boolean) => void;
+  setTrash: (value: boolean) => void;
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [inputValue, setInputValue] = useState(searchParams.get("mq") ?? "");
@@ -82,6 +84,11 @@ const FileSearch = ({
           </div>
         )}
       </div>
+      <Button
+        colorType="white"
+        iconName="Trash_Full_gray"
+        onClick={() => setTrash(true)}
+      />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import FilesData from "../../shared/api/mock/Files";
 import File from "./File";
 import { TFilesType, TFiles } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
@@ -11,13 +10,13 @@ interface IFileListProps {
   sort: boolean;
 }
 
-const FileList = ({
+const TrashFileList = ({
   searchValue,
   setShowInput,
   showInput,
   sort,
 }: IFileListProps) => {
-  const [fileList, setFileList] = useState<TFiles[]>(FilesData);
+  const [fileList, setFileList] = useState<TFiles[]>([]);
   const filteredFiles = fileList.filter((file) =>
     file.title.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -25,7 +24,7 @@ const FileList = ({
   const filesToShow = searchValue ? filteredFiles : fileList;
   const noDataMessage = searchValue
     ? "검색된 파일이 없습니다."
-    : "저장한 파일이 없습니다.";
+    : "빈 휴지통입니다.";
 
   const handleAddFile = (text: string) => {
     if (!text.trim()) return;
@@ -60,8 +59,6 @@ const FileList = ({
                 title={file.title}
                 date={file.date}
                 user={file.user}
-                fileId={file.id}
-                setFileList={setFileList}
               />
             ))}
         </div>
@@ -73,8 +70,6 @@ const FileList = ({
             title={file.title}
             date={file.date}
             user={file.user}
-            fileId={file.id}
-            setFileList={setFileList}
           />
         ))
       ) : (
@@ -85,14 +80,14 @@ const FileList = ({
 
       {showInput && (
         <FileInput
-          type="folder"
           user={"userProfile"}
           onAdd={handleAddFile}
           onCancel={() => setShowInput(false)}
+          type="folder"
         />
       )}
     </div>
   );
 };
 
-export default FileList;
+export default TrashFileList;
