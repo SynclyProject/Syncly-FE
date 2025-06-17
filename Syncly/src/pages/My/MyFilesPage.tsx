@@ -1,12 +1,12 @@
-import FilePath from "../components/Files/FilePath";
-import FileSearch from "../components/Files/FileSearch";
-import FileList from "../components/Files/FileList";
+import Navigate from "../../components/Navigate";
+import FilePath from "../../components/Files/FilePath";
+import FileSearch from "../../components/Files/FileSearch";
+import FileList from "../../components/Files/FileList";
 import { useState } from "react";
-import useDebounce from "../hooks/useDebounce";
-import TrashFileList from "../components/Files/TrashFileList";
-import TeamNavigate from "../components/TeamNavigate";
+import useDebounce from "../../hooks/useDebounce";
+import TrashFileList from "../../components/Files/TrashFileList";
 
-const TeamFilesPage = () => {
+const MyFilesPage = () => {
   const [showInput, setShowInput] = useState(false);
   const [sort, setSort] = useState(false);
   const [trash, setTrash] = useState(false);
@@ -15,7 +15,7 @@ const TeamFilesPage = () => {
   return (
     <div className="w-full mx-[74px] flex flex-col items-center gap-5">
       <div className="w-full flex mt-5">
-        <TeamNavigate state="files" />
+        <Navigate state="files" />
       </div>
       <div className="w-full flex flex-col gap-5">
         <FilePath setShowInput={setShowInput} />
@@ -44,4 +44,4 @@ const TeamFilesPage = () => {
   );
 };
 
-export default TeamFilesPage;
+export default MyFilesPage;

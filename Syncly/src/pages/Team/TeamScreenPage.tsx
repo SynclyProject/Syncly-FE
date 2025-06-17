@@ -1,4 +1,4 @@
-import TeamNavigate from "../components/TeamNavigate";
+import TeamNavigate from "../../components/TeamNavigate";
 
 const TeamScreenPage = () => {
   return (

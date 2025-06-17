@@ -1,6 +1,6 @@
-import Navigate from "../components/Navigate";
-import URLsList from "../components/URLs/URLsList";
-import Button from "../shared/ui/Button";
+import Navigate from "../../components/Navigate";
+import URLsList from "../../components/URLs/URLsList";
+import Button from "../../shared/ui/Button";
 import { useState } from "react";
 
 const MyURLsPage = () => {

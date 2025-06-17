@@ -7,7 +7,7 @@ import CreatepsPage from "./pages/CreatepsPage";
 import MyURLsPage from "./pages/MyURLsPage";
 import MyFilesPage from "./pages/MyFilesPage";
 import MyPage from "./pages/MyPage";
-import TeamURLsPage from "./pages/TeamURLsPage";
+import TeamURLsPage from "./pages/Team/TeamURLsPage";
 import TeamFilesPage from "./pages/TeamFilesPage";
 import TeamScreenPage from "./pages/TeamScreenPage";
 

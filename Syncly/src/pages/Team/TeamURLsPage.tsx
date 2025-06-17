@@ -1,6 +1,6 @@
-import TeamNavigate from "../components/TeamNavigate";
-import URLsList from "../components/URLs/URLsList";
-import Button from "../shared/ui/Button";
+import TeamNavigate from "../../components/TeamNavigate";
+import URLsList from "../../components/URLs/URLsList";
+import Button from "../../shared/ui/Button";
 import { useState } from "react";
 
 const TeamURLsPage = () => {
