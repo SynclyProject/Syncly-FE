@@ -1,5 +1,5 @@
 import Icon from "../shared/ui/Icon";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type TStateProp = {
   state: "urls" | "files" | "screen";
@@ -7,6 +7,7 @@ type TStateProp = {
 
 const TeamNavigate = ({ state }: TStateProp) => {
   const navigate = useNavigate();
+  const { id } = useParams();
   return (
     <div className="flex">
       <div
@@ -16,7 +17,7 @@ const TeamNavigate = ({ state }: TStateProp) => {
             ? "bg-white border-b border-b-[#028090] rounded-[4px] hover:cursor-pointer"
             : "hover:cursor-pointer")
         }
-        onClick={() => navigate("/team-urls")}
+        onClick={() => navigate(`/team-urls/${id}`)}
       >
         <Icon name="attachment" />
         <p className="text-[16px] font-semibold ">URLs</p>
@@ -28,7 +29,7 @@ const TeamNavigate = ({ state }: TStateProp) => {
             ? "bg-white border-b border-b-[#028090] rounded-[4px] hover:cursor-pointer"
             : "hover:cursor-pointer")
         }
-        onClick={() => navigate("/team-files")}
+        onClick={() => navigate(`/team-files/${id}`)}
       >
         <Icon name="folder_open" />
         <p className="text-[16px] font-semibold">Files</p>
@@ -40,10 +41,10 @@ const TeamNavigate = ({ state }: TStateProp) => {
             ? "bg-white border-b border-b-[#028090] rounded-[4px] hover:cursor-pointer"
             : "hover:cursor-pointer")
         }
-        onClick={() => navigate("/team-screen")}
+        onClick={() => navigate(`/team-screen/${id}`)}
       >
-        <Icon name="folder_open" />
-        <p className="text-[16px] font-semibold">Files</p>
+        <Icon name="Sharing" />
+        <p className="text-[16px] font-semibold">Screen Sharing</p>
       </div>
     </div>
   );

@@ -46,15 +46,15 @@ const router = createBrowserRouter([
         element: <MyPage />,
       },
       {
-        path: "team-urls",
+        path: "team-urls/:id",
         element: <TeamURLsPage />,
       },
       {
-        path: "team-files",
+        path: "team-files/:id",
         element: <TeamFilesPage />,
       },
       {
-        path: "team-screen",
+        path: "team-screen/:id",
         element: <TeamScreenPage />,
       },
     ],
