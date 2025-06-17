@@ -4,12 +4,12 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import CreatepsPage from "./pages/CreatepsPage";
-import MyURLsPage from "./pages/MyURLsPage";
-import MyFilesPage from "./pages/MyFilesPage";
+import MyURLsPage from "./pages/My/MyURLsPage";
+import MyFilesPage from "./pages/My/MyFilesPage";
 import MyPage from "./pages/MyPage";
 import TeamURLsPage from "./pages/Team/TeamURLsPage";
-import TeamFilesPage from "./pages/TeamFilesPage";
-import TeamScreenPage from "./pages/TeamScreenPage";
+import TeamFilesPage from "./pages/Team/TeamFilesPage";
+import TeamScreenPage from "./pages/Team/TeamScreenPage";
 
 const router = createBrowserRouter([
   {
