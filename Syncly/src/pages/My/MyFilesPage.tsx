@@ -1,10 +1,10 @@
-import Navigate from "../components/Navigate";
-import FilePath from "../components/Files/FilePath";
-import FileSearch from "../components/Files/FileSearch";
-import FileList from "../components/Files/FileList";
+import Navigate from "../../components/Navigate";
+import FilePath from "../../components/Files/FilePath";
+import FileSearch from "../../components/Files/FileSearch";
+import FileList from "../../components/Files/FileList";
 import { useState } from "react";
-import useDebounce from "../hooks/useDebounce";
-import TrashFileList from "../components/Files/TrashFileList";
+import useDebounce from "../../hooks/useDebounce";
+import TrashFileList from "../../components/Files/TrashFileList";
 
 const MyFilesPage = () => {
   const [showInput, setShowInput] = useState(false);

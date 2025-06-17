@@ -33,7 +33,7 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
           state="team"
           iconName="attachment"
           text={space.text}
-          onClick={() => navigate("/")}
+          onClick={() => navigate(`/team-urls/${space.id}`)}
           setTeams={setTeams}
           spaceId={space.id}
         />
