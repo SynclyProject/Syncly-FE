@@ -7,6 +7,10 @@ import CreatepsPage from "./pages/CreatepsPage";
 import MyURLsPage from "./pages/MyURLsPage";
 import MyFilesPage from "./pages/MyFilesPage";
 import MyPage from "./pages/MyPage";
+import TeamURLsPage from "./pages/TeamURLsPage";
+import TeamFilesPage from "./pages/TeamFilesPage";
+import TeamScreenPage from "./pages/TeamScreenPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +44,18 @@ const router = createBrowserRouter([
       {
         path: "my-page",
         element: <MyPage />,
+      },
+      {
+        path: "team-urls",
+        element: <TeamURLsPage />,
+      },
+      {
+        path: "team-files",
+        element: <TeamFilesPage />,
+      },
+      {
+        path: "team-screen",
+        element: <TeamScreenPage />,
       },
     ],
   },
