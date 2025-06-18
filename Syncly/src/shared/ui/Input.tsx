@@ -18,8 +18,8 @@ type TInputStyleProps = {
 interface IInputProps
   extends TInputStyleProps,
     InputHTMLAttributes<HTMLInputElement> {
-  title: string;
-  placeholder: string;
+  title?: string;
+  placeholder?: string;
 }
 
 const Input = ({
@@ -39,7 +39,7 @@ const Input = ({
     <div className={`flex flex-col gap-[9px] w-[414px]`}>
       <p className="font-[#585858] text-[14px] font-[400]">{title}</p>
       <input
-        className={`w-full border rounded-[8px] p-[10px] ${colorStyle[state]} ${className}`}
+        className={`w-full border rounded-[8px] p-[10px] outline-none ${colorStyle[state]} ${className}`}
         placeholder={placeholder}
         {...props}
       />
