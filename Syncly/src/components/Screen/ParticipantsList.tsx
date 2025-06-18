@@ -1,5 +1,6 @@
 import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
+import People from "./People";
 
 const ParticipantsList = () => {
   return (
@@ -11,7 +12,9 @@ const ParticipantsList = () => {
         </div>
         <Button colorType="main" iconName="Phone" />
       </div>
-      <div className="p-5 rounded-[4px] border border-[#E0E0E0] h-full"></div>
+      <div className="p-5 rounded-[4px] border border-[#E0E0E0] h-full">
+        <People profile="User_Circle" name="John Doe" />
+      </div>
     </div>
   );
 };
