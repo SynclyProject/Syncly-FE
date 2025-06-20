@@ -2,6 +2,7 @@ import TeamNavigate from "../../components/TeamNavigate";
 import ParticipantsList from "../../components/Screen/ParticipantsList";
 import Chatting from "../../components/Screen/Chatting";
 import BottomBar from "../../components/Screen/BottomBar";
+import VoiceList from "../../components/Screen/VoiceList";
 
 const TeamScreenPage = () => {
   return (
@@ -11,7 +12,8 @@ const TeamScreenPage = () => {
         <div className="w-full h-full flex flex-col items-center gap-5 p-2.5 bg-[#F7F9FB]">
           <div className="w-full h-full flex justify-between items-center gap-5">
             <div className="w-full flex justify-center">
-              <ParticipantsList />
+              {/* <ParticipantsList /> */}
+              <VoiceList />
             </div>
             <Chatting />
           </div>
