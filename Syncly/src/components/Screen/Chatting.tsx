@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 const Chatting = () => {
   return (
-    <div className="max-w-[270px] w-full h-full flex flex-col gap-3">
+    <div className="max-w-[350px] min-w-[270px] w-full h-full flex flex-col gap-3">
       {chatData.map((chat) => {
         const prevChat = chatData[chat.id - 1];
         let showTime = true;

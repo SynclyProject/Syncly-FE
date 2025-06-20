@@ -24,7 +24,9 @@ const Chat = ({ who, profile, name, message, time, hideTime }: IChatProps) => {
       ) : (
         <div className="flex flex-col gap-2 items-start">
           <div className="flex gap-2 items-center">
-            <Icon name={profile} rounded={true} />
+            <div className="w-[32px] h-[32px]">
+              <Icon name={profile} rounded={true} />
+            </div>
             <p className="text-sm text-[#828282]">{name}</p>
           </div>
           <p className="max-w-[200px] text-sm rounded-tl-[16px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[4px] bg-[#E0E0E0] px-4 py-3">
