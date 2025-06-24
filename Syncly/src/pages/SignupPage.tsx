@@ -51,6 +51,7 @@ const SignupPage = () => {
     //API
 
     const email = getValues("email");
+    const code = getValues("code");   
     
     try{
       
@@ -78,6 +79,10 @@ const SignupPage = () => {
         alert("이메일 전송 중 오류가 발생했습니다.")
       }
     };
+
+    const 
+
+
     */
   };
 
