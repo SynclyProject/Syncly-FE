@@ -68,7 +68,7 @@ const File = ({ type, title, date, user, fileId, setFileList }: IFileProps) => {
             {title}
           </p>
           <p className="text-[#828282]">{date}</p>
-          {user && <Icon name={user} />}
+          {user && <Icon name={user} rounded={true} />}
           <div className="relative">
             <button
               className="cursor-pointer"
