@@ -46,8 +46,9 @@ const Security = () => {
         {/*계정삭제 폼 */}
         
         {showDeleteForm && (
-        <div className="fixed inset-0 bg-black flex items-center justify-center">
-          <div className="relative bg-white rounded-lg w-96 max-w-full p-6">
+        <div className="fixed inset-0 z-50  flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-40 pointer-events-none" />
+          <div className="relative z-50 bg-white rounded-lg w-96 max-w-full p-6 shadow-lg">
             {/* 닫기 버튼 */}
             <button
             
