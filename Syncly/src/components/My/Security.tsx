@@ -41,7 +41,7 @@ const Security = () => {
         <p className="text-[20px] text-[#456990]">비밀번호 변경</p>
 
         {/*계정 삭제 버튼 */}
-        <button className="text-[20px] text-[#EB5757]" onClick = {() => setShowDeleteForm(true)}>계정 삭제</button>
+        <button className="block text-left text-[20px] text-[#EB5757]" onClick = {() => setShowDeleteForm(true)}>계정 삭제</button>
 
         {/*계정삭제 폼 */}
         
