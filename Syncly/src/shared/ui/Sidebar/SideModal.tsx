@@ -9,7 +9,7 @@ interface ISideModalProps {
   setEditTeam: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const [showInviteModel, setShowInviteModel] = useState(false);
+
 
 const SideModal = ({
   spaceId,
@@ -17,6 +17,7 @@ const SideModal = ({
   editTeam,
   setEditTeam,
 }: ISideModalProps) => {
+  const [showInviteModel, setShowInviteModel] = useState(false);
   return (
     <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
       <p className="text-[##828282]"
