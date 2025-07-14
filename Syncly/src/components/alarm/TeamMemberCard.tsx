@@ -48,13 +48,14 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ name, role, email, show
       {/* 메뉴 버튼 (옵션 버튼) */}
       {showMenu && (
         <div className="w-10 self-stretch border-t border-zinc-200 flex flex-col justify-center items-end">
-          <div className="px-3 py-4 flex justify-center items-center">
-            <div className="w-4 h-4 relative overflow-hidden">
-              <div className="w-3.5 h-1 left-[1.33px] top-[6px] absolute bg-zinc-500" />
+            <div className="px-3 py-4 flex flex-col justify-center items-center gap-[3px]">
+            <div className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+            <div className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+            <div className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
             </div>
-          </div>
         </div>
-      )}
+        )}
+
     </div>
   );
 };
