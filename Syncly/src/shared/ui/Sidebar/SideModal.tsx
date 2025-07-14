@@ -1,5 +1,5 @@
 import { TTeamSpace } from "../../type/teamSpaceType";
-import {TeamInviteModel} from "../../../components/alarm/TeamInviteModel"; 
+import TeamInviteModel from "../../../components/alarm/TeamInviteModel";
 import { useState } from "react";
 
 interface ISideModalProps {
@@ -9,7 +9,7 @@ interface ISideModalProps {
   setEditTeam: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const [showInviteModal, setShowInviteModal] = useState(false);
+const [showInviteModel, setShowInviteModel] = useState(false);
 
 const SideModal = ({
   spaceId,
@@ -20,7 +20,18 @@ const SideModal = ({
   return (
     <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
       <p className="text-[##828282]"
-      onClick = {()=> setShowInviteModal(true)}>팀원 추가</p>
+      onClick = {()=> 
+        setShowInviteModel(true)}>팀원 추가</p>
+      {showInviteModel && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/30 z-40"
+            onClick={() => setShowInviteModel(false)}
+          />
+          <TeamInviteModel onClose={() => setShowInviteModel(false)} />
+        </>
+      )}
+
       <p
         className="text-[##828282]"
         onClick={() => {
