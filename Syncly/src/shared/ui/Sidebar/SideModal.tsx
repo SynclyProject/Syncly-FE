@@ -1,4 +1,5 @@
 import { TTeamSpace } from "../../type/teamSpaceType";
+import { useState } from "react";
 
 interface ISideModalProps {
   spaceId: number;
@@ -6,6 +7,8 @@ interface ISideModalProps {
   editTeam: boolean;
   setEditTeam: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const [showInviteModal, setShowInviteModal] = useState(false);
 
 const SideModal = ({
   spaceId,
@@ -15,7 +18,8 @@ const SideModal = ({
 }: ISideModalProps) => {
   return (
     <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
-      <p className="text-[##828282]">팀원 추가</p>
+      <p className="text-[##828282]"
+      onClick = {()=> setShowInviteModal(true)}>팀원 추가</p>
       <p
         className="text-[##828282]"
         onClick={() => {

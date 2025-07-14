@@ -1,5 +1,5 @@
 import React from "react";
-import TeamMemberCard from "./TeamMemberCard"; // 이미 만든 컴포넌트 사용
+import TeamMemberCard from "./TeamMemberCard"; 
 
 interface TeamInviteModalProps {
   onClose: () => void;
