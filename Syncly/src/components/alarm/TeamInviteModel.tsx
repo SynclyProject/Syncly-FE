@@ -40,7 +40,10 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
           
           colorType="main"
           iconName="add_circle"
-          onClick={() => setShowInput(true)}
+          onClick={() => {
+            setShowInput(true); 
+            alert("이메일 초대가 완료되었습니다!");
+          }}
         />
       </div>
 
