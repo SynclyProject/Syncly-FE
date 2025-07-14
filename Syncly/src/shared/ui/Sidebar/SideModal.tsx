@@ -19,7 +19,7 @@ const SideModal = ({
   return (
     <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
       <p className="text-[##828282]" onClick={() => setShowInviteModel(true)}>
-        팀원 추가
+        팀원 관리
       </p>
       
       {showInviteModel && (

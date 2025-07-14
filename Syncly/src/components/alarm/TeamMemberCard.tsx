@@ -1,5 +1,6 @@
 import React from "react";
 
+
 interface TeamMemberCardProps {
   name: string;
   role: string; 
@@ -42,7 +43,8 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({ name, role, email, show
           </div>
         </div>
       </div>
-
+      
+      
       {/* 메뉴 버튼 (옵션 버튼) */}
       {showMenu && (
         <div className="w-10 self-stretch border-t border-zinc-200 flex flex-col justify-center items-end">
