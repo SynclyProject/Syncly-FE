@@ -1,11 +1,11 @@
 import React from "react";
 import TeamMemberCard from "./TeamMemberCard"; 
 
-interface TeamInviteModalProps {
+interface TeamInviteModelProps {
   onClose: () => void;
 }
 
-const TeamInviteModal: React.FC<TeamInviteModalProps> = ({ onClose }) => {
+const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
   return (
     <div className="w-[703px] h-72 bg-white rounded-lg shadow-md border border-neutral-200 p-6 relative">
       {/* 이메일 입력 */}
@@ -32,4 +32,4 @@ const TeamInviteModal: React.FC<TeamInviteModalProps> = ({ onClose }) => {
   );
 };
 
-export default TeamInviteModal;
+export default TeamInviteModel;

@@ -1,4 +1,5 @@
 import { TTeamSpace } from "../../type/teamSpaceType";
+import {TeamInviteModel} from "../../../components/alarm/TeamInviteModel"; 
 import { useState } from "react";
 
 interface ISideModalProps {
