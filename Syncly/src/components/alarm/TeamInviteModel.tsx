@@ -17,23 +17,23 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
         className="absolute inset-0 bg-black bg-opacity-30"
         onClick={onClose}
       /> */}
-    <div className="relative z-50 w-[703px] h-80 bg-white rounded-lg shadow-lg p-6">
+    <div className="relative z-50 w-[703px] h-80 bg-white rounded-lg shadow-lg p-6 ">
 
     {/* 닫기 버튼 */}
     <button
                 
       onClick={onClose}
-      className="absolute top-3 right-3 text-gray-400 hover:text-black text-xl font-bold"
+      className="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl font-bold"
     >
     &times;
     </button> 
-
+    <div className="mt-6">
     {/* 이메일 입력 */}
     <div className="flex items-center gap-2 mb-4">
     <input
             type="text"
             placeholder="이메일을 입력해주세요"
-            className="w-full border-b border-neutral-300 mb-4 px-2 py-4 text-sm text-gray-500"
+            className="w-full border-b border-neutral-300 mb-4 px-2 py-4 text-sm:10 text-gray-500"
       />
       {/* 추가 버튼 */}
       <Button
@@ -60,6 +60,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
       >
         초대하기
       </button> */}
+    </div>
     </div>
     </div>
   );
