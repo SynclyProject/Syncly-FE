@@ -21,7 +21,7 @@ const VoicePeople = ({ profile }: { profile: string }) => {
   }, []);
   return (
     <div
-      className="w-full h-full flex justify-center items-center rounded-lg"
+      className="w-full h-full flex justify-center items-center rounded-lg cursor-pointer"
       style={{ backgroundColor: bgColor }}
     >
       <div className="w-[100px]">
