@@ -14,17 +14,37 @@ const pastelColors = [
   "#B2DFDB", // turquoise
 ];
 
-const VoicePeople = ({ profile }: { profile: string }) => {
+const VoicePeople = ({
+  profile,
+  onClick,
+  size = "small",
+}: {
+  profile: string;
+  onClick: () => void;
+  size: "small" | "large" | "default";
+}) => {
   const bgColor = useMemo(() => {
     const randomIndex = Math.floor(Math.random() * pastelColors.length);
     return pastelColors[randomIndex];
   }, []);
+
+  const iconSize = {
+    small: "w-[70px]",
+    large: "w-[150px]",
+    default: "w-[100px]",
+  };
+  const cardHeightSize = {
+    small: "h-[150px]",
+    large: "h-full",
+    default: "h-full",
+  };
   return (
     <div
-      className="w-full h-full flex justify-center items-center rounded-lg cursor-pointer"
+      className={`w-full ${cardHeightSize[size]} flex justify-center items-center rounded-lg cursor-pointer`}
       style={{ backgroundColor: bgColor }}
+      onClick={onClick}
     >
-      <div className="w-[100px]">
+      <div className={`${iconSize[size]}`}>
         <Icon name={profile} rounded={true} />
       </div>
     </div>
