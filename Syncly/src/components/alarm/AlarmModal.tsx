@@ -18,7 +18,7 @@ const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
       <hr className="border-t border-gray-200 my-4" />
 
       <div className="space-y-3">
-        <div className="flex justify-between items-center bg-gray-50 p-3 rounded-md shadow">
+        <div className="flex justify-between items-center bg-gray-50 p-3 rounded-xl shadow">
           <p>
             <span className="font-semibold">Deep Learning</span>{" "}
             팀스페이스에서의 초대
