@@ -11,7 +11,7 @@ const AlarmModalCard = ({
   title,
   message,
   onAccept,
-  onDecline,
+  
 }: AlarmModalCardProps) => {
   return (
     <div className="flex justify-between items-center bg-gray-50 p-3 rounded-xl shadow-md">
@@ -22,7 +22,7 @@ const AlarmModalCard = ({
         <Button colorType="sub" className="px-2 py-1 rounded-md" onClick={onAccept}>
           수락
         </Button>
-        <Button colorType="white" className="px-2 py-1 rounded-md" onClick={onDecline}>
+        <Button colorType="white" className="px-2 py-1 rounded-md" >
           거절
         </Button>
       </div>
