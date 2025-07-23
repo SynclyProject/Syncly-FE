@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
-
+import AlarmModal from "../../components/alarm/AlarmModal";
 
 const TopBar = () => {
   const navigate = useNavigate();
