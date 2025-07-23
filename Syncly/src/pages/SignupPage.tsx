@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
 import { SignUpSchema } from '../shared/schema';
+import { sendEmail } from '../shared/apis/memberapi';
 
 
 const SignupPage = () => {
@@ -15,14 +16,30 @@ const SignupPage = () => {
   const [isVerified, setIsVerified] = useState(false);
   //닉네임 인증 필드 상태
   const [nickname, setNickname] = useState("");
-  const handleVerifyClick = async () => {
-      const isValid = await trigger("code"); // 코드 필드 검증
-      if (!isValid) return; // 유효하지 않으면 인증 안 함
+  
+
+
+    const handleVerifyClick = async (email: string) => {
+      try {
+        const response = await axios.post(
+          'http://52.79.102.15:8080/api/member/email/send',
+          null,
+          {
+            params: { email }
+          }
+        );
     
-      setIsVerified(true);
-      alert("이메일 인증 완료!");
-      
+        if (response.data.isSuccess) {
+          alert('인증 메일이 전송되었습니다!');
+        } else {
+          alert('전송 실패: ' + response.data.message);
+        }
+      } catch (error: any) {
+        console.error(error);
+        alert('서버 오류가 발생했습니다.');
+      }
     };
+    
 
   
 
@@ -39,18 +56,16 @@ const SignupPage = () => {
 
 
   const handleSendClick = async () => {
-    const isValid = await trigger("email"); // email 필드만 검증
-    if (!isValid) return; // 유효하지 않으면 중단
-  
-    /*setShowCodeInput(true);
-    alert("인증메일이 전송되었습니다");*/
 
-    //API
+
+    const email = getValues("email");
+       
+    
     try{
-      const email = getValues("email");
+      
 
       const response = await axios.post(
-        "http://localhost:8080/api/member/email/send",
+        'http://52.79.102.15:8080/api/member/email/send',
         null,
         {
           params: {email},
@@ -72,6 +87,10 @@ const SignupPage = () => {
         alert("이메일 전송 중 오류가 발생했습니다.")
       }
     };
+
+
+
+    
   };
 
   //Onsubmit함수
