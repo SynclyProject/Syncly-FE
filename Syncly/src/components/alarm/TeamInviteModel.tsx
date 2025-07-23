@@ -58,13 +58,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
             />
           </div>
 
-          {/* 초대 버튼
-      <button
-        onClick={onClose}
-        className="absolute right-4 bottom-4 px-4 py-2 bg-red-500 text-white rounded-lg text-sm"
-      >
-        초대하기
-      </button> */}
+
         </div>
       </div>
     </div>
