@@ -11,7 +11,7 @@ const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
 
   return (
     <div className="fixed top-14 right-4 z-50 bg-white shadow-lg rounded-xl p-4 w-[320px]">
-      <h3 className="text-lg font-bold mb-2"><Icon name="Bell"/> Notification</h3>
+      <h3 className="text-lg font-bold mb-2 flex items-center gap-2"><Icon name="Bell"/> Notification</h3>
       <div className="space-y-3">
         <div className="flex justify-between items-center bg-gray-50 p-3 rounded-md shadow">
           <p>
