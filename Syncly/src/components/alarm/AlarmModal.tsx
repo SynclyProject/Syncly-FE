@@ -1,6 +1,7 @@
 import React from "react";
 import Icon from "../../shared/ui/Icon";
 import Button from "../../shared/ui/Button";
+import AlarmModalCard from "./AlarmModalCard";
 
 interface AlarmModalProps {
   isOpen: boolean;
@@ -18,22 +19,14 @@ const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
       <hr className="border-t border-gray-200 my-4" />
 
       <div className="space-y-3">
-        <div className="flex justify-between items-center bg-gray-50 p-3 rounded-xl shadow">
-          <p>
-            <span className="font-semibold">Deep Learning</span>{" "}
-            팀스페이스에서의 초대
-          </p>
-          <div className="flex gap-2">
-            <Button colorType="sub" className="px-2 py-1 rounded-md">
-              수락
-            </Button>
-            <Button colorType= "white" className=" px-2 py-1 rounded-md">
-              거절
-            </Button>
-          </div>
+        <AlarmModalCard
+            title="Deep Learning"
+            message="팀스페이스에서의 초대"
+            onAccept={() => alert("수락")}
+            onDecline={() => alert("거절")}
+        />
+        {/* 다른 알림들도 추가 가능 */}
         </div>
-        {/* 여러 알림이 있을 수 있음 */}
-      </div>
     </div>
   );
 };
