@@ -67,7 +67,19 @@ const LoginPage = () => {
           <button type= "submit" className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium">
             Continue with password
           </button>
-          <div className="flex flex-col gap-1 mb-6"></div>
+          <div className="flex flex-col gap-1 mb-1"></div>
+
+        </form>
+
+          {/* Forgot Password Link */}
+          <button
+            onClick={() => navigate('/createps')}
+            className="text-red-500 text-sm mb-6 hover:underline text-left"
+          >
+            Did you forget your password?
+          </button>
+
+        
 
           {/* Divider */}
           <div className="h-px bg-[#E6E6E6]" />
@@ -94,7 +106,7 @@ const LoginPage = () => {
         {/*바닥 여유 공간용*/}
         <div className="h-32" />
 
-        </form>
+        
       </div>
     </div>
   );
