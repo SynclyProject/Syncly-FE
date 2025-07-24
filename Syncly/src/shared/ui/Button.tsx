@@ -11,7 +11,7 @@ import Icon from "./Icon";
  * @param {string} iconName - 아이콘 이름 (선택)
  */
 type TButtonColorProps = {
-  colorType: "main" | "sub" | "success" | "unable" | "white";
+  colorType: "main" | "sub" | "success" | "unable" | "white" | "red";
 };
 interface IButtonProps
   extends TButtonColorProps,
@@ -34,6 +34,7 @@ const Button = ({
     success: `bg-[#44A257] text-[#FFFFFF] border-none`,
     unable: `bg-[#FDF5F2] text-[#EB5757] border border-[#E0E0E0]`,
     white: `bg-[#FFFFFF] text-[#828282] border border-[#E0E0E0]`,
+    red: `bg-[#B42626] text-[#FFFFFF] border-none`,
   };
 
   return (
