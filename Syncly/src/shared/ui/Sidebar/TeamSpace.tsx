@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
 import InputSpace from "./InputSpace";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { GetSpaceList } from "../../api/WorkSpace";
 
 interface TeamSpaceProps {
   showInput: boolean;
@@ -23,6 +25,11 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     setTeams((prev) => [...prev, newTeam]);
     setShowInput(false);
   };
+
+  const { data: spaceList, isPending } = useQuery({
+    queryFn: GetSpaceList,
+    queryKey: ["spaceList"],
+  });
 
   return (
     <div className="flex flex-col gap-[8px]">
