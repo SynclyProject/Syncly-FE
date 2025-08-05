@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Icon from "../Icon";
+import { useMutation } from "@tanstack/react-query";
+import { PostTeamSpace } from "../../api/WorkSpace";
 
 interface IInputSpaceProps {
   onAdd: (text: string) => void;
@@ -13,10 +15,11 @@ const InputSpace = ({
   initialValue = "",
 }: IInputSpaceProps) => {
   const [inputValue, setInputValue] = useState(initialValue);
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (inputValue.trim()) {
       onAdd(inputValue);
       setInputValue("");
+      await postTeamSpaceMutation({ name: inputValue });
     }
   };
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -25,6 +28,13 @@ const InputSpace = ({
   const handleBlur = () => {
     if (!inputValue.trim()) onCancel();
   };
+
+  const { mutate: postTeamSpaceMutation } = useMutation({
+    mutationFn: PostTeamSpace,
+    onSuccess: () => {
+      onCancel();
+    },
+  });
 
   return (
     <div className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] bg-white">
