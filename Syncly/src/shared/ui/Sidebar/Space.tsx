@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import Icon from "../Icon";
 import SideModal from "./SideModal";
-import { TTeamSpace } from "../../type/teamSpaceType";
 import InputSpace from "./InputSpace";
 
 type TSpaceStateProps = {
@@ -13,17 +12,9 @@ interface ISpaceProps extends TSpaceStateProps {
   text: string;
   onClick: () => void;
   spaceId?: number;
-  setTeams?: React.Dispatch<React.SetStateAction<TTeamSpace[]>>;
 }
 
-const Space = ({
-  state,
-  iconName,
-  text,
-  onClick,
-  spaceId,
-  setTeams,
-}: ISpaceProps) => {
+const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
   const [modalShow, setModalShow] = useState(false);
   const [editTeam, setEditTeam] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -36,10 +27,8 @@ const Space = ({
 
   const handleTeamNameChange = (text: string) => {
     if (!text.trim()) return;
-    if (spaceId && setTeams) {
-      setTeams((prev) =>
-        prev.map((team) => (team.id === spaceId ? { ...team, text } : team))
-      );
+    if (spaceId) {
+      //이름 변경 api 추가
     }
     setEditTeam(false);
   };
@@ -95,13 +84,8 @@ const Space = ({
               </button>
               {modalShow && (
                 <div className="absolute top-[-9px] left-8" ref={modalRef}>
-                  {spaceId && setTeams && (
-                    <SideModal
-                      spaceId={spaceId}
-                      setTeams={setTeams}
-                      editTeam={editTeam}
-                      setEditTeam={setEditTeam}
-                    />
+                  {spaceId && (
+                    <SideModal editTeam={editTeam} setEditTeam={setEditTeam} />
                   )}
                 </div>
               )}

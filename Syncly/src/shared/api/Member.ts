@@ -21,10 +21,9 @@ export const PostEmailVerify = async (data: {
   code: string;
 }) => {
   try {
-    const response = await axiosBasic.post("/api/member/email/verify", {
-      email: data.email,
-      code: data.code,
-    });
+    const response = await axiosBasic.post(
+      `/api/member/email/verify?email=${data.email}&code=${data.code}`
+    );
     return response.data;
   } catch (error) {
     console.error("이메일 인증 실패", error);
@@ -35,9 +34,9 @@ export const PostEmailVerify = async (data: {
 //이메일 인증코드 전송
 export const PostEmailSend = async (data: { email: string }) => {
   try {
-    const response = await axiosBasic.post("/api/member/email/send", {
-      email: data.email,
-    });
+    const response = await axiosBasic.post(
+      `/api/member/email/send?email=${data.email}`
+    );
     return response.data;
   } catch (error) {
     console.error("이메일 인증코드 전송 실패", error);

@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+
+import { useState } from "react";
 import Button from "../shared/ui/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { SignUpSchema } from "../shared/schema";
-import { sendEmail, verifyEmail } from "../shared/apis/memberapi.tsx";
+import {
+  PostEmailSend,
+  PostEmailVerify,
+  PostRegister,
+} from "../shared/api/Member";
+import { useMutation } from "@tanstack/react-query";
+import { TSignUpSchema } from "../shared/type/sign";
+
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -16,54 +22,50 @@ const SignupPage = () => {
   //닉네임 인증 필드 상태
   const [nickname, setNickname] = useState("");
 
+
+  const { mutate: postEmailSend } = useMutation({
+    mutationFn: PostEmailSend,
+    onSuccess: () => {
+      alert("인증메일이 전송되었습니다!");
+      setShowCodeInput(true);
+    },
+  });
+  const { mutate: postEmailVerify } = useMutation({
+    mutationFn: PostEmailVerify,
+    onSuccess: () => {
+      alert("인증되었습니다.");
+      setIsVerified(true);
+    },
+  });
+
+  const { mutate: postRegister } = useMutation({
+    mutationFn: PostRegister,
+    onSuccess: () => {
+      alert("회원가입이 완료되었습니다!");
+      navigate("/login");
+    },
+  });
+
+
   //useForm() react-hook-form 설정
   const {
     register,
     handleSubmit,
-    trigger,
     getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(SignUpSchema),
   });
 
-  //Onsubmit함수
-  const onSubmit = (data: any) => {
-    console.log("제출된 데이터:", data);
-    alert("회원가입이 완료되었습니다!");
-    navigate("/login");
+
+  const onSubmit = async (data: TSignUpSchema) => {
+    await postRegister({
+      email: data.email,
+      password: data.password,
+      name: data.nickname,
+    });
   };
 
-  //API 함수
-  const handleSendClick = async () => {
-    const email = getValues("email"); // 입력한 이메일 가져오기
-    try {
-      const data = await sendEmail(email); // API 호출
-      if (data.isSuccess) {
-        setShowCodeInput(true);
-        alert("인증메일이 전송되었습니다!");
-      } else {
-        alert("전송 실패: " + data.message);
-      }
-    } catch (err) {
-      alert("서버 오류가 발생했습니다.");
-    }
-  };
-
-  const handleVerifyClick = async () => {
-    const email = getValues("email");
-    const code = getValues("code");
-    try {
-      const data = await verifyEmail(email, code);
-      if (data.isSuccess) {
-        alert("이메일 인증 완료!");
-      } else {
-        alert("인증 실패: " + data.message);
-      }
-    } catch (err) {
-      alert("서버 오류가 발생했습니다.");
-    }
-  };
 
   return (
     <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
@@ -87,7 +89,11 @@ const SignupPage = () => {
                 placeholder="Enter your email address..."
                 className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
               />
-              <Button colorType="main" onClick={handleSendClick}>
+
+              <Button
+                colorType="main"
+                onClick={() => postEmailSend({ email: getValues("email") })}
+              >
                 Send
               </Button>
             </div>
@@ -117,7 +123,14 @@ const SignupPage = () => {
                 <Button
                   type="button"
                   colorType={isVerified ? "success" : "main"}
-                  onClick={handleVerifyClick}
+
+                  onClick={() =>
+                    postEmailVerify({
+                      email: getValues("email"),
+                      code: getValues("code"),
+                    })
+                  }
+
                 >
                   Verify
                 </Button>
