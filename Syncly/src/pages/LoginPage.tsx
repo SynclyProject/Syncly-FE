@@ -51,7 +51,7 @@ const LoginPage = () => {
               {...register("email")}
               type="email"
               placeholder="Enter your email address..."
-              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             />
             {errors.email && (
               <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -67,7 +67,7 @@ const LoginPage = () => {
               {...register("password")}
               type="password"
               placeholder="Enter your password..."
-              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             />
             {errors.password && (
               <p className="text-red-500 text-xs">{errors.password.message}</p>

@@ -30,7 +30,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
             <input
               type="text"
               placeholder="이메일을 입력해주세요"
-              className="w-full border-b border-neutral-300 mb-4 px-2 py-4 text-sm:10 text-gray-500"
+              className="w-full border-b border-neutral-300 mb-4 px-2 py-4 text-sm:10 text-gray-500 outline-none"
             />
             {/* 추가 버튼 */}
             <Button
