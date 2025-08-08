@@ -72,7 +72,7 @@ const CreatepsPage = () => {
                   {...register("email")}
                   type="email"
                   placeholder="Enter your email address..."
-                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
                 />
                 <Button colorType="main" onClick={handleSendClick}>
                   Send
@@ -93,7 +93,7 @@ const CreatepsPage = () => {
                   {...register("code")} 
                   type="text"
                   placeholder="Code"
-                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault(); // Enter로 인한 submit 방지
@@ -118,7 +118,7 @@ const CreatepsPage = () => {
             {...register("password")}
             type="password"
             placeholder="Enter your password..."
-            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault(); // Enter로 인한 submit 방지
@@ -133,7 +133,7 @@ const CreatepsPage = () => {
             {...register("confirmPassword")}
             type="password"
             placeholder="Confirm your password..."
-            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault(); // Enter로 인한 submit 방지

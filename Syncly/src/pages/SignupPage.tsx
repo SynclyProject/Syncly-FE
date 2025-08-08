@@ -122,7 +122,7 @@ const SignupPage = () => {
                   {...register("email")}
                   type="email"
                   placeholder="Enter your email address..."
-                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
                 />
                 <Button colorType="main" onClick={handleSendClick}>
                   Send
@@ -144,7 +144,7 @@ const SignupPage = () => {
                   {...register("code")} 
                   type="text"
                   placeholder="Code"
-                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+                  className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault(); // Enter로 인한 submit 방지
@@ -176,7 +176,7 @@ const SignupPage = () => {
                   e.preventDefault(); // Enter로 인한 submit 방지
                 }
               }}
-              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
               />
               {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname.message}</p>}
             </div>
@@ -190,7 +190,7 @@ const SignupPage = () => {
             {...register("password")}
             type="password"
             placeholder="Enter your password..."
-            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault(); // Enter로 인한 submit 방지
@@ -205,7 +205,7 @@ const SignupPage = () => {
             {...register("confirmPassword")}
             type="password"
             placeholder="Confirm your password..."
-            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
+            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault(); // Enter로 인한 submit 방지

@@ -74,7 +74,7 @@ const Security = () => {
               <input
                 type="text"
                 placeholder="기타 사유 입력"
-                className="w-full px-3 py-2 border rounded text-xs text-zinc-500"
+                className="w-full px-3 py-2 border rounded text-xs text-zinc-500 outline-none"
               />
             </div>
 
@@ -83,7 +83,7 @@ const Security = () => {
               <input
                 type="password"
                 placeholder="비밀번호를 입력해주세요"
-                className="w-full px-3 py-2 border rounded text-xs text-red-400 mt-2"
+                className="w-full px-3 py-2 border rounded text-xs text-red-400 mt-2 outline-none"
               />
             </div>           
 
