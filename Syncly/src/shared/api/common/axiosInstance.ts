@@ -14,3 +14,5 @@ export const axiosBasic = axios.create({
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 });
+
+axiosBasic.defaults.baseURL = import.meta.env.VITE_API_URL;
