@@ -3,7 +3,8 @@ import Space from "./Space";
 import { useNavigate } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
 import InputSpace from "./InputSpace";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { GetSpaceList } from "../../api/WorkSpace/get";
 
 interface TeamSpaceProps {
   showInput: boolean;
@@ -12,33 +13,30 @@ interface TeamSpaceProps {
 
 const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
   const navigate = useNavigate();
-  const [teams, setTeams] = useState<TTeamSpace[]>([]);
-  const handleAddTeam = (text: string) => {
-    if (!text.trim()) return;
-    const newTeam: TTeamSpace = {
-      id: teams.length + 1,
-      text,
-      isEdit: false,
-    };
-    setTeams((prev) => [...prev, newTeam]);
+
+  const handleAddTeam = () => {
     setShowInput(false);
   };
+
+  const { data: spaceList, isPending } = useQuery({
+    queryFn: GetSpaceList,
+    queryKey: ["spaceList"],
+  });
 
   return (
     <div className="flex flex-col gap-[8px]">
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
-      {teams.map((space: TTeamSpace) => (
+      {spaceList?.result?.map((space: TTeamSpace) => (
         <Space
-          key={space.id}
+          key={space.workspaceId}
           state="team"
           iconName="attachment"
-          text={space.text}
-          onClick={() => navigate(`/team-urls/${space.id}`)}
-          setTeams={setTeams}
-          spaceId={space.id}
+          text={space.workspaceName}
+          onClick={() => navigate(`/team-urls/${space.workspaceId}`)}
+          spaceId={space.workspaceId}
         />
       ))}
-      {(teams.length === 0 || showInput) && (
+      {(spaceList?.result?.length === 0 || showInput) && (
         <InputSpace
           onAdd={handleAddTeam}
           onCancel={() => setShowInput(false)}
