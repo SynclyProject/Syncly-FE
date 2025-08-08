@@ -1,4 +1,8 @@
-import { axiosInstance, axiosBasic } from "./common/axiosInstance";
+import {
+  axiosInstance,
+  axiosInstance2,
+  axiosBasic,
+} from "./common/axiosInstance";
 
 // 워크스페이스 초대 API
 export const PostSpaceInvite = async (data: {
@@ -142,7 +146,7 @@ export const DeleteSpaceKick = async (data: {
 // 팀 워크스페이스 리스트 전체 조회
 export const GetSpaceList = async () => {
   try {
-    const response = await axiosInstance.get(`/api/workspaces`);
+    const response = await axiosInstance2.get(`/api/workspaces`);
     return response.data;
   } catch (error) {
     console.error("팀 워크스페이스 리스트 전체 조회 실패", error);

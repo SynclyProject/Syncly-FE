@@ -30,7 +30,6 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     queryFn: GetSpaceList,
     queryKey: ["spaceList"],
   });
-  console.log("spaceList : ", spaceList);
 
   return (
     <div className="flex flex-col gap-[8px]">
