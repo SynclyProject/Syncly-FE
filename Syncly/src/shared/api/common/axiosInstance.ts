@@ -8,11 +8,6 @@ export const axiosInstance = axios.create({
   },
 });
 
-export const axiosBasic = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-});
+export const axiosBasic = axios.create();
 
 axiosBasic.defaults.baseURL = import.meta.env.VITE_API_URL;

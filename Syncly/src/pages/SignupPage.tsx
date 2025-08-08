@@ -24,12 +24,14 @@ const SignupPage = () => {
     mutationFn: PostEmailSend,
     onSuccess: () => {
       alert("인증메일이 전송되었습니다!");
+      setShowCodeInput(true);
     },
   });
   const { mutate: postEmailVerify } = useMutation({
     mutationFn: PostEmailVerify,
     onSuccess: () => {
       alert("인증되었습니다.");
+      setIsVerified(true);
     },
   });
 
@@ -37,6 +39,7 @@ const SignupPage = () => {
     mutationFn: PostRegister,
     onSuccess: () => {
       alert("회원가입이 완료되었습니다!");
+      navigate("/login");
     },
   });
 
@@ -50,36 +53,13 @@ const SignupPage = () => {
     resolver: yupResolver(SignUpSchema),
   });
 
-  const onClickSendEmail = async () => {
-    try {
-      console.log(getValues("email"));
-      await postEmailSend({ email: getValues("email") });
-      setShowCodeInput(true);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const onClickVerifyEmail = async () => {
-    await postEmailVerify({
-      email: getValues("email"),
-      code: getValues("code"),
-    });
-    setIsVerified(true);
-  };
-
   //Onsubmit함수
-  const onSubmit = (data: TSignUpSchema) => {
-    try {
-      postRegister({
-        email: data.email,
-        password: data.password,
-        name: data.nickname,
-      });
-      console.log("데이터 제출 : ", data);
-      navigate("/login");
-    } catch (error) {
-      console.error(error);
-    }
+  const onSubmit = async (data: TSignUpSchema) => {
+    await postRegister({
+      email: data.email,
+      password: data.password,
+      name: data.nickname,
+    });
   };
 
   return (
@@ -104,7 +84,10 @@ const SignupPage = () => {
                 placeholder="Enter your email address..."
                 className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm"
               />
-              <Button colorType="main" onClick={onClickSendEmail}>
+              <Button
+                colorType="main"
+                onClick={() => postEmailSend({ email: getValues("email") })}
+              >
                 Send
               </Button>
             </div>
@@ -134,7 +117,12 @@ const SignupPage = () => {
                 <Button
                   type="button"
                   colorType={isVerified ? "success" : "main"}
-                  onClick={onClickVerifyEmail}
+                  onClick={() =>
+                    postEmailVerify({
+                      email: getValues("email"),
+                      code: getValues("code"),
+                    })
+                  }
                 >
                   Verify
                 </Button>
