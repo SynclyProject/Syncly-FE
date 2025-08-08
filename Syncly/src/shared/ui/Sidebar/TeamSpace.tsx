@@ -30,22 +30,23 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     queryFn: GetSpaceList,
     queryKey: ["spaceList"],
   });
+  console.log("spaceList : ", spaceList);
 
   return (
     <div className="flex flex-col gap-[8px]">
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
-      {teams.map((space: TTeamSpace) => (
+      {spaceList?.result?.map((space: TTeamSpace) => (
         <Space
-          key={space.id}
+          key={space.workspaceId}
           state="team"
           iconName="attachment"
-          text={space.text}
-          onClick={() => navigate(`/team-urls/${space.id}`)}
+          text={space.workspaceName}
+          onClick={() => navigate(`/team-urls/${space.workspaceId}`)}
           setTeams={setTeams}
-          spaceId={space.id}
+          spaceId={space.workspaceId}
         />
       ))}
-      {(teams.length === 0 || showInput) && (
+      {(spaceList?.result?.length === 0 || showInput) && (
         <InputSpace
           onAdd={handleAddTeam}
           onCancel={() => setShowInput(false)}

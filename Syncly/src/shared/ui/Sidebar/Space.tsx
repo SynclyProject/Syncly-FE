@@ -38,7 +38,9 @@ const Space = ({
     if (!text.trim()) return;
     if (spaceId && setTeams) {
       setTeams((prev) =>
-        prev.map((team) => (team.id === spaceId ? { ...team, text } : team))
+        prev.map((team) =>
+          team.workspaceId === spaceId ? { ...team, text } : team
+        )
       );
     }
     setEditTeam(false);

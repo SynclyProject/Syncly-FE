@@ -33,10 +33,9 @@ export const PostPersonalSpace = async () => {
 // 팀 워크스페이스 생성 API
 export const PostTeamSpace = async (data: { name: string }) => {
   try {
-    const response = await axiosInstance.post(
-      "/api/workspaces/team",
-      data.name
-    );
+    const response = await axiosInstance.post("/api/workspaces/team", {
+      workspaceName: data.name,
+    });
     return response.data;
   } catch (error) {
     console.error("팀 워크스페이스 생성 실패", error);
@@ -143,7 +142,7 @@ export const DeleteSpaceKick = async (data: {
 // 팀 워크스페이스 리스트 전체 조회
 export const GetSpaceList = async () => {
   try {
-    const response = await axiosBasic.get(`/api/workspaces`);
+    const response = await axiosInstance.get(`/api/workspaces`);
     return response.data;
   } catch (error) {
     console.error("팀 워크스페이스 리스트 전체 조회 실패", error);

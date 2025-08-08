@@ -15,11 +15,11 @@ const InputSpace = ({
   initialValue = "",
 }: IInputSpaceProps) => {
   const [inputValue, setInputValue] = useState(initialValue);
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (inputValue.trim()) {
       onAdd(inputValue);
       setInputValue("");
-      await postTeamSpaceMutation({ name: inputValue });
+      postTeamSpaceMutation({ name: inputValue });
     }
   };
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -32,6 +32,7 @@ const InputSpace = ({
   const { mutate: postTeamSpaceMutation } = useMutation({
     mutationFn: PostTeamSpace,
     onSuccess: () => {
+      console.log("팀 워크스페이스 생성 성공");
       onCancel();
     },
   });
