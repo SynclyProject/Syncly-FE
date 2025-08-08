@@ -1,5 +1,7 @@
 export type TTeamSpace = {
-  id: number;
-  text: string;
-  isEdit: boolean;
+  createdAt: string;
+  workspaceId: number;
+  workspaceName: string;
+  workspaceType: string;
+  //isEdit: boolean;
 };
