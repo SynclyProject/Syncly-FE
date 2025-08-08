@@ -11,7 +11,7 @@ export const PostLogin = async (data: { email: string; password: string }) => {
   }
 };
 
-//로그아웃웃
+//로그아웃
 export const PostLogout = async () => {
   try {
     await axiosBasic.post("/api/auth/logout");

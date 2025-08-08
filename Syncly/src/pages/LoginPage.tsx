@@ -19,14 +19,14 @@ const LoginPage = () => {
 
   const { mutate: postLogin } = useMutation({
     mutationFn: PostLogin,
-    onSuccess: () => {
+    onSuccess: (response) => {
       alert("로그인 성공!");
+      localStorage.setItem("accessToken", response.result);
       navigate("/my-urls");
     },
   });
 
   const onSubmit = async (data: TLoginSchema) => {
-    console.log("제출된 데이터:", data);
     await postLogin(data);
   };
 
