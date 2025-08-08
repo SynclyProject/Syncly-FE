@@ -3,9 +3,8 @@ import Space from "./Space";
 import { useNavigate } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
 import InputSpace from "./InputSpace";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { GetSpaceList } from "../../api/WorkSpace";
+import { GetSpaceList } from "../../api/WorkSpace/get";
 
 interface TeamSpaceProps {
   showInput: boolean;
@@ -14,15 +13,8 @@ interface TeamSpaceProps {
 
 const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
   const navigate = useNavigate();
-  const [teams, setTeams] = useState<TTeamSpace[]>([]);
-  const handleAddTeam = (text: string) => {
-    if (!text.trim()) return;
-    const newTeam: TTeamSpace = {
-      id: teams.length + 1,
-      text,
-      isEdit: false,
-    };
-    setTeams((prev) => [...prev, newTeam]);
+
+  const handleAddTeam = () => {
     setShowInput(false);
   };
 
@@ -41,7 +33,6 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
           iconName="attachment"
           text={space.workspaceName}
           onClick={() => navigate(`/team-urls/${space.workspaceId}`)}
-          setTeams={setTeams}
           spaceId={space.workspaceId}
         />
       ))}

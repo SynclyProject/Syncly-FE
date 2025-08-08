@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Icon from "../Icon";
 import { useMutation } from "@tanstack/react-query";
-import { PostTeamSpace } from "../../api/WorkSpace";
+import { PostTeamSpace } from "../../api/WorkSpace/post";
 
 interface IInputSpaceProps {
   onAdd: (text: string) => void;
