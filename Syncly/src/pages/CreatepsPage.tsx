@@ -148,28 +148,26 @@ const CreatepsPage = () => {
           <button type= "submit" className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium">
             Create new password
           </button>
-
-          {/* Divider */}
-          <div className="h-px bg-[#E6E6E6]" />
-
-          {/* Google Sign-In */}
-          <div className="flex items-center gap-4 border border-[#E6E6E6] px-4 py-2 rounded-[8px] bg-white cursor-pointer">
-            <img src="/google-logo.png" className="w-6 h-6" alt="Google" />
-            <span className="text-black text-sm font-medium leading-6 font-['inter']">
-              Continue with Google
-            </span>
-          </div>
-
-          {/* Policy Text */}
-          <p className="text-center text-[#585858] text-xs font-extralight mt-2">
-            By clicking “Continue with Google/Email” above, <br />
-            you acknowledge that you have read and understood, and agree to
-            Syncly’s Privacy Policy.
-          </p>
         </form>
 
+        {/* Divider */}
+        <div className="w-[459px] h-px bg-[#E6E6E6] mt-4 " />
+        {/* Google Sign-In */}
+
+        <button className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
+          <img src="/google-logo.png" className="w-6 h-6" alt="Google" />{" "}
+          <p>Continue with Google</p>
+        </button>
+
+        {/* Policy Text */}
+        <p className="w-[459px] flex justify-center text-center text-[#585858] text-xs font-xl mt-4">
+          By clicking “Continue with Google/Email” above, <br />
+          you acknowledge that you have read and understood, and agree to
+          Syncly’s Privacy Policy.
+        </p>
         {/*바닥 여유 공간용*/}
         <div className="h-32" />
+
       </div>
     </div>
   );

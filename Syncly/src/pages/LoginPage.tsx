@@ -67,7 +67,7 @@ const LoginPage = () => {
               {...register("password")}
               type="password"
               placeholder="Enter your password..."
-              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
+              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm "
             />
             {errors.password && (
               <p className="text-red-500 text-xs">{errors.password.message}</p>
@@ -84,29 +84,27 @@ const LoginPage = () => {
           <div className="flex flex-col gap-1 mb-1"></div>
         </form>
 
-        {/* Forgot Password Link */}
-        <button
-          onClick={() => navigate("/createps")}
-          className="text-red-500 text-sm mb-6 hover:underline text-left"
-        >
-          Did you forget your password?
+          {/* Forgot Password Link */}
+          <button
+            onClick={() => navigate('/createps')}
+            className="text-red-500 text-sm mb-3 hover:underline text-left"
+          >
+            Did you forget your password?
+          </button>
+
+      
+        {/* Divider */}
+        <div className="w-[459px] h-px bg-[#E6E6E6] mt-2 " />
+        {/* Google Sign-In */}
+
+        <button className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
+          <img src="/google-logo.png" className="w-6 h-6" alt="Google" />{" "}
+          <p>Continue with Google</p>
         </button>
 
-        {/* Divider */}
-        <div className="h-px bg-[#E6E6E6]" />
-        <div className="flex flex-col gap-1 mb-3"></div>
-
-        {/* Google Sign-In */}
-        <div className="flex items-center gap-4 border border-[#E6E6E6] px-4 py-2 rounded-[8px] bg-white cursor-pointer">
-          <img src="/google-logo.png" className="w-6 h-6" alt="Google" />
-          <span className="text-black text-sm font-medium leading-6 font-['inter']">
-            Continue with Google
-          </span>
-        </div>
-        <div className="flex flex-col gap-1 mb-4"></div>
-
         {/* Policy Text */}
-        <p className="text-center text-[#585858] text-xs font-extralight mt-2">
+        <p className="w-[459px] flex justify-center text-center text-[#585858] text-xs font-xl mt-4">
+
           By clicking “Continue with Google/Email” above, <br />
           you acknowledge that you have read and understood, and agree to
           Syncly’s Privacy Policy.

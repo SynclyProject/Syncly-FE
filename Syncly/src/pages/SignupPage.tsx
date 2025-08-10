@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Button from "../shared/ui/Button";
 import { useForm } from "react-hook-form";
@@ -12,6 +13,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { TSignUpSchema } from "../shared/type/sign";
 
+
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ const SignupPage = () => {
   const [isVerified, setIsVerified] = useState(false);
   //닉네임 인증 필드 상태
   const [nickname, setNickname] = useState("");
+
 
   const { mutate: postEmailSend } = useMutation({
     mutationFn: PostEmailSend,
@@ -43,6 +46,7 @@ const SignupPage = () => {
     },
   });
 
+
   //useForm() react-hook-form 설정
   const {
     register,
@@ -53,7 +57,7 @@ const SignupPage = () => {
     resolver: yupResolver(SignUpSchema),
   });
 
-  //Onsubmit함수
+
   const onSubmit = async (data: TSignUpSchema) => {
     await postRegister({
       email: data.email,
@@ -61,6 +65,7 @@ const SignupPage = () => {
       name: data.nickname,
     });
   };
+
 
   return (
     <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
@@ -84,6 +89,7 @@ const SignupPage = () => {
                 placeholder="Enter your email address..."
                 className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
               />
+
               <Button
                 colorType="main"
                 onClick={() => postEmailSend({ email: getValues("email") })}
@@ -117,12 +123,14 @@ const SignupPage = () => {
                 <Button
                   type="button"
                   colorType={isVerified ? "success" : "main"}
+
                   onClick={() =>
                     postEmailVerify({
                       email: getValues("email"),
                       code: getValues("code"),
                     })
                   }
+
                 >
                   Verify
                 </Button>
@@ -209,26 +217,23 @@ const SignupPage = () => {
           >
             Start with Syncly !
           </button>
-
-          {/* Divider */}
-          <div className="h-px bg-[#E6E6E6]" />
-
-          {/* Google Sign-In */}
-          <div className="flex items-center gap-4 border border-[#E6E6E6] px-4 py-2 rounded-[8px] bg-white cursor-pointer">
-            <img src="/google-logo.png" className="w-6 h-6 " alt="Google" />
-            <span className="text-black text-sm font-medium leading-6 font-['inter']">
-              Continue with Google
-            </span>
-          </div>
-
-          {/* Policy Text */}
-          <p className="text-center text-[#585858] text-xs font-extralight mt-2">
-            By clicking “Continue with Google/Email” above, <br />
-            you acknowledge that you have read and understood, and agree to
-            Syncly’s Privacy Policy.
-          </p>
         </form>
 
+        {/* Divider */}
+        <div className="w-[459px] h-px bg-[#E6E6E6] mt-4 " />
+        {/* Google Sign-In */}
+
+        <button className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
+          <img src="/google-logo.png" className="w-6 h-6" alt="Google" />{" "}
+          <p>Continue with Google</p>
+        </button>
+
+        {/* Policy Text */}
+        <p className="w-[459px] flex justify-center text-center text-[#585858] text-xs font-xl mt-4">
+          By clicking “Continue with Google/Email” above, <br />
+          you acknowledge that you have read and understood, and agree to
+          Syncly’s Privacy Policy.
+        </p>
         {/*바닥 여유 공간용*/}
         <div className="h-32" />
       </div>
