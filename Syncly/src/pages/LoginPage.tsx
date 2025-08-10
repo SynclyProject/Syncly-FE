@@ -5,9 +5,11 @@ import { LoginSchema } from "../shared/schema";
 import { TLoginSchema } from "../shared/type/sign";
 import { useMutation } from "@tanstack/react-query";
 import { PostLogin } from "../shared/api/Auth";
+import { useAuthContext } from "../context/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { checkLoginStatus } = useAuthContext();
 
   const {
     register,
@@ -21,7 +23,9 @@ const LoginPage = () => {
     mutationFn: PostLogin,
     onSuccess: (response) => {
       alert("로그인 성공!");
+      console.log("accessToken", response.result);
       localStorage.setItem("accessToken", response.result);
+      checkLoginStatus(); // AuthContext 상태 업데이트
       navigate("/my-urls");
     },
   });
@@ -84,15 +88,14 @@ const LoginPage = () => {
           <div className="flex flex-col gap-1 mb-1"></div>
         </form>
 
-          {/* Forgot Password Link */}
-          <button
-            onClick={() => navigate('/createps')}
-            className="text-red-500 text-sm mb-3 hover:underline text-left"
-          >
-            Did you forget your password?
-          </button>
+        {/* Forgot Password Link */}
+        <button
+          onClick={() => navigate("/createps")}
+          className="text-red-500 text-sm mb-3 hover:underline text-left"
+        >
+          Did you forget your password?
+        </button>
 
-      
         {/* Divider */}
         <div className="w-[459px] h-px bg-[#E6E6E6] mt-2 " />
         {/* Google Sign-In */}
@@ -104,7 +107,6 @@ const LoginPage = () => {
 
         {/* Policy Text */}
         <p className="w-[459px] flex justify-center text-center text-[#585858] text-xs font-xl mt-4">
-
           By clicking “Continue with Google/Email” above, <br />
           you acknowledge that you have read and understood, and agree to
           Syncly’s Privacy Policy.
