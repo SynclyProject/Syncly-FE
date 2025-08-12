@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Button from "../shared/ui/Button";
 import { useForm } from "react-hook-form";
@@ -9,10 +8,9 @@ import {
   PostEmailSend,
   PostEmailVerify,
   PostRegister,
-} from "../shared/api/Member";
+} from "../shared/api/Member/post";
 import { useMutation } from "@tanstack/react-query";
 import { TSignUpSchema } from "../shared/type/sign";
-
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -21,7 +19,6 @@ const SignupPage = () => {
   const [isVerified, setIsVerified] = useState(false);
   //닉네임 인증 필드 상태
   const [nickname, setNickname] = useState("");
-
 
   const { mutate: postEmailSend } = useMutation({
     mutationFn: PostEmailSend,
@@ -46,7 +43,6 @@ const SignupPage = () => {
     },
   });
 
-
   //useForm() react-hook-form 설정
   const {
     register,
@@ -57,7 +53,6 @@ const SignupPage = () => {
     resolver: yupResolver(SignUpSchema),
   });
 
-
   const onSubmit = async (data: TSignUpSchema) => {
     await postRegister({
       email: data.email,
@@ -65,7 +60,6 @@ const SignupPage = () => {
       name: data.nickname,
     });
   };
-
 
   return (
     <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
@@ -123,14 +117,12 @@ const SignupPage = () => {
                 <Button
                   type="button"
                   colorType={isVerified ? "success" : "main"}
-
                   onClick={() =>
                     postEmailVerify({
                       email: getValues("email"),
                       code: getValues("code"),
                     })
                   }
-
                 >
                   Verify
                 </Button>

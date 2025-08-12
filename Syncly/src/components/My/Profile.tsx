@@ -1,7 +1,6 @@
 import Icon from "../../shared/ui/Icon";
 
-const Profile = () => {
-  const name = "김희재";
+const Profile = ({ name }: { name: string }) => {
   return (
     <div className="w-full flex flex-col gap-[30px]">
       <p className=" pb-4 text-[32px] font-semibold border-b border-b-[#E0E0E0]">

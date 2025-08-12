@@ -2,13 +2,29 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import AlarmModal from "../../components/alarm/AlarmModal";
 import { useState } from "react";
+import { useAuthContext } from "../../context/AuthContext";
+import { PostLogout } from "../../shared/api/Auth";
 
 const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const hideIcon =
-    location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "/createps";
+    location.pathname === "/login" ||
+    location.pathname === "/signup" ||
+    location.pathname === "/createps";
   const [showAlarm, setShowAlarm] = useState(false);
+  const { isLogin, checkLoginStatus } = useAuthContext();
+
+  const handleLogout = async () => {
+    try {
+      await PostLogout();
+      localStorage.removeItem("accessToken");
+      checkLoginStatus(); // AuthContext 상태 업데이트
+      navigate("/login");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
+  };
 
   return (
     <div className="w-full h-[70px] bg-white px-7 flex justify-between items-center border border-[#E0E0E0]">
@@ -20,22 +36,50 @@ const TopBar = () => {
       </p>
       {!hideIcon && (
         <div className="flex gap-[16px]">
-          <button className="bg-transparent border-none cursor-pointer" onClick={() => setShowAlarm(!showAlarm)}>
-            <Icon name="Bell" />
-          </button>
+          {isLogin ? (
+            <>
+              <button
+                className="bg-transparent border-none cursor-pointer"
+                onClick={() => setShowAlarm(!showAlarm)}
+              >
+                <Icon name="Bell" />
+              </button>
 
-          {/* 알람모달 */}
-          <AlarmModal isOpen={showAlarm} onClose={() => setShowAlarm(false)} />
+              {/* 알람모달 */}
+              <AlarmModal
+                isOpen={showAlarm}
+                onClose={() => setShowAlarm(false)}
+              />
 
-          <button
-            className="bg-transparent border-none cursor-pointer"
-            onClick={() => navigate("/my-page")}
-          >
-            <Icon name="User_Circle" />
-          </button>
-          <button className="bg-transparent border-none cursor-pointer">
-            <Icon name="Log_Out" />
-          </button>
+              <button
+                className="bg-transparent border-none cursor-pointer"
+                onClick={() => navigate("/my-page")}
+              >
+                <Icon name="User_Circle" />
+              </button>
+              <button
+                className="bg-transparent border-none cursor-pointer"
+                onClick={handleLogout}
+              >
+                <Icon name="Log_Out" />
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="bg-transparent border-none cursor-pointer hover:font-bold"
+                onClick={() => navigate("/login")}
+              >
+                로그인
+              </button>
+              <button
+                className="bg-transparent border-none cursor-pointer hover:font-bold"
+                onClick={() => navigate("/signup")}
+              >
+                회원가입
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>
