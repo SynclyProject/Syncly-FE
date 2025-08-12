@@ -27,6 +27,9 @@ const LoginPage = () => {
       checkLoginStatus(); // AuthContext 상태 업데이트
       navigate("/my-urls");
     },
+    onError: (error: Error) => {
+      alert(error?.response?.data?.message);
+    },
   });
 
   const onSubmit = async (data: TLoginSchema) => {
