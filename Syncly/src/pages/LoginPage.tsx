@@ -23,7 +23,6 @@ const LoginPage = () => {
     mutationFn: PostLogin,
     onSuccess: (response) => {
       alert("로그인 성공!");
-      console.log("accessToken", response.result);
       localStorage.setItem("accessToken", response.result);
       checkLoginStatus(); // AuthContext 상태 업데이트
       navigate("/my-urls");

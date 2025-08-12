@@ -85,7 +85,11 @@ const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
               {modalShow && (
                 <div className="absolute top-[-9px] left-8" ref={modalRef}>
                   {spaceId && (
-                    <SideModal editTeam={editTeam} setEditTeam={setEditTeam} />
+                    <SideModal
+                      editTeam={editTeam}
+                      setEditTeam={setEditTeam}
+                      spaceId={spaceId}
+                    />
                   )}
                 </div>
               )}

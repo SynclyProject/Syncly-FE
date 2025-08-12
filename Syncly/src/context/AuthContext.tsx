@@ -15,7 +15,9 @@ type TAuthContext = {
 const AuthContext = createContext<TAuthContext | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(
+    !!localStorage.getItem("accessToken")
+  );
 
   const checkLoginStatus = () => {
     const token = localStorage.getItem("accessToken");
