@@ -2,6 +2,8 @@ import TeamInviteModel from "../../../components/alarm/TeamInviteModel";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { GetSpaceRole } from "../../../shared/api/WorkSpace/get";
+import { DeleteSpaceLeave } from "../../api/WorkSpace/delete";
+import { useNavigate } from "react-router-dom";
 
 interface ISideModalProps {
   editTeam: boolean;
@@ -11,6 +13,7 @@ interface ISideModalProps {
 
 const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
   const [showInviteModel, setShowInviteModel] = useState(false);
+  const navigate = useNavigate();
 
   const { data } = useQuery({
     queryKey: ["role"],
@@ -18,6 +21,16 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
   });
 
   const role = data?.result?.role === "MANAGER" ? true : false;
+
+  const handleDeleteClick = async () => {
+    try {
+      await DeleteSpaceLeave({ workspaceId: spaceId });
+      console.log("팀스페이스 나가기 성공");
+      navigate("/my-urls");
+    } catch (error) {
+      console.log("팀스페이스 나가기 실패", error);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
@@ -65,12 +78,7 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
           </p>
         </>
       ) : (
-        <p
-          className="text-[#F45B69]"
-          onClick={() => {
-            //팀스페이스 나가기 api 추가
-          }}
-        >
+        <p className="text-[#F45B69]" onClick={handleDeleteClick}>
           팀스페이스 나가기
         </p>
       )}
