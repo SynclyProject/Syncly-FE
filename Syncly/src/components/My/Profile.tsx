@@ -15,7 +15,7 @@ const Profile = ({
       </p>
       <div className="w-full flex gap-[40px] px-7">
         {profile == null ? (
-          <div className="w-[190px] h-[190px]">
+          <div className="max-w-[190px] max-h-[190px] min-w-[100px] min-h-[100px] flex items-center justify-center">
             <Icon name="User_Default" />
           </div>
         ) : (
