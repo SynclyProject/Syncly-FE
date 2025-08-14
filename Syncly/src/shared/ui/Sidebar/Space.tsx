@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import Icon from "../Icon";
 import SideModal from "./SideModal";
 import InputSpace from "./InputSpace";
+import { PatchSpaceName } from "../../api/WorkSpace/patch";
 
 type TSpaceStateProps = {
   state: "my" | "team";
@@ -25,12 +26,23 @@ const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
   //   setModalShow((prevState) => !prevState);
   // };
 
-  const handleTeamNameChange = (text: string) => {
+  const handleTeamNameChange = async (text: string) => {
     if (!text.trim()) return;
     if (spaceId) {
       //이름 변경 api 추가
+      try {
+        await PatchSpaceName({ workspaceId: spaceId, name: text });
+        console.log("팀스페이스 이름 변경 성공");
+        // 이름 변경 성공 후 편집 모드 종료
+        setEditTeam(false);
+        // 페이지 새로고침으로 목록 업데이트
+        window.location.reload();
+      } catch (error) {
+        console.log("팀스페이스 이름 변경 실패", error);
+        // 에러 발생 시에도 편집 모드 종료
+        setEditTeam(false);
+      }
     }
-    setEditTeam(false);
   };
 
   const handleIconClick = (e: React.MouseEvent) => {
@@ -59,7 +71,7 @@ const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
     <>
       {editTeam ? (
         <InputSpace
-          onAdd={handleTeamNameChange}
+          onChangeName={handleTeamNameChange}
           onCancel={() => setEditTeam(false)}
           initialValue={text}
         />

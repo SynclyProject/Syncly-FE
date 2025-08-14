@@ -18,7 +18,7 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     setShowInput(false);
   };
 
-  const { data: spaceList, isPending } = useQuery({
+  const { data: spaceList } = useQuery({
     queryFn: GetSpaceList,
     queryKey: ["spaceList"],
   });

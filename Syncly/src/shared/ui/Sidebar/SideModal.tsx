@@ -26,6 +26,7 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
     try {
       await DeleteSpaceLeave({ workspaceId: spaceId });
       console.log("팀스페이스 나가기 성공");
+      window.location.reload();
       navigate("/my-urls");
     } catch (error) {
       console.log("팀스페이스 나가기 실패", error);
@@ -35,6 +36,7 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
     try {
       await DeleteSpace({ workspaceId: spaceId });
       console.log("팀스페이스 삭제 성공");
+      window.location.reload();
       navigate("/my-urls");
     } catch (error) {
       console.log("팀스페이스 삭제 실패", error);

@@ -4,29 +4,46 @@ import { useMutation } from "@tanstack/react-query";
 import { PostTeamSpace } from "../../api/WorkSpace/post";
 
 interface IInputSpaceProps {
-  onAdd: (text: string) => void;
+  onAdd?: () => void;
+  onChangeName?: (text: string) => void;
   onCancel: () => void;
   initialValue?: string;
 }
 
 const InputSpace = ({
   onAdd,
+  onChangeName,
   onCancel,
   initialValue = "",
 }: IInputSpaceProps) => {
   const [inputValue, setInputValue] = useState(initialValue);
+
   const handleSubmit = () => {
     if (inputValue.trim()) {
-      onAdd(inputValue);
-      setInputValue("");
-      postTeamSpaceMutation({ name: inputValue });
+      if (onAdd) {
+        // 새로 생성하는 경우
+        onAdd();
+        postTeamSpaceMutation({ name: inputValue });
+      } else if (onChangeName) {
+        // 이름을 변경하는 경우
+        onChangeName(inputValue);
+        onCancel(); // 편집 모드 종료
+      }
     }
   };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Enter") {
+      handleSubmit();
+    } else if (e.key === "Escape") {
+      onCancel();
+    }
   };
+
   const handleBlur = () => {
-    if (!inputValue.trim()) onCancel();
+    if (!inputValue.trim()) {
+      onCancel();
+    }
   };
 
   const { mutate: postTeamSpaceMutation } = useMutation({
@@ -47,15 +64,22 @@ const InputSpace = ({
       <input
         className="flex-1 w-full text-[#828282] focus:outline-none"
         value={inputValue}
-        placeholder="text..."
+        placeholder={onAdd ? "새 워크스페이스 이름..." : "이름을 입력하세요..."}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
+        autoFocus
       />
-      <button className="bg-transparent border-none">
-        <Icon name="Vector_gray" />
+
+      <button
+        className="bg-transparent border-none cursor-pointer"
+        onClick={handleSubmit}
+        title={onAdd ? "생성" : "저장"}
+      >
+        <Icon name={onAdd ? "plus_blue" : "Vector_gray"} />
       </button>
     </div>
   );
 };
+
 export default InputSpace;
