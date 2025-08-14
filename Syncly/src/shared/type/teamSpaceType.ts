@@ -5,3 +5,11 @@ export type TTeamSpace = {
   workspaceType: string;
   //isEdit: boolean;
 };
+
+export type TTeamMember = {
+  joinedAt: string;
+  memberEmail: string;
+  memberName: string;
+  role: string;
+  workspaceMemberId: number;
+};

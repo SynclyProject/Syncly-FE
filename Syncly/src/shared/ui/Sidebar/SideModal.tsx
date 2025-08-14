@@ -30,7 +30,10 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
             //className="fixed inset-0 bg-black/30 z-40"
             onClick={() => setShowInviteModel(false)}
           />
-          <TeamInviteModel onClose={() => setShowInviteModel(false)} />
+          <TeamInviteModel
+            onClose={() => setShowInviteModel(false)}
+            spaceId={spaceId}
+          />
         </>
       )}
 

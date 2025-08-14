@@ -2,13 +2,27 @@ import React from "react";
 import TeamMemberCard from "./TeamMemberCard";
 import Button from "../../shared/ui/Button";
 import { useState } from "react";
-
+import { useQuery } from "@tanstack/react-query";
+import { GetSpaceMember } from "../../shared/api/WorkSpace/get";
+import { TTeamMember } from "../../shared/type/teamSpaceType";
 interface TeamInviteModelProps {
   onClose: () => void;
+  spaceId: number;
 }
 
-const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
+const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
+  onClose,
+  spaceId,
+}) => {
   const [showInput, setShowInput] = useState(false);
+
+  const { data } = useQuery({
+    queryKey: ["spaceMember"],
+    queryFn: () => GetSpaceMember({ workspaceId: spaceId }),
+  });
+
+  console.log(data);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 ">
       <div className="absolute inset-0 bg-black opacity-40 pointer-events-none" />
@@ -46,19 +60,14 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
           {/* 팀원 목록 */}
           <p className="pb-4">팀원 목록</p>
           <div className="flex flex-col gap-1 overflow-y-auto pb-10">
-            <TeamMemberCard
-              name="김희재"
-              role="팀스페이스 소유자"
-              email="example@gmail.com"
-            />
-            <TeamMemberCard
-              name="김희재"
-              role="팀원"
-              email="example@gmail.com"
-            />
+            {data?.result.map((member: TTeamMember) => (
+              <TeamMemberCard
+                name={member.memberName}
+                role={member.role}
+                email={member.memberEmail}
+              />
+            ))}
           </div>
-
-
         </div>
       </div>
     </div>
