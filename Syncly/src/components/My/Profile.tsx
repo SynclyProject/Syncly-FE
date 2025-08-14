@@ -16,7 +16,7 @@ const Profile = ({
       <div className="w-full flex gap-[40px] px-7">
         {profile == null ? (
           <div className="w-[190px] h-[190px]">
-            <Icon name="User_Default_2" />
+            <Icon name="User_Default" />
           </div>
         ) : (
           <></>
