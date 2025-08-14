@@ -6,6 +6,7 @@ import { TLoginSchema } from "../shared/type/sign";
 import { useMutation } from "@tanstack/react-query";
 import { PostLogin } from "../shared/api/Auth";
 import { useAuthContext } from "../context/AuthContext";
+import { AxiosError } from "axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const LoginPage = () => {
       checkLoginStatus(); // AuthContext 상태 업데이트
       navigate("/my-urls");
     },
-    onError: (error: Error) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       alert(error?.response?.data?.message);
     },
   });

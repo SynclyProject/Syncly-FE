@@ -1,6 +1,12 @@
 import Icon from "../../shared/ui/Icon";
 
-const Profile = ({ name, profile }: { name: string; profile: string }) => {
+const Profile = ({
+  name,
+  profile,
+}: {
+  name: string;
+  profile: string | null;
+}) => {
   console.log(profile);
   return (
     <div className="w-full flex flex-col gap-[30px]">
@@ -8,7 +14,13 @@ const Profile = ({ name, profile }: { name: string; profile: string }) => {
         Mypage
       </p>
       <div className="w-full flex gap-[40px] px-7">
-        {profile == null ? <Icon name="userProfile_2" /> : <></>}
+        {profile == null ? (
+          <div className="w-[190px] h-[190px]">
+            <Icon name="User_Default_2" />
+          </div>
+        ) : (
+          <></>
+        )}
 
         <div className="flex flex-col justify-center gap-4">
           <p className="text-[24px] text-[#828282]">선호하는 이름</p>
