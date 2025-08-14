@@ -2,7 +2,7 @@ import TeamInviteModel from "../../../components/alarm/TeamInviteModel";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { GetSpaceRole } from "../../../shared/api/WorkSpace/get";
-import { DeleteSpaceLeave } from "../../api/WorkSpace/delete";
+import { DeleteSpace, DeleteSpaceLeave } from "../../api/WorkSpace/delete";
 import { useNavigate } from "react-router-dom";
 
 interface ISideModalProps {
@@ -22,13 +22,22 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
 
   const role = data?.result?.role === "MANAGER" ? true : false;
 
-  const handleDeleteClick = async () => {
+  const handleLeaveClick = async () => {
     try {
       await DeleteSpaceLeave({ workspaceId: spaceId });
       console.log("팀스페이스 나가기 성공");
       navigate("/my-urls");
     } catch (error) {
       console.log("팀스페이스 나가기 실패", error);
+    }
+  };
+  const handleDeleteClick = async () => {
+    try {
+      await DeleteSpace({ workspaceId: spaceId });
+      console.log("팀스페이스 삭제 성공");
+      navigate("/my-urls");
+    } catch (error) {
+      console.log("팀스페이스 삭제 실패", error);
     }
   };
 
@@ -60,25 +69,15 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
           >
             팀스페이스 이름 변경
           </p>
-          <p
-            className="text-[#028090]"
-            onClick={() => {
-              //팀스페이스 나가기 api 추가
-            }}
-          >
+          <p className="text-[#028090]" onClick={handleLeaveClick}>
             팀스페이스 나가기
           </p>
-          <p
-            className="text-[#F45B69]"
-            onClick={() => {
-              //팀스페이스 삭제 api 추가
-            }}
-          >
+          <p className="text-[#F45B69]" onClick={handleDeleteClick}>
             팀스페이스 삭제
           </p>
         </>
       ) : (
-        <p className="text-[#F45B69]" onClick={handleDeleteClick}>
+        <p className="text-[#F45B69]" onClick={handleLeaveClick}>
           팀스페이스 나가기
         </p>
       )}
