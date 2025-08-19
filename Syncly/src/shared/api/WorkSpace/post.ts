@@ -63,12 +63,12 @@ export const PostSpaceReject = async ({
 // 워크스페이스 초대 수락 API(알림창)
 export const PostSpaceAccept = async (data: { spaceId: number }) => {
   try {
-    const response = await axiosInstance.post(`/api/workspaces/reject`, {
+    const response = await axiosInstance.post(`/api/workspaces/accept`, {
       invitationId: data.spaceId,
     });
     return response.data;
   } catch (error) {
-    console.error("워크스페이스 초대 수락(알림창창) 실패", error);
+    console.error("워크스페이스 초대 수락(알림창) 실패", error);
     throw error;
   }
 };

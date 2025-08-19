@@ -33,7 +33,7 @@ const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
       <div className="space-y-3">
         {data?.result.length === 0 ? (
           <div className="flex justify-center items-center h-full">
-            <p className="text-gray-500">알림이 없습니다.</p>
+            <p className="text-gray-500 py-5">알림이 없습니다.</p>
           </div>
         ) : (
           <>
@@ -42,6 +42,7 @@ const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
                 title={item.workspaceName}
                 message="팀스페이스에서의 초대"
                 onAccept={() => handleAccept(item.workspaceName)}
+                invitationId={item.invitationId}
               />
             ))}
           </>
