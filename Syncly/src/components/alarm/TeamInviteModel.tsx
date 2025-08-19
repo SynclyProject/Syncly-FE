@@ -2,9 +2,11 @@ import React from "react";
 import TeamMemberCard from "./TeamMemberCard";
 import Button from "../../shared/ui/Button";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetSpaceMember } from "../../shared/api/WorkSpace/get";
 import { TTeamMember } from "../../shared/type/teamSpaceType";
+import { PostSpaceInvite } from "../../shared/api/WorkSpace/post";
+import { AxiosError } from "axios";
 interface TeamInviteModelProps {
   onClose: () => void;
   spaceId: number;
@@ -15,13 +17,23 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
   spaceId,
 }) => {
   const [showInput, setShowInput] = useState(false);
+  const [email, setEmail] = useState("");
 
   const { data } = useQuery({
     queryKey: ["spaceMember"],
     queryFn: () => GetSpaceMember({ workspaceId: spaceId }),
   });
 
-  console.log(data);
+  const { mutate: postSpaceInviteMutation } = useMutation({
+    mutationFn: PostSpaceInvite,
+    onSuccess: () => {
+      alert("이메일 초대가 완료되었습니다!");
+      setEmail("");
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      alert(error?.response?.data?.message);
+    },
+  });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 ">
@@ -45,6 +57,8 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
               type="text"
               placeholder="이메일을 입력해주세요"
               className="w-full border-b border-neutral-300 mb-4 px-2 py-4 text-sm:10 text-gray-500 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             {/* 추가 버튼 */}
             <Button
@@ -52,7 +66,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
               iconName="add_circle"
               onClick={() => {
                 setShowInput(true);
-                alert("이메일 초대가 완료되었습니다!");
+                postSpaceInviteMutation({ spaceId, email });
               }}
             />
           </div>
