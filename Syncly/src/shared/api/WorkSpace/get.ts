@@ -37,7 +37,7 @@ export const GetSpaceMember = async (data: { workspaceId: number }) => {
 // 사용자의 초대 목록 조회
 export const GetSpaceInvite = async () => {
   try {
-    const response = await axiosInstance2.get(`/api/workspaces/invite`);
+    const response = await axiosInstance2.get(`/api/workspaces/invites`);
     return response.data;
   } catch (error) {
     console.error("사용자의 초대 목록 조회 실패", error);

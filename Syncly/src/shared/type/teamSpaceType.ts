@@ -13,3 +13,10 @@ export type TTeamMember = {
   role: string;
   workspaceMemberId: number;
 };
+
+export type TInvite = {
+  expiresAt: string;
+  invitationId: number;
+  inviterName: string;
+  workspaceName: string;
+};
