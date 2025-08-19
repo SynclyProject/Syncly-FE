@@ -64,7 +64,7 @@ const InputSpace = ({
       <input
         className="flex-1 w-full text-[#828282] focus:outline-none"
         value={inputValue}
-        placeholder={onAdd ? "새 워크스페이스 이름..." : "이름을 입력하세요..."}
+        placeholder="text..."
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
@@ -76,7 +76,7 @@ const InputSpace = ({
         onClick={handleSubmit}
         title={onAdd ? "생성" : "저장"}
       >
-        <Icon name={onAdd ? "plus_blue" : "Vector_gray"} />
+        <Icon name="Vector_gray" />
       </button>
     </div>
   );

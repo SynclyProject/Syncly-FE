@@ -17,7 +17,6 @@ export const DeleteSpaceKick = async (data: {
   workspaceId: number;
   targetMemberId: number;
 }) => {
-  console.log(data);
   try {
     const response = await axiosInstance2.delete(
       `/api/workspaces/${data.workspaceId}/members/${data.targetMemberId}/kick`
