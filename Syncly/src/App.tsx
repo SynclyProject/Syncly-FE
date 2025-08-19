@@ -14,6 +14,7 @@ import MyPage from "./pages/MyPage";
 import TeamURLsPage from "./pages/Team/TeamURLsPage";
 import TeamFilesPage from "./pages/Team/TeamFilesPage";
 import TeamScreenPage from "./pages/Team/TeamScreenPage";
+import AcceptWorkspacePage from "./pages/AcceptWorkspacePage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
             <TeamScreenPage />
           </AuthRoute>
         ),
+      },
+      {
+        path: "accept/:token",
+        element: <AcceptWorkspacePage />,
       },
     ],
   },

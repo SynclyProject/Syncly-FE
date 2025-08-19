@@ -46,7 +46,7 @@ export const GetSpaceInvite = async () => {
 };
 
 // 팀 워크스페이스 초대 수락 (이메일 링크 클릭)
-export const GetSpaceAccept = async ({ data }: { data: { token: string } }) => {
+export const GetSpaceAccept = async (data: { token: string }) => {
   try {
     const response = await axiosInstance2.get(
       `/api/workspaces/accept/${data.token}`
