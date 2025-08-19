@@ -16,7 +16,7 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
   const navigate = useNavigate();
 
   const { data } = useQuery({
-    queryKey: ["role"],
+    queryKey: ["role", spaceId],
     queryFn: () => GetSpaceRole({ workspaceId: spaceId }),
   });
 

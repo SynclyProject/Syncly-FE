@@ -14,7 +14,6 @@ const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
     queryKey: ["spaceInviteList"],
     queryFn: () => GetSpaceInvite(),
   });
-  console.log(data);
 
   if (!isOpen) return null;
 

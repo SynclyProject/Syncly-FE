@@ -15,11 +15,12 @@ export const DeleteSpace = async (data: { workspaceId: number }) => {
 // 팀 워크스페이스 멤버 추방하기 (MANAGER만 가능)
 export const DeleteSpaceKick = async (data: {
   workspaceId: number;
-  memberId: number;
+  targetMemberId: number;
 }) => {
+  console.log(data);
   try {
     const response = await axiosInstance2.delete(
-      `/api/workspaces/${data.workspaceId}/members/${data.memberId}/kick`
+      `/api/workspaces/${data.workspaceId}/members/${data.targetMemberId}/kick`
     );
     return response.data;
   } catch (error) {

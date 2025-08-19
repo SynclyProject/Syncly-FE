@@ -20,7 +20,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
   const [email, setEmail] = useState("");
 
   const { data } = useQuery({
-    queryKey: ["spaceMember"],
+    queryKey: ["spaceMember", spaceId],
     queryFn: () => GetSpaceMember({ workspaceId: spaceId }),
   });
 
@@ -76,9 +76,12 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
           <div className="flex flex-col gap-1 overflow-y-auto pb-10">
             {data?.result.map((member: TTeamMember) => (
               <TeamMemberCard
+                key={member.workspaceMemberId}
                 name={member.memberName}
                 role={member.role}
                 email={member.memberEmail}
+                spaceId={spaceId}
+                memberId={member.workspaceMemberId}
               />
             ))}
           </div>
