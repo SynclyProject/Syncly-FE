@@ -1,4 +1,5 @@
 import { axiosInstance2 } from "../common/axiosInstance";
+import axios from "axios";
 
 // 팀 워크스페이스 리스트 전체 조회
 export const GetSpaceList = async () => {
@@ -56,3 +57,17 @@ export const GetSpaceAccept = async (data: { token: string }) => {
     console.error("팀 워크스페이스 초대 수락(이메일 링크) 실패", error);
   }
 };
+
+//워크스페이스 초대 알림 API (SSE)
+
+// export const GetInviteNotification = async (token: string) => {
+//   try {
+//     const response = await axios.get(
+//       `/api/workspaces/notifications?token=${token}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("사용자의 초대 목록 조회 실패", error);
+//     throw error;
+//   }
+// };
