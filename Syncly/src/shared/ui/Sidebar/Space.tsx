@@ -13,18 +13,21 @@ interface ISpaceProps extends TSpaceStateProps {
   text: string;
   onClick: () => void;
   spaceId?: number;
+  click?: boolean;
 }
 
-const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
+const Space = ({
+  state,
+  iconName,
+  text,
+  onClick,
+  spaceId,
+  click,
+}: ISpaceProps) => {
   const [modalShow, setModalShow] = useState(false);
   const [editTeam, setEditTeam] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
-  // const toggleModal = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.stopPropagation();
-  //   setModalShow((prevState) => !prevState);
-  // };
 
   const handleTeamNameChange = async (text: string) => {
     if (!text.trim()) return;
@@ -77,7 +80,9 @@ const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
         />
       ) : (
         <div
-          className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] cursor-pointer bg-white hover:bg-[#DEE4ED]"
+          className={`h-[40px] flex items-center px-4 gap-4 rounded-[8px] cursor-pointer ${
+            click ? "bg-[#DEE4ED]" : "bg-white hover:bg-[#DEE4ED]"
+          }`}
           onClick={() => onClick()}
         >
           {state === "my" ? (
