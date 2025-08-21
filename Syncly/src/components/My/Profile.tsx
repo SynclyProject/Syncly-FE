@@ -1,4 +1,7 @@
 import Icon from "../../shared/ui/Icon";
+import { PatchNickname } from "../../shared/api/Member/patch";
+import { useState } from "react";
+import useDebounce from "../../hooks/useDebounce";
 
 const Profile = ({
   name,
@@ -7,7 +10,18 @@ const Profile = ({
   name: string;
   profile: string | null;
 }) => {
-  console.log(profile);
+  const [nickname, setNickname] = useState(name);
+  const debouncedNickname = useDebounce(nickname, 200);
+
+  const handleNicknameChange = async () => {
+    try {
+      await PatchNickname({ newName: debouncedNickname });
+      console.log("닉네임 변경 성공");
+    } catch (error) {
+      console.error("닉네임 변경 실패", error);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col gap-[30px]">
       <p className=" pb-4 text-[32px] font-semibold border-b border-b-[#E0E0E0]">
@@ -27,7 +41,15 @@ const Profile = ({
           <input
             className="px-4 py-2 bg-[#F7F9FB] border border-[#E0E0E0] overflow-hidden text-[#828282] text-[16px] rounded-[6px] outline-none"
             type="text"
-            value={name}
+            value={nickname}
+            onChange={(e) => {
+              setNickname(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleNicknameChange();
+              }
+            }}
           />
           <input type="file" id="profile" className="hidden" />
           <p
