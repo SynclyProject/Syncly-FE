@@ -27,6 +27,7 @@ const LoginPage = () => {
       localStorage.setItem("accessToken", response.result);
       checkLoginStatus(); // AuthContext 상태 업데이트
       navigate("/my-urls");
+      window.location.reload();
     },
     onError: (error: AxiosError<{ message: string }>) => {
       alert(error?.response?.data?.message);
