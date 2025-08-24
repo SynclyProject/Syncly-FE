@@ -36,23 +36,33 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const response = await axiosInstance.post("/api/auth/reissue");
+        // 토큰 재발급 요청은 인터셉터 없이 직접 axios로 호출
+        const response = await axios.post(
+          "/api/auth/reissue",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("refreshToken")}`,
+            },
+          }
+        );
         console.log("토큰 재발급 결과 : ", response);
-        const newAccessToken = response?.data?.accessToken;
-        if (!newAccessToken) {
-          console.log("토큰 재발급 실패");
-        }
-        localStorage.setItem("accessToken", newAccessToken);
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return axiosInstance(originalRequest);
+        if (response.status === 200) {
+          console.log("토큰 재발급 성공");
+          const newAccessToken = response?.data?.accessToken;
+          localStorage.setItem("accessToken", newAccessToken);
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return axiosInstance(originalRequest);
+          }
         }
       } catch (reissueError) {
         console.error("토큰 재발급 실패", reissueError);
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
 
         if (!window.location.pathname.includes("/login")) {
-          throw new Error("토큰이 만료되었습니다. 다시 로그인 해주세요.");
+          window.location.href = "/login";
         }
         return Promise.reject(reissueError);
       }
