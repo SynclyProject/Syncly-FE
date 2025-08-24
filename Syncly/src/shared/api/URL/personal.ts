@@ -38,13 +38,20 @@ export const DeleteTaps = async (data: { tapId: number }) => {
 };
 
 // URL 아이템 삭제
-export const DeleteTabItems = async (data: {tabId:number, itemId: number }) => {
+export const DeleteTabItems = async (data: {
+  tabId: number;
+  itemId: number;
+}) => {
   try {
     const response = await axiosInstance.delete(
       `/api/workspaces/taps/${data.tabId}/${data.itemId}`
     );
     return response.data;
   } catch (error) {
+    console.error("URL 아이템 삭제 실패", error);
+    throw error;
+  }
+};
 
 // URL 탭 이름 변경
 export const PatchTaps = async (data: {
@@ -64,5 +71,3 @@ export const PatchTaps = async (data: {
     throw error;
   }
 };
-
-// 모든 탭 및 URL 리스트 조회 (개인/팀 공용)
