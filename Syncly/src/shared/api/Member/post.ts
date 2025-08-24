@@ -1,4 +1,4 @@
-import { axiosInstance, axiosBasic } from "../common/axiosInstance";
+import { axiosInstance } from "../common/axiosInstance";
 
 //회원가입
 export const PostRegister = async (data: {
@@ -21,7 +21,7 @@ export const PostEmailVerify = async (data: {
   code: string;
 }) => {
   try {
-    const response = await axiosBasic.post(
+    const response = await axiosInstance.post(
       `/api/member/email/verify?email=${data.email}&code=${data.code}`
     );
     return response.data;
@@ -34,7 +34,7 @@ export const PostEmailVerify = async (data: {
 //이메일 인증코드 전송
 export const PostEmailSend = async (data: { email: string }) => {
   try {
-    const response = await axiosBasic.post(
+    const response = await axiosInstance.post(
       `/api/member/email/send?email=${data.email}`
     );
     return response.data;
