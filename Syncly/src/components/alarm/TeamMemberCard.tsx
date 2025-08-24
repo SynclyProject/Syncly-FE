@@ -1,9 +1,14 @@
 import React, { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { GetSpaceRole } from "../../shared/api/WorkSpace/get";
+import { DeleteSpaceKick } from "../../shared/api/WorkSpace/delete";
 
 interface TeamMemberCardProps {
   name: string;
   role: string;
   email: string;
+  spaceId: number;
+  memberId: number;
   showMenu?: boolean;
 }
 
@@ -12,8 +17,25 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
   role,
   email,
   showMenu = true,
+  spaceId,
+  memberId,
 }) => {
   const [showModal, setShowModal] = useState(false);
+
+  const { data } = useQuery({
+    queryKey: ["role", spaceId],
+    queryFn: () => GetSpaceRole({ workspaceId: spaceId }),
+  });
+
+  const MyRole = data?.result?.role === "MANAGER" ? true : false;
+
+  const { mutate: deleteSpaceKickMemberMutation } = useMutation({
+    mutationFn: DeleteSpaceKick,
+    onSuccess: () => {
+      alert("추방되었습니다!");
+      window.location.reload();
+    },
+  });
 
   return (
     <div className="w-full flex items-center border-t border-zinc-200 bg-white px-4 py-2">
@@ -25,7 +47,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
             <div className="w-3.5 h-5 left-[5px] top-[2px] absolute bg-neutral-300" />
           </div>
         </div>
-  
+
         {/* 이름 + 역할 */}
         <div className="flex flex-col justify-center">
           <div className="text-zinc-800 text-sm font-medium font-['Roboto'] leading-none">
@@ -36,16 +58,16 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
           </div>
         </div>
       </div>
-  
+
       {/* 이메일 */}
       <div className="w-1/3 flex items-center">
         <div className="text-slate-500 text-sm font-normal font-['Roboto'] leading-tight">
           {email}
         </div>
       </div>
-  
+
       {/* 메뉴 버튼 */}
-      {showMenu && (
+      {MyRole && showMenu && (
         <div className="w-10 flex items-center justify-end">
           <div
             className="flex flex-col items-center gap-[3px] cursor-pointer"
@@ -58,35 +80,33 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
         </div>
       )}
 
-  
-
-        {/* 모달 */}
-        {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-64">
-              <p className="text-lg font-semibold mb-4">정말 추방하시겠어요?</p>
-              <button
-                className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-500 transition"
-                onClick={() => {
-                  alert("추방되었습니다!");
-                  setShowModal(false);
-                }}
-              >
-                추방하기
-              </button>
-              <button
-                className="w-full mt-2 text-sm text-gray-500 underline"
-                onClick={() => setShowModal(false)}
-              >
-                취소
-              </button>
-            </div>
+      {/* 모달 */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-64">
+            <p className="text-lg font-semibold mb-4">정말 추방하시겠어요?</p>
+            <button
+              className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-500 transition cursor-pointer"
+              onClick={() => {
+                deleteSpaceKickMemberMutation({
+                  workspaceId: spaceId,
+                  targetMemberId: memberId,
+                });
+                setShowModal(false);
+              }}
+            >
+              추방하기
+            </button>
+            <button
+              className="w-full mt-2 text-sm text-gray-500 underline cursor-pointer"
+              onClick={() => setShowModal(false)}
+            >
+              취소
+            </button>
           </div>
-        )}
-      
-  
+        </div>
+      )}
     </div>
-  
   );
 };
 

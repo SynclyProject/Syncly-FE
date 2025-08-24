@@ -1,9 +1,10 @@
-import { axiosInstance2 } from "../common/axiosInstance";
+import { axiosInstance } from "../common/axiosInstance";
+import axios from "axios";
 
 // 팀 워크스페이스 리스트 전체 조회
 export const GetSpaceList = async () => {
   try {
-    const response = await axiosInstance2.get(`/api/workspaces`);
+    const response = await axiosInstance.get(`/api/workspaces`);
     return response.data;
   } catch (error) {
     console.error("팀 워크스페이스 리스트 전체 조회 실패", error);
@@ -13,7 +14,7 @@ export const GetSpaceList = async () => {
 // 해당 워크스페이스에서 자신의 ROLE 조회
 export const GetSpaceRole = async (data: { workspaceId: number }) => {
   try {
-    const response = await axiosInstance2.get(
+    const response = await axiosInstance.get(
       `/api/workspaces/${data.workspaceId}/role`
     );
     return response.data;
@@ -25,7 +26,7 @@ export const GetSpaceRole = async (data: { workspaceId: number }) => {
 // 팀 워크스페이스 소속 멤버 조회
 export const GetSpaceMember = async (data: { workspaceId: number }) => {
   try {
-    const response = await axiosInstance2.get(
+    const response = await axiosInstance.get(
       `/api/workspaces/${data.workspaceId}/members`
     );
     return response.data;
@@ -37,7 +38,7 @@ export const GetSpaceMember = async (data: { workspaceId: number }) => {
 // 사용자의 초대 목록 조회
 export const GetSpaceInvite = async () => {
   try {
-    const response = await axiosInstance2.get(`/api/workspaces/invite`);
+    const response = await axiosInstance.get(`/api/workspaces/invites`);
     return response.data;
   } catch (error) {
     console.error("사용자의 초대 목록 조회 실패", error);
@@ -46,9 +47,9 @@ export const GetSpaceInvite = async () => {
 };
 
 // 팀 워크스페이스 초대 수락 (이메일 링크 클릭)
-export const GetSpaceAccept = async ({ data }: { data: { token: string } }) => {
+export const GetSpaceAccept = async (data: { token: string }) => {
   try {
-    const response = await axiosInstance2.get(
+    const response = await axiosInstance.get(
       `/api/workspaces/accept/${data.token}`
     );
     return response.data;
@@ -56,3 +57,17 @@ export const GetSpaceAccept = async ({ data }: { data: { token: string } }) => {
     console.error("팀 워크스페이스 초대 수락(이메일 링크) 실패", error);
   }
 };
+
+//워크스페이스 초대 알림 API (SSE)
+
+// export const GetInviteNotification = async (token: string) => {
+//   try {
+//     const response = await axios.get(
+//       `/api/workspaces/notifications?token=${token}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("사용자의 초대 목록 조회 실패", error);
+//     throw error;
+//   }
+// };

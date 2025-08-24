@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import Icon from "../Icon";
 import SideModal from "./SideModal";
 import InputSpace from "./InputSpace";
+import { PatchSpaceName } from "../../api/WorkSpace/patch";
 
 type TSpaceStateProps = {
   state: "my" | "team";
@@ -12,25 +13,39 @@ interface ISpaceProps extends TSpaceStateProps {
   text: string;
   onClick: () => void;
   spaceId?: number;
+  click?: boolean;
 }
 
-const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
+const Space = ({
+  state,
+  iconName,
+  text,
+  onClick,
+  spaceId,
+  click,
+}: ISpaceProps) => {
   const [modalShow, setModalShow] = useState(false);
   const [editTeam, setEditTeam] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // const toggleModal = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.stopPropagation();
-  //   setModalShow((prevState) => !prevState);
-  // };
-
-  const handleTeamNameChange = (text: string) => {
+  const handleTeamNameChange = async (text: string) => {
     if (!text.trim()) return;
     if (spaceId) {
       //이름 변경 api 추가
+      try {
+        await PatchSpaceName({ workspaceId: spaceId, name: text });
+        console.log("팀스페이스 이름 변경 성공");
+        // 이름 변경 성공 후 편집 모드 종료
+        setEditTeam(false);
+        // 페이지 새로고침으로 목록 업데이트
+        window.location.reload();
+      } catch (error) {
+        console.log("팀스페이스 이름 변경 실패", error);
+        // 에러 발생 시에도 편집 모드 종료
+        setEditTeam(false);
+      }
     }
-    setEditTeam(false);
   };
 
   const handleIconClick = (e: React.MouseEvent) => {
@@ -59,13 +74,15 @@ const Space = ({ state, iconName, text, onClick, spaceId }: ISpaceProps) => {
     <>
       {editTeam ? (
         <InputSpace
-          onAdd={handleTeamNameChange}
+          onChangeName={handleTeamNameChange}
           onCancel={() => setEditTeam(false)}
           initialValue={text}
         />
       ) : (
         <div
-          className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] cursor-pointer bg-white hover:bg-[#DEE4ED]"
+          className={`h-[40px] flex items-center px-4 gap-4 rounded-[8px] cursor-pointer ${
+            click ? "bg-[#DEE4ED]" : "bg-white hover:bg-[#DEE4ED]"
+          }`}
           onClick={() => onClick()}
         >
           {state === "my" ? (

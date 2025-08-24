@@ -2,13 +2,39 @@ import React from "react";
 import TeamMemberCard from "./TeamMemberCard";
 import Button from "../../shared/ui/Button";
 import { useState } from "react";
-
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { GetSpaceMember } from "../../shared/api/WorkSpace/get";
+import { TTeamMember } from "../../shared/type/teamSpaceType";
+import { PostSpaceInvite } from "../../shared/api/WorkSpace/post";
+import { AxiosError } from "axios";
 interface TeamInviteModelProps {
   onClose: () => void;
+  spaceId: number;
 }
 
-const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
+const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
+  onClose,
+  spaceId,
+}) => {
   const [showInput, setShowInput] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const { data } = useQuery({
+    queryKey: ["spaceMember", spaceId],
+    queryFn: () => GetSpaceMember({ workspaceId: spaceId }),
+  });
+
+  const { mutate: postSpaceInviteMutation } = useMutation({
+    mutationFn: PostSpaceInvite,
+    onSuccess: () => {
+      alert("이메일 초대가 완료되었습니다!");
+      setEmail("");
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      alert(error?.response?.data?.message);
+    },
+  });
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 ">
       <div className="absolute inset-0 bg-black opacity-40 pointer-events-none" />
@@ -31,6 +57,8 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
               type="text"
               placeholder="이메일을 입력해주세요"
               className="w-full border-b border-neutral-300 mb-4 px-2 py-4 text-sm:10 text-gray-500 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             {/* 추가 버튼 */}
             <Button
@@ -38,7 +66,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
               iconName="add_circle"
               onClick={() => {
                 setShowInput(true);
-                alert("이메일 초대가 완료되었습니다!");
+                postSpaceInviteMutation({ spaceId, email });
               }}
             />
           </div>
@@ -46,19 +74,17 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({ onClose }) => {
           {/* 팀원 목록 */}
           <p className="pb-4">팀원 목록</p>
           <div className="flex flex-col gap-1 overflow-y-auto pb-10">
-            <TeamMemberCard
-              name="김희재"
-              role="팀스페이스 소유자"
-              email="example@gmail.com"
-            />
-            <TeamMemberCard
-              name="김희재"
-              role="팀원"
-              email="example@gmail.com"
-            />
+            {data?.result.map((member: TTeamMember) => (
+              <TeamMemberCard
+                key={member.workspaceMemberId}
+                name={member.memberName}
+                role={member.role}
+                email={member.memberEmail}
+                spaceId={spaceId}
+                memberId={member.workspaceMemberId}
+              />
+            ))}
           </div>
-
-
         </div>
       </div>
     </div>

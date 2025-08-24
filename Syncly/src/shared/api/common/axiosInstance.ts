@@ -1,19 +1,72 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  },
-});
-export const axiosInstance2 = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
   },
 });
 
-export const axiosBasic = axios.create();
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-axiosBasic.defaults.baseURL = import.meta.env.VITE_API_URL;
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
+    const isLoginRequest = originalRequest.url?.includes("/api/auth/login");
+    if (isLoginRequest) {
+      console.log("로그인 요청 에러는 토큰 재발급 시도 하지 않음");
+      return Promise.reject(error);
+    }
+
+    //로그인 요청이 아닌 경우 토큰 재발급 시도
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        // 토큰 재발급 요청은 인터셉터 없이 직접 axios로 호출
+        const response = await axios.post(
+          "/api/auth/reissue",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("refreshToken")}`,
+            },
+          }
+        );
+        console.log("토큰 재발급 결과 : ", response);
+        if (response.status === 200) {
+          console.log("토큰 재발급 성공");
+          const newAccessToken = response?.data?.accessToken;
+          localStorage.setItem("accessToken", newAccessToken);
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return axiosInstance(originalRequest);
+          }
+        }
+      } catch (reissueError) {
+        console.error("토큰 재발급 실패", reissueError);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+
+        if (!window.location.pathname.includes("/login")) {
+          window.location.href = "/login";
+        }
+        return Promise.reject(reissueError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
