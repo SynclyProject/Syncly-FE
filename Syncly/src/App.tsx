@@ -101,7 +101,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "accept/:token",
+        path: "api/workspaces/accept/:token",
         element: <AcceptWorkspacePage />,
       },
     ],

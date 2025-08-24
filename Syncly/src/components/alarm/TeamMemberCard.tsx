@@ -33,7 +33,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
     mutationFn: DeleteSpaceKick,
     onSuccess: () => {
       alert("추방되었습니다!");
-      // window.location.reload();
+      window.location.reload();
     },
   });
 

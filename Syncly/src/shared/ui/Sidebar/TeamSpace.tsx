@@ -29,7 +29,7 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
       {spaceList?.result?.map((space: TTeamSpace) => {
         const isActive =
-          location.pathname.startsWith("/team-") &&
+          location.pathname.startsWith("/team-urls") &&
           location.pathname.includes(`/${space.workspaceId}`);
         return (
           <Space

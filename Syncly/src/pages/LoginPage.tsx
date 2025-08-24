@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { LoginSchema } from "../shared/schema";
 import { TLoginSchema } from "../shared/type/sign";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +10,12 @@ import { AxiosError } from "axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { checkLoginStatus } = useAuthContext();
+
+  // redirectTo state 확인
+  const redirectTo = location.state?.redirectTo;
+  const message = location.state?.message;
 
   const {
     register,
@@ -26,7 +31,13 @@ const LoginPage = () => {
       alert("로그인 성공!");
       localStorage.setItem("accessToken", response.result);
       checkLoginStatus(); // AuthContext 상태 업데이트
-      navigate("/my-urls");
+
+      // redirectTo가 있으면 해당 경로로, 없으면 기본 경로로 이동
+      if (redirectTo) {
+        navigate(redirectTo);
+      } else {
+        navigate("/my-urls");
+      }
       window.location.reload();
     },
     onError: (error: AxiosError<{ message: string }>) => {
@@ -49,6 +60,13 @@ const LoginPage = () => {
           <h1 className="text-center text-black text-6xl font-bold leading-[50px]">
             Sign in
           </h1>
+
+          {/* 메시지 표시 */}
+          {message && (
+            <div className="text-center text-blue-600 text-sm mt-5 p-3">
+              {message}
+            </div>
+          )}
 
           {/* Email */}
           <label className="text-[#585858] text-sm font-light mt-6 block">
