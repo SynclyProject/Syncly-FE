@@ -7,10 +7,6 @@ export const axiosInstance = axios.create({
   },
 });
 
-export const axiosBasic = axios.create();
-
-axiosBasic.defaults.baseURL = import.meta.env.VITE_API_URL;
-
 axiosInstance.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
