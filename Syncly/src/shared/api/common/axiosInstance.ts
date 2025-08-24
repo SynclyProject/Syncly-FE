@@ -7,12 +7,6 @@ export const axiosInstance = axios.create({
     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
   },
 });
-export const axiosInstance2 = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  },
-});
 
 export const axiosBasic = axios.create();
 
