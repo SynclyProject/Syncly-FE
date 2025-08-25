@@ -8,7 +8,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-let refreshPromise: Promise<string> | null = null;
+const refreshPromise: Promise<string> | null = null;
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -82,6 +82,8 @@ axiosInstance.interceptors.request.use(
 //   }
 // );
 
+/*
+// 토큰 재발급 인터셉터 (강의 참고)
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -135,3 +137,4 @@ axiosInstance.interceptors.response.use(
     });
   }
 );
+*/
