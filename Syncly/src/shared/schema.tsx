@@ -51,7 +51,14 @@ export const CreatePsSchema = yup.object().shape({
     .string()
     .matches(/^\d{6}$/, "인증 코드는 6자리 숫자입니다.")
     .required("인증 코드를 입력해주세요."),
-  password: yup
+  currentPassword: yup
+    .string()
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
+      "영문,숫자,특수문자 포함 8-20자"
+    )
+    .required("비밀번호를 입력해주세요."),
+  newPassword: yup
     .string()
     .matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,

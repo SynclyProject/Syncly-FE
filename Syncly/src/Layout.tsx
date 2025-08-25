@@ -7,7 +7,7 @@ const RootLayout = () => {
   const hideSidebar =
     location.pathname === "/login" ||
     location.pathname === "/signup" ||
-    location.pathname === "/createps" ||
+    location.pathname === "/create-pw" ||
     location.pathname === "/";
 
   return (

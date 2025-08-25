@@ -7,7 +7,7 @@ import RootLayout from "./Layout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import CreatepsPage from "./pages/CreatepsPage";
+import CreatePWPage from "./pages/CreatePWPage";
 import MyURLsPage from "./pages/My/MyURLsPage";
 import MyFilesPage from "./pages/My/MyFilesPage";
 import MyPage from "./pages/MyPage";
@@ -49,8 +49,8 @@ const router = createBrowserRouter([
         element: <SignupPage />,
       },
       {
-        path: "createps",
-        element: <CreatepsPage />,
+        path: "create-pw",
+        element: <CreatePWPage />,
       },
       {
         path: "my-urls",

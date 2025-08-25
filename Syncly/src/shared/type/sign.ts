@@ -9,4 +9,11 @@ type TLoginSchema = {
   password: string;
 };
 
-export type { TSignUpSchema, TLoginSchema };
+type TCreatePWSchema = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+  email: string;
+  code: string;
+};
+export type { TSignUpSchema, TLoginSchema, TCreatePWSchema };

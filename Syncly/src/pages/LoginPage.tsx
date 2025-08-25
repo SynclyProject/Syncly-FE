@@ -112,7 +112,7 @@ const LoginPage = () => {
 
         {/* Forgot Password Link */}
         <button
-          onClick={() => navigate("/createps")}
+          onClick={() => navigate("/create-pw")}
           className="text-red-500 text-sm mb-3 hover:underline text-left"
         >
           Did you forget your password?
