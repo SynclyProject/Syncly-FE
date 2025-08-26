@@ -19,6 +19,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
 import { AuthProvider, useAuthContext } from "./context/AuthContext";
+import { WorkSpaceProvider } from "./context/workSpaceContext";
 
 const queryClient = new QueryClient();
 
@@ -111,9 +112,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <WorkSpaceProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </WorkSpaceProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
