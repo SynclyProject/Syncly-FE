@@ -8,7 +8,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-const refreshPromise: Promise<string> | null = null;
+let refreshPromise: Promise<string> | null = null;
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -82,7 +82,6 @@ axiosInstance.interceptors.request.use(
 //   }
 // );
 
-/*
 // 토큰 재발급 인터셉터 (강의 참고)
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -92,7 +91,8 @@ axiosInstance.interceptors.response.use(
     if (
       error.response &&
       error.response.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      error.response.data.message === "만료된 토큰입니다."
     ) {
       if (originalRequest.url?.includes("/api/auth/reissue")) {
         localStorage.removeItem("accessToken");
@@ -137,4 +137,3 @@ axiosInstance.interceptors.response.use(
     });
   }
 );
-*/
