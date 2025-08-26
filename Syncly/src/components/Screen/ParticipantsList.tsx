@@ -3,7 +3,7 @@ import Icon from "../../shared/ui/Icon";
 import People from "./People";
 import { useQuery } from "@tanstack/react-query";
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
-import { GetInitInfo } from "../../shared/api/Live";
+import { GetInitInfo, GetLiveToken } from "../../shared/api/Live";
 
 const ParticipantsList = ({
   setIsVoice,
@@ -14,10 +14,17 @@ const ParticipantsList = ({
 
   const { data } = useQuery({
     queryKey: ["live-room-members", workspaceId],
-    queryFn: () => GetInitInfo(workspaceId),
+    queryFn: () => GetInitInfo({ workspaceId: workspaceId }),
   });
 
   console.log(data);
+
+  const { data: liveKitToken } = useQuery({
+    queryKey: ["liveKit-token", workspaceId],
+    queryFn: () => GetLiveToken(workspaceId),
+  });
+
+  console.log(liveKitToken);
 
   return (
     <div className="w-[335px] rounded-[10px] bg-white p-[14px] flex flex-col gap-3">
