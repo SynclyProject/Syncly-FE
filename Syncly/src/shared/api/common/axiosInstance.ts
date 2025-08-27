@@ -3,18 +3,29 @@ import axios, {
   // AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from "axios";
+import Cookies from "js-cookie";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-const refreshPromise: Promise<string> | null = null;
+let refreshPromise: Promise<string> | null = null;
+
+// const refreshAxios = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL,
+//   headers: {
+//     "Content-Type": "application/json",
+//     Authorization: `Bearer ${Cookies.get("refreshToken")}`,
+//   },
+//   withCredentials: true,
+// });
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
@@ -83,7 +94,7 @@ axiosInstance.interceptors.request.use(
 // );
 
 // 토큰 재발급 인터셉터 (강의 참고)
-/*
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -107,7 +118,7 @@ axiosInstance.interceptors.response.use(
 
     if (!refreshPromise) {
       refreshPromise = (async () => {
-        const refreshToken = localStorage.getItem("refreshToken");
+        const refreshToken = Cookies.get("refreshToken");
         if (!refreshToken) {
           throw new Error("Refresh token not found");
         }
@@ -138,4 +149,3 @@ axiosInstance.interceptors.response.use(
     });
   }
 );
-*/
