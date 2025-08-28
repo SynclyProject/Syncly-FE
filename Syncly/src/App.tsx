@@ -7,7 +7,7 @@ import RootLayout from "./Layout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import CreatepsPage from "./pages/CreatepsPage";
+import CreatePWPage from "./pages/CreatePWPage";
 import MyURLsPage from "./pages/My/MyURLsPage";
 import MyFilesPage from "./pages/My/MyFilesPage";
 import MyPage from "./pages/MyPage";
@@ -19,6 +19,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
 import { AuthProvider, useAuthContext } from "./context/AuthContext";
+import { WorkSpaceProvider } from "./context/workSpaceContext";
 
 const queryClient = new QueryClient();
 
@@ -49,8 +50,8 @@ const router = createBrowserRouter([
         element: <SignupPage />,
       },
       {
-        path: "createps",
-        element: <CreatepsPage />,
+        path: "create-pw",
+        element: <CreatePWPage />,
       },
       {
         path: "my-urls",
@@ -111,9 +112,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <WorkSpaceProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </WorkSpaceProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

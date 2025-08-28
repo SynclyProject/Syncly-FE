@@ -1,7 +1,13 @@
 import Icon from "../../shared/ui/Icon";
-import { PatchNickname } from "../../shared/api/Member/patch";
-import { useState } from "react";
+import {
+  PatchNickname,
+  PatchProfileImage,
+} from "../../shared/api/Member/patch";
+import { useState, useRef } from "react";
 import useDebounce from "../../hooks/useDebounce";
+import { PostProfile } from "../../shared/api/S3";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const Profile = ({
   name,
@@ -11,6 +17,9 @@ const Profile = ({
   profile: string | null;
 }) => {
   const [nickname, setNickname] = useState(name);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const debouncedNickname = useDebounce(nickname, 200);
 
   const handleNicknameChange = async () => {
@@ -20,6 +29,61 @@ const Profile = ({
     } catch (error) {
       console.error("닉네임 변경 실패", error);
     }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // 파일 유효성 검사 (이미지 파일만 허용)
+      if (!file.type.startsWith("image/")) {
+        alert("이미지 파일만 선택 가능합니다.");
+        return;
+      }
+
+      setSelectedFile(file);
+      setFileName(file.name);
+
+      // 여기서 파일을 서버로 전송하거나 추가 처리
+      handleProfileUpload(file);
+    }
+  };
+
+  const handleProfileUpload = async (file: File) => {
+    // PostProfile API 호출
+    postProfileMutation(file);
+  };
+
+  const { mutate: postProfileMutation } = useMutation({
+    mutationFn: PostProfile,
+    onSuccess: async (data) => {
+      const objKey = data.result.objectKey;
+      const uploadUrl = data.result.uploadUrl;
+      const file = selectedFile;
+
+      if (file) {
+        await axios.put(uploadUrl, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        PatchProfileImage({
+          fileName: fileName,
+          objectKey: objKey,
+        });
+
+        // 성공 후 상태 초기화
+        setSelectedFile(null);
+        setFileName("");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }
+    },
+  });
+
+  const handleProfileChangeClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -33,7 +97,11 @@ const Profile = ({
             <Icon name="User_Default" />
           </div>
         ) : (
-          <></>
+          <img
+            src={`https://cdn.syncly-io.com/${profile}`}
+            alt="profile"
+            className="w-[190px] h-[190px] object-cover rounded-full"
+          />
         )}
 
         <div className="flex flex-col justify-center gap-4">
@@ -51,16 +119,20 @@ const Profile = ({
               }
             }}
           />
-          <input type="file" id="profile" className="hidden" />
+
+          {/* 파일 입력 필드 */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileSelect}
+          />
+
+          {/* 프로필 사진 변경 버튼 */}
           <p
-            className="text-[16px] text-[#456990]"
-            onClick={(e) => {
-              e.preventDefault();
-              const fileInput = document.getElementById(
-                "profile"
-              ) as HTMLInputElement | null;
-              fileInput?.click();
-            }}
+            className="text-[16px] text-[#456990] cursor-pointer hover:text-[#345678] transition-colors"
+            onClick={handleProfileChangeClick}
           >
             프로필 사진 변경
           </p>

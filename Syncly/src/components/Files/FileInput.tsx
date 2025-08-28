@@ -36,7 +36,10 @@ const FileInput = ({
 
   return (
     <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0]">
-      <Icon name={iconName} />
+      <div className="min-w-[24px] min-h-[24px]">
+        <Icon name={iconName} />
+      </div>
+
       <input
         className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold outline-none"
         placeholder="폴더명"
@@ -45,9 +48,15 @@ const FileInput = ({
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
       />
-      <p className="text-[#828282]">{today}</p>
-      {user && <Icon name={user} />}
-      <Icon name="more-horizontal" />
+      <p className="text-[#828282] text-nowrap">{today}</p>
+      {user && (
+        <div className="min-w-[24px] min-h-[24px]">
+          <Icon name={user} />
+        </div>
+      )}
+      <div className="min-w-[24px] min-h-[24px]">
+        <Icon name="more-horizontal" />
+      </div>
     </div>
   );
 };

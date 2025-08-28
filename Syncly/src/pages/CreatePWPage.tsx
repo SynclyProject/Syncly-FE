@@ -3,18 +3,16 @@ import Button from "../shared/ui/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-import { SignUpSchema } from "../shared/schema";
-import {
-  PostEmailSend,
-  PostEmailVerify,
-  PostRegister,
-} from "../shared/api/Member/post";
+import { CreatePsSchema } from "../shared/schema";
+import { TCreatePWSchema } from "../shared/type/sign";
 import { useMutation } from "@tanstack/react-query";
-import { TSignUpSchema } from "../shared/type/sign";
+import { PostEmailSend, PostEmailVerify } from "../shared/api/Member/post";
+import { PatchPassword } from "../shared/api/Member/patch";
 
-const SignupPage = () => {
+const CreatePWPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
+
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
 
@@ -32,30 +30,48 @@ const SignupPage = () => {
       setIsVerified(true);
     },
   });
-
-  const { mutate: postRegister } = useMutation({
-    mutationFn: PostRegister,
+  const { mutate: patchPassword } = useMutation({
+    mutationFn: PatchPassword,
     onSuccess: () => {
-      alert("회원가입이 완료되었습니다!");
+      alert("비밀번호가 재설정되었습니다.");
       navigate("/login");
     },
   });
+
+  /*
+  const handleVerifyClick = async () => {
+    const isValid = await trigger("code"); // 코드 필드 검증
+    if (!isValid) return; // 유효하지 않으면 인증 안 함
+
+    setIsVerified(true);
+    alert("이메일 인증 완료!");
+  };
+
+  const handleSendClick = async () => {
+    const isValid = await trigger("email"); // email 필드만 검증
+    if (!isValid) return; // 유효하지 않으면 중단
+    setShowCodeInput(true);
+  };
+  */
 
   //useForm() react-hook-form 설정
   const {
     register,
     handleSubmit,
+    //trigger,
     getValues,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
-    resolver: yupResolver(SignUpSchema),
+    resolver: yupResolver(CreatePsSchema),
   });
 
-  const onSubmit = async (data: TSignUpSchema) => {
-    await postRegister({
-      email: data.email,
-      password: data.password,
-      name: data.nickname,
+  //Onsubmit함수
+  const onSubmit = (data: TCreatePWSchema) => {
+    console.log("제출된 데이터:", data);
+    patchPassword({
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+      confirmPassword: data.confirmPassword,
     });
   };
 
@@ -64,11 +80,11 @@ const SignupPage = () => {
       <div className="w-full max-w-md px-4 pt-10">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[459px] flex flex-col gap-4 pt-24"
+          className="w-[459px] flex flex-col gap-4 pt-15"
         >
           {/* Title */}
-          <h1 className="text-center text-black text-6xl font-bold leading-[50px]">
-            Sign up
+          <h1 className=" text-black text-5xl font-bold leading-[60px] whitespace-nowrap">
+            Create new password
           </h1>
 
           {/* Email */}
@@ -81,7 +97,6 @@ const SignupPage = () => {
                 placeholder="Enter your email address..."
                 className="flex-1 px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
               />
-
               <Button
                 colorType="main"
                 onClick={() => postEmailSend({ email: getValues("email") })}
@@ -134,39 +149,14 @@ const SignupPage = () => {
             </>
           )}
 
-          {/* Nickname */}
-          {isVerified && (
-            <div className="flex flex-col gap-2">
-              <label className="text-[#585858] text-sm font-light mt-2">
-                Nickname
-              </label>
-              <input
-                {...register("nickname")}
-                type="text"
-                placeholder="Enter your nickname..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault(); // Enter로 인한 submit 방지
-                  }
-                }}
-                className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
-              />
-              {errors.nickname && (
-                <p className="text-red-500 text-xs">
-                  {errors.nickname.message}
-                </p>
-              )}
-            </div>
-          )}
-
           {/* Password */}
           <label className="text-[#585858] text-sm font-light mt-2">
             Password
           </label>
           <input
-            {...register("password")}
+            {...register("currentPassword")}
             type="password"
-            placeholder="Enter your password..."
+            placeholder="Enter your current password..."
             className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -175,8 +165,30 @@ const SignupPage = () => {
             }}
           />
           {/*에러메세지*/}
-          {errors.password && (
-            <p className="text-red-500 text-xs">{errors.password.message}</p>
+          {errors.currentPassword && (
+            <p className="text-red-500 text-xs">
+              {errors.currentPassword.message}
+            </p>
+          )}
+
+          {/* newPassword */}
+          <label className="text-[#585858] text-sm font-light mt-2">
+            New Password
+          </label>
+          <input
+            {...register("newPassword")}
+            type="password"
+            placeholder="Enter your new password..."
+            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Enter로 인한 submit 방지
+              }
+            }}
+          />
+          {/*에러메세지*/}
+          {errors.newPassword && (
+            <p className="text-red-500 text-xs">{errors.newPassword.message}</p>
           )}
 
           {/* Confirm Password */}
@@ -201,14 +213,9 @@ const SignupPage = () => {
           {/* Submit */}
           <button
             type="submit"
-            className={`w-full h-[45px] rounded-[8px]  font-medium cursor-pointer ${
-              isValid
-                ? "bg-[#028090] text-[#FFFFFF] border-none"
-                : "bg-[#FDF5F2] border border-[#E0E0E0] text-[#EB5757]"
-            }`}
-            disabled={!isValid}
+            className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium"
           >
-            Start with Syncly !
+            Create new password
           </button>
         </form>
 
@@ -234,4 +241,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default CreatePWPage;

@@ -3,7 +3,9 @@ import { axiosInstance } from "../common/axiosInstance";
 //URL 탭 생성
 export const PostTaps = async (data: { urlTapName: string }) => {
   try {
-    const response = await axiosInstance.post("/api/workspaces/taps", data);
+    const response = await axiosInstance.post("/api/workspaces/taps", {
+      urlTapName: data.urlTapName,
+    });
     return response.data;
   } catch (error) {
     console.error("탭 생성 실패", error);
@@ -20,7 +22,6 @@ export const PostTabItems = async (data: { tabId: number }) => {
     return response.data;
   } catch (error) {
     console.error("URL 아이템 생성 실패", error);
-    throw error;
   }
 };
 
@@ -33,7 +34,6 @@ export const DeleteTaps = async (data: { tapId: number }) => {
     return response.data;
   } catch (error) {
     console.error("URL 탭 삭제 실패", error);
-    throw error;
   }
 };
 
@@ -49,7 +49,6 @@ export const DeleteTabItems = async (data: {
     return response.data;
   } catch (error) {
     console.error("URL 아이템 삭제 실패", error);
-    throw error;
   }
 };
 
@@ -68,6 +67,5 @@ export const PatchTaps = async (data: {
     return response.data;
   } catch (error) {
     console.error("URL 탭 이름 변경 실패", error);
-    throw error;
   }
 };

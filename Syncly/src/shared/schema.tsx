@@ -14,9 +14,9 @@ export const SignUpSchema = yup.object().shape({
 
   nickname: yup
     .string()
-    .min(2)
-    .max(12)
-    .required("닉네임을 적어주세요. (최소 2자, 최대 12자)"),
+    .required("닉네임을 입력해주세요.")
+    .min(2, "닉네임은 최소 2자 이상이어야 합니다.")
+    .max(12, "닉네임은 최대 12자까지 가능합니다."),
 
   password: yup
     .string()
@@ -51,7 +51,14 @@ export const CreatePsSchema = yup.object().shape({
     .string()
     .matches(/^\d{6}$/, "인증 코드는 6자리 숫자입니다.")
     .required("인증 코드를 입력해주세요."),
-  password: yup
+  currentPassword: yup
+    .string()
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
+      "영문,숫자,특수문자 포함 8-20자"
+    )
+    .required("비밀번호를 입력해주세요."),
+  newPassword: yup
     .string()
     .matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
