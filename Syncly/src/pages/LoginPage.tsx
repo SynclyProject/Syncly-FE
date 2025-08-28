@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { PostLogin } from "../shared/api/Auth";
 import { useAuthContext } from "../context/AuthContext";
 import { AxiosError } from "axios";
+import { BeginGoogleLogin } from "../shared/api/Social";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -127,7 +128,9 @@ const LoginPage = () => {
         <div className="w-[459px] h-px bg-[#E6E6E6] mt-2 " />
         {/* Google Sign-In */}
 
-        <button className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
+        <button 
+          onClick={() => BeginGoogleLogin()}
+          className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
           <img src="/google-logo.png" className="w-6 h-6" alt="Google" />{" "}
           <p>Continue with Google</p>
         </button>

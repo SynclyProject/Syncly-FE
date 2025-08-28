@@ -1,5 +1,5 @@
 
-export const beginGoogleLogin = (onModalClose?: (open: boolean) => void) => {
+export const BeginGoogleLogin = (onModalClose?: (open: boolean) => void) => {
   onModalClose?.(false); 
 
   const API_BASE = import.meta.env.VITE_API_URL!;
@@ -11,4 +11,5 @@ export const beginGoogleLogin = (onModalClose?: (open: boolean) => void) => {
     redirectUri
   )}`;
 };
+
 
