@@ -4,11 +4,9 @@ import Chatting from "../../components/Screen/Chatting";
 import BottomBar from "../../components/Screen/BottomBar";
 import VoiceList from "../../components/Screen/VoiceList";
 import { useEffect, useState } from "react";
-import {
-  useWorkSpaceContext,
-  WorkSpaceProvider,
-} from "../../context/workSpaceContext";
+import { useWorkSpaceContext } from "../../context/workSpaceContext";
 import { useParams } from "react-router-dom";
+import { LiveKitProvider } from "../../context/LiveKitContext";
 
 const TeamScreenPage = () => {
   const [isVoice, setIsVoice] = useState(false);
@@ -21,7 +19,7 @@ const TeamScreenPage = () => {
   }, [workspaceId, setWorkspaceId]);
 
   return (
-    <WorkSpaceProvider>
+    <LiveKitProvider>
       <div className="w-full h-full mx-[74px] flex flex-col items-center gap-5">
         <div className="w-full h-full flex flex-col my-5 gap-5">
           <TeamNavigate state="screen" />
@@ -44,7 +42,7 @@ const TeamScreenPage = () => {
           </div>
         </div>
       </div>
-    </WorkSpaceProvider>
+    </LiveKitProvider>
   );
 };
 export default TeamScreenPage;

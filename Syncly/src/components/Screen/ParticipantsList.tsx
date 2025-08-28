@@ -2,26 +2,28 @@ import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
 import People from "./People";
 import { useQuery } from "@tanstack/react-query";
-import { useWorkSpaceContext } from "../../context/workSpaceContext";
 import { GetInitInfo, GetLiveToken } from "../../shared/api/Live";
+import { useParams } from "react-router-dom";
+import { useLiveKitContext } from "../../context/LiveKitContext";
 
 const ParticipantsList = ({
   setIsVoice,
 }: {
   setIsVoice: (isVoice: boolean) => void;
 }) => {
-  const { workspaceId } = useWorkSpaceContext();
+  const { id } = useParams();
+  const { joinRoom } = useLiveKitContext();
 
   const { data } = useQuery({
-    queryKey: ["live-room-members", workspaceId],
-    queryFn: () => GetInitInfo({ workspaceId: workspaceId }),
+    queryKey: ["live-room-members", id],
+    queryFn: () => GetInitInfo({ workspaceId: Number(id) }),
   });
 
   console.log(data);
 
   const { data: liveKitToken } = useQuery({
-    queryKey: ["liveKit-token", workspaceId],
-    queryFn: () => GetLiveToken(workspaceId),
+    queryKey: ["liveKit-token", id],
+    queryFn: () => GetLiveToken(Number(id)),
   });
 
   console.log(liveKitToken);
@@ -36,7 +38,10 @@ const ParticipantsList = ({
         <Button
           colorType="main"
           iconName="Phone"
-          onClick={() => setIsVoice(true)}
+          onClick={() => {
+            joinRoom();
+            setIsVoice(true);
+          }}
         />
       </div>
       <div className="p-5 rounded-[4px] border border-[#E0E0E0] max-h-[332px] h-full flex flex-col gap-5 overflow-y-auto">
