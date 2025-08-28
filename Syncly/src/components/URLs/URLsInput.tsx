@@ -18,13 +18,8 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
 
   const { mutate: postTapsMutation } = useMutation({
     mutationFn: PostTaps,
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       console.log("탭 생성 성공", data);
-      onAdd({
-        id: urls.length + 1,
-        title: data.result.urlTapName,
-        urls: urls,
-      });
     },
   });
 
@@ -45,16 +40,25 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
 
   const handleSubmit = () => {
     if (!title.trim()) return;
+
     const newUrls: TMySpaceURLs = {
       id: urls.length + 1, // 임시 ID 생성
       title: title,
       urls: urls,
     };
-    //postTapsMutation({ urlTapName: title });
+
+    // 먼저 onAdd 호출하여 UI 업데이트
     onAdd(newUrls);
+
+    // 상태 초기화
     setTitle("");
     setUrls([]);
     setCurrentUrl("");
+
+    // 마지막에 API 호출 (setTimeout으로 비동기 처리)
+    setTimeout(() => {
+      postTapsMutation({ urlTapName: title });
+    }, 0);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

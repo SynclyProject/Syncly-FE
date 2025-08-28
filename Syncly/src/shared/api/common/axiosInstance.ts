@@ -71,6 +71,11 @@ axiosInstance.interceptors.response.use(
       })();
     }
 
+    // 401 재발급 흐름이 아닌 경우에는 재시도하지 않고 에러를 그대로 반환
+    if (!refreshPromise) {
+      return Promise.reject(error);
+    }
+
     try {
       const newToken = await refreshPromise;
       originalRequest.headers.Authorization = `Bearer ${newToken}`;
