@@ -112,7 +112,7 @@ const Profile = ({
           </div>
         ) : (
           <img
-            src={`${import.meta.env.VITE_API_URL}/uploads/profile/${profile}`}
+            src={`https://cdn.syncly-io.com/${profile}`}
             alt="profile"
             className="w-[190px] h-[190px] object-cover rounded-full"
           />
