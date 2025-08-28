@@ -1,4 +1,6 @@
 
+import { axiosInstance } from "../api/common/axiosInstance";
+
 export const BeginGoogleLogin = (onModalClose?: (open: boolean) => void) => {
   onModalClose?.(false); 
 
@@ -13,3 +15,7 @@ export const BeginGoogleLogin = (onModalClose?: (open: boolean) => void) => {
 };
 
 
+export const getMe = async <T = any>() => {
+  const res = await axiosInstance.get<T>("/api/auth/me");
+  return res.data;
+};
