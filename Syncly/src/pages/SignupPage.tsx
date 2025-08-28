@@ -218,6 +218,7 @@ const SignupPage = () => {
         {/* Google Sign-In */}
 
         <button 
+          onClick={() => BeginGoogleLogin()}
           className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
           <img src="/google-logo.png" className="w-6 h-6" alt="Google" />{" "}
           <p>Continue with Google</p>

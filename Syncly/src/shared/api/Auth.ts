@@ -1,5 +1,9 @@
 import { axiosInstance, refreshAxios } from "./common/axiosInstance";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL;                  
+const DEFAULT_CALLBACK =
+  import.meta.env.VITE_OAUTH_REDIRECT_PATH ?? "/oauth2/callback";
+
 //로그인
 export const PostLogin = async (data: { email: string; password: string }) => {
   try {
