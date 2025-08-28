@@ -12,19 +12,14 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { TSignUpSchema } from "../shared/type/sign";
 
-const BeginGoogleLogin = ({ onModalClose }) => {
-  const handleClose = () => {
-    onModalClose(false);
-  };
-  const handleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
-  };
+
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
+
 
   const { mutate: postEmailSend } = useMutation({
     mutationFn: PostEmailSend,
