@@ -29,3 +29,13 @@ export const PostReissue = async () => {
     console.error("토큰 재발급 실패", error);
   }
 };
+
+//구글 소셜로그인
+export const BeginGoogleLogin = (redirectTo?: string) => {
+  const redirectUri =
+    redirectTo ?? `${window.location.origin}${DEFAULT_CALLBACK}`;
+  const url = `${API_BASE}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
+    redirectUri
+  )}`;
+  window.location.href = url;
+};
