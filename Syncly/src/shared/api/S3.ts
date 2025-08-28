@@ -8,23 +8,19 @@ export const PostViewCookie = async (data: { objectKey: string }) => {
     return response.data;
   } catch (error) {
     console.error("??? 실패", error);
-    throw error;
   }
 };
 
-export const PostProfile = async (data: {
-  fileName: string;
-  mimeType: File;
-}) => {
+export const PostProfile = async (file: File) => {
+  console.log(file);
   try {
     const response = await axiosInstance.post("/api/s3/presigned-url/profile", {
-      fileName: data.fileName,
-      mimeType: data.mimeType,
+      fileName: file.name,
+      mimeType: file.type,
     });
     return response.data;
   } catch (error) {
     console.error("프로필 업로드 실패", error);
-    throw error;
   }
 };
 
@@ -44,7 +40,6 @@ export const PostDrive = async (data: {
     return response.data;
   } catch (error) {
     console.error("드라이브 업로드 실패", error);
-    throw error;
   }
 };
 
@@ -62,6 +57,5 @@ export const PostDownLoadUrl = async (data: {
     return response.data;
   } catch (error) {
     console.error("다운로드 URL 생성 실패", error);
-    throw error;
   }
 };
