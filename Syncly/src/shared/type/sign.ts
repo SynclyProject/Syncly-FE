@@ -16,4 +16,15 @@ type TCreatePWSchema = {
   email: string;
   code: string;
 };
-export type { TSignUpSchema, TLoginSchema, TCreatePWSchema };
+
+type TDeleteSchema = {
+  leaveReasonType:
+    | "INCONVENIENT_SERVICE"
+    | "MISSING_FEATURE"
+    | "LOW_USAGE"
+    | "UNSATISFACTORY_SUPPORT";
+  leaveReason: string | null;
+  password: string;
+};
+
+export type { TSignUpSchema, TLoginSchema, TCreatePWSchema, TDeleteSchema };

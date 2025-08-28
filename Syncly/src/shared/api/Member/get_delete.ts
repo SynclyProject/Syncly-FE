@@ -1,4 +1,5 @@
 import { axiosInstance } from "../common/axiosInstance";
+import { TDeleteSchema } from "../../type/sign";
 
 //프로필 이미지 삭제
 export const DeleteProfileImage = async () => {
@@ -22,18 +23,15 @@ export const GetMemberInfo = async () => {
   }
 };
 
-/*
 //회원 탈퇴
-export const DeleteMember = async (data: {
-  leaveReasonType: INCONVENIENT_SERVICE;
-  leaveReason: string;
-  password: string;
-}) => {
+export const DeleteMember = async (data: TDeleteSchema) => {
   try {
     const response = await axiosInstance.delete("/api/member", {
-      leaveReasonType: data.leaveReasonType,
-      leaveReason: data.leaveReason,
-      password: data.password,
+      data: {
+        leaveReasonType: data.leaveReasonType,
+        leaveReason: data.leaveReason,
+        password: data.password,
+      },
     });
     return response.data;
   } catch (error) {
@@ -41,4 +39,3 @@ export const DeleteMember = async (data: {
     throw error;
   }
 };
-*/
