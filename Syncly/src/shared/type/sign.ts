@@ -22,7 +22,8 @@ type TDeleteSchema = {
     | "INCONVENIENT_SERVICE"
     | "MISSING_FEATURE"
     | "LOW_USAGE"
-    | "UNSATISFACTORY_SUPPORT";
+    | "UNSATISFACTORY_SUPPORT"
+    | "ETC";
   leaveReason: string | null;
   password: string;
 };

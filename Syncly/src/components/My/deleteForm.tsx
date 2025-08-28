@@ -3,7 +3,6 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DeleteMember } from "../../shared/api/Member/get_delete";
-import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 const REASONS = [
@@ -11,6 +10,7 @@ const REASONS = [
   { label: "원하는 기능이 없어요", value: "MISSING_FEATURE" },
   { label: "사용 빈도가 줄었어요", value: "LOW_USAGE" },
   { label: "고객 지원이 만족스럽지 않았어요", value: "UNSATISFACTORY_SUPPORT" },
+  { label: "기타", value: "ETC" },
 ] as const;
 
 type FormValues = {
@@ -33,20 +33,21 @@ const DeleteForm = ({
 }: {
   setShowDeleteForm: (show: boolean) => void;
 }) => {
-  const [isOpenOtherReason, setIsOpenOtherReason] = useState(false);
-
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     defaultValues: {
-      leaveReasonType: "INCONVENIENT_SERVICE",
+      leaveReasonType: undefined,
       leaveReason: null,
       password: "",
     },
   });
+
+  const selectedReason = watch("leaveReasonType");
 
   const { mutate: DeleteMutation } = useMutation({
     mutationFn: DeleteMember,
@@ -99,16 +100,8 @@ const DeleteForm = ({
                 {reason.label}
               </label>
             ))}
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                value="OTHER"
-                className="border rounded"
-                onChange={() => setIsOpenOtherReason(!isOpenOtherReason)}
-              />
-              기타
-            </label>
-            {isOpenOtherReason && (
+
+            {selectedReason === "ETC" && (
               <input
                 type="text"
                 placeholder="기타 사유 입력"
