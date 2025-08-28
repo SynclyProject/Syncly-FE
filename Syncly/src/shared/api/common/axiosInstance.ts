@@ -6,7 +6,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 const refreshPromise: Promise<string> | null = null;
 
-const refreshAxios = axios.create({
+export const refreshAxios = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Content-Type": "application/json",
