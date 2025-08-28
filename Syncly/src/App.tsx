@@ -20,6 +20,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
 import { AuthProvider, useAuthContext } from "./context/AuthContext";
 import { WorkSpaceProvider } from "./context/workSpaceContext";
+import OAuthCallback from "./shared/api/OAuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -104,6 +105,10 @@ const router = createBrowserRouter([
       {
         path: "api/workspaces/accept/:token",
         element: <AcceptWorkspacePage />,
+      },
+      {
+        path: "oauth2/callback", 
+        element: <OAuthCallback />,
       },
     ],
   },
