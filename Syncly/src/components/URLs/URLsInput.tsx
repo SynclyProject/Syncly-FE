@@ -2,6 +2,8 @@ import { useState } from "react";
 import Button from "../../shared/ui/Button";
 import Url from "./Url";
 import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
+import { useMutation } from "@tanstack/react-query";
+import { PostTaps } from "../../shared/api/URL/personal";
 
 interface IURLsInputProps {
   onAdd: (urls: TMySpaceURLs) => void;
@@ -13,6 +15,18 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
   const [title, setTitle] = useState(initialValue);
   const [urls, setUrls] = useState<TUrl[]>([]);
   const [currentUrl, setCurrentUrl] = useState("");
+
+  const { mutate: postTapsMutation } = useMutation({
+    mutationFn: PostTaps,
+    onSuccess: async (data) => {
+      console.log("탭 생성 성공", data);
+      onAdd({
+        id: urls.length + 1,
+        title: data.result.urlTapName,
+        urls: urls,
+      });
+    },
+  });
 
   const handleAddUrl = () => {
     if (currentUrl.trim()) {
@@ -36,6 +50,7 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
       title: title,
       urls: urls,
     };
+    //postTapsMutation({ urlTapName: title });
     onAdd(newUrls);
     setTitle("");
     setUrls([]);
