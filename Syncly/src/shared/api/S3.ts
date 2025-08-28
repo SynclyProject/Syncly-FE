@@ -17,7 +17,6 @@ export const PostProfile = async (file: File) => {
       fileName: file.name,
       mimeType: file.type,
     });
-    console.log("PostProfile (S3) 성공 :  ", response.data);
     return response.data;
   } catch (error) {
     console.error("프로필 업로드 실패", error);

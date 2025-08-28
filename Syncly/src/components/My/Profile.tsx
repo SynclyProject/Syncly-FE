@@ -60,8 +60,6 @@ const Profile = ({
       const uploadUrl = data.result.uploadUrl;
       const file = selectedFile;
 
-      console.log(file, "file");
-
       if (file) {
         await axios.put(uploadUrl, file, {
           headers: {
@@ -69,12 +67,7 @@ const Profile = ({
           },
         });
 
-        patchProfileImageMutation({
-          fileName: fileName,
-          objectKey: objKey,
-        });
-
-        console.log("프로필 사진 업로드 성공:", {
+        PatchProfileImage({
           fileName: fileName,
           objectKey: objKey,
         });
@@ -86,13 +79,6 @@ const Profile = ({
           fileInputRef.current.value = "";
         }
       }
-    },
-  });
-
-  const { mutate: patchProfileImageMutation } = useMutation({
-    mutationFn: PatchProfileImage,
-    onSuccess: (data) => {
-      console.log("프로필 사진 변경 성공", data);
     },
   });
 
