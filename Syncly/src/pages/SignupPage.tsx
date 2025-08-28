@@ -17,8 +17,6 @@ const SignupPage = () => {
   const navigate = useNavigate();
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
-  //닉네임 인증 필드 상태
-  const [nickname, setNickname] = useState("");
 
   const { mutate: postEmailSend } = useMutation({
     mutationFn: PostEmailSend,
@@ -48,7 +46,7 @@ const SignupPage = () => {
     register,
     handleSubmit,
     getValues,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(SignUpSchema),
   });
@@ -145,8 +143,6 @@ const SignupPage = () => {
               <input
                 {...register("nickname")}
                 type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
                 placeholder="Enter your nickname..."
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -205,7 +201,12 @@ const SignupPage = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium"
+            className={`w-full h-[45px] rounded-[8px]  font-medium cursor-pointer ${
+              isValid
+                ? "bg-[#028090] text-[#FFFFFF] border-none"
+                : "bg-[#FDF5F2] border border-[#E0E0E0] text-[#EB5757]"
+            }`}
+            disabled={!isValid}
           >
             Start with Syncly !
           </button>

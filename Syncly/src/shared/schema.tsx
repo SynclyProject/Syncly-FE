@@ -14,9 +14,9 @@ export const SignUpSchema = yup.object().shape({
 
   nickname: yup
     .string()
-    .min(2)
-    .max(12)
-    .required("닉네임을 적어주세요. (최소 2자, 최대 12자)"),
+    .required("닉네임을 입력해주세요.")
+    .min(2, "닉네임은 최소 2자 이상이어야 합니다.")
+    .max(12, "닉네임은 최대 12자까지 가능합니다."),
 
   password: yup
     .string()
