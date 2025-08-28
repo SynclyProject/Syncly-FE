@@ -20,7 +20,7 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(LoginSchema),
   });
@@ -93,7 +93,7 @@ const LoginPage = () => {
               {...register("password")}
               type="password"
               placeholder="Enter your password..."
-              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm "
+              className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
             />
             {errors.password && (
               <p className="text-red-500 text-xs">{errors.password.message}</p>
@@ -103,7 +103,12 @@ const LoginPage = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium"
+            className={`w-full h-[45px] rounded-[8px]  font-medium cursor-pointer ${
+              isValid
+                ? "bg-[#028090] text-[#FFFFFF] border-none"
+                : "bg-[#FDF5F2] border border-[#E0E0E0] text-[#EB5757]"
+            }`}
+            disabled={!isValid}
           >
             Continue with password
           </button>
@@ -113,7 +118,7 @@ const LoginPage = () => {
         {/* Forgot Password Link */}
         <button
           onClick={() => navigate("/create-pw")}
-          className="text-red-500 text-sm mb-3 hover:underline text-left"
+          className="text-red-500 text-sm mb-3 hover:underline text-left cursor-pointer"
         >
           Did you forget your password?
         </button>
