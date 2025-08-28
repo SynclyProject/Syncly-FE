@@ -4,13 +4,10 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-const refreshPromise: Promise<string> | null = null;
+let refreshPromise: Promise<string> | null = null;
 
 export const refreshAxios = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true,
 });
 
@@ -36,7 +33,7 @@ axiosInstance.interceptors.request.use(
 );
 
 // 토큰 재발급 인터셉터 (강의 참고)
-/*
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -65,10 +62,10 @@ axiosInstance.interceptors.response.use(
       }
       refreshPromise = (async () => {
         const { data, status } = await refreshAxios.post("/api/auth/reissue");
-        if (status !== 200 || !data?.accessToken) {
+        if (status !== 200 || !data?.result?.accessToken) {
           throw new Error("토큰 재발급 실패");
         }
-        const newAccessToken: string = data.accessToken;
+        const newAccessToken: string = data.result.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
         return newAccessToken;
       })();
@@ -87,4 +84,3 @@ axiosInstance.interceptors.response.use(
     }
   }
 );
-*/
