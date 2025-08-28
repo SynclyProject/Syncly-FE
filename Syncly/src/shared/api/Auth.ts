@@ -1,8 +1,5 @@
 import { axiosInstance, refreshAxios } from "./common/axiosInstance";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;                  
-const DEFAULT_CALLBACK =
-  import.meta.env.VITE_OAUTH_REDIRECT_PATH ?? "/oauth2/callback";
 
 //로그인
 export const PostLogin = async (data: { email: string; password: string }) => {
@@ -32,14 +29,4 @@ export const PostReissue = async () => {
   } catch (error) {
     console.error("토큰 재발급 실패", error);
   }
-};
-
-//구글 소셜로그인
-export const BeginGoogleLogin = (redirectTo?: string) => {
-  const redirectUri =
-    redirectTo ?? `${window.location.origin}${DEFAULT_CALLBACK}`;
-  const url = `${API_BASE}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
-    redirectUri
-  )}`;
-  window.location.href = url;
 };
