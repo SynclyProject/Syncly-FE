@@ -1,5 +1,8 @@
 import Icon from "../../shared/ui/Icon";
-import { PatchNickname } from "../../shared/api/Member/patch";
+import {
+  PatchNickname,
+  PatchProfileImage,
+} from "../../shared/api/Member/patch";
 import { useState, useRef } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import { PostProfile } from "../../shared/api/S3";
@@ -37,12 +40,6 @@ const Profile = ({
         return;
       }
 
-      // 파일 크기 제한 (예: 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("파일 크기는 5MB 이하여야 합니다.");
-        return;
-      }
-
       setSelectedFile(file);
       setFileName(file.name);
 
@@ -52,48 +49,50 @@ const Profile = ({
   };
 
   const handleProfileUpload = async (file: File) => {
-    try {
-      // PostProfile API 호출
-      postProfileMutation(file);
-    } catch (error) {
-      console.error("프로필 업로드 실패:", error);
-    }
+    // PostProfile API 호출
+    postProfileMutation(file);
   };
 
   const { mutate: postProfileMutation } = useMutation({
     mutationFn: PostProfile,
     onSuccess: async (data) => {
-      try {
-        const objKey = data.result.objectKey;
-        const uploadUrl = data.result.uploadUrl;
-        const file = selectedFile;
+      const objKey = data.result.objectKey;
+      const uploadUrl = data.result.uploadUrl;
+      const file = selectedFile;
 
-        if (file) {
-          await axios.put(uploadUrl, file, {
-            headers: {
-              "Content-Type": file.type,
-            },
-            maxBodyLength: Infinity,
-          });
+      console.log(file, "file");
 
-          console.log("프로필 사진 업로드 성공:", {
-            fileName: fileName,
-            objectKey: objKey,
-          });
+      if (file) {
+        await axios.put(uploadUrl, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
 
-          alert("프로필 사진이 변경되었습니다.");
+        patchProfileImageMutation({
+          fileName: fileName,
+          objectKey: objKey,
+        });
 
-          // 성공 후 상태 초기화
-          setSelectedFile(null);
-          setFileName("");
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
+        console.log("프로필 사진 업로드 성공:", {
+          fileName: fileName,
+          objectKey: objKey,
+        });
+
+        // 성공 후 상태 초기화
+        setSelectedFile(null);
+        setFileName("");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
         }
-      } catch (error) {
-        console.error("S3 업로드 실패:", error);
-        alert("프로필 사진 업로드에 실패했습니다.");
       }
+    },
+  });
+
+  const { mutate: patchProfileImageMutation } = useMutation({
+    mutationFn: PatchProfileImage,
+    onSuccess: (data) => {
+      console.log("프로필 사진 변경 성공", data);
     },
   });
 
@@ -112,7 +111,11 @@ const Profile = ({
             <Icon name="User_Default" />
           </div>
         ) : (
-          <></>
+          <img
+            src={`${import.meta.env.VITE_API_URL}/uploads/profile/${profile}`}
+            alt="profile"
+            className="w-[190px] h-[190px] object-cover rounded-full"
+          />
         )}
 
         <div className="flex flex-col justify-center gap-4">

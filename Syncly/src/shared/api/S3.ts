@@ -12,12 +12,12 @@ export const PostViewCookie = async (data: { objectKey: string }) => {
 };
 
 export const PostProfile = async (file: File) => {
-  console.log(file);
   try {
     const response = await axiosInstance.post("/api/s3/presigned-url/profile", {
       fileName: file.name,
       mimeType: file.type,
     });
+    console.log("PostProfile (S3) 성공 :  ", response.data);
     return response.data;
   } catch (error) {
     console.error("프로필 업로드 실패", error);
