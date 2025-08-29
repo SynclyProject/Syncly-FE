@@ -26,8 +26,9 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
   const handleAddUrl = () => {
     if (currentUrl.trim()) {
       const newUrl: TUrl = {
-        id: urls.length + 1, // 임시 ID 생성
-        url: [currentUrl],
+        urlItemId: urls.length + 1, // 임시 ID 생성
+        url: currentUrl,
+        createdAt: new Date().toISOString(),
       };
       setUrls([...urls, newUrl]);
       setCurrentUrl("");
@@ -42,13 +43,14 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
     if (!title.trim()) return;
 
     const newUrls: TMySpaceURLs = {
-      id: urls.length + 1, // 임시 ID 생성
-      title: title,
+      tapId: urls.length + 1, // 임시 ID 생성
+      tapName: title,
+      createdAt: new Date().toISOString(),
       urls: urls,
     };
 
     // 먼저 onAdd 호출하여 UI 업데이트
-    onAdd(newUrls);
+    onAdd?.(newUrls);
 
     // 상태 초기화
     setTitle("");
@@ -93,7 +95,7 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
           onAdd={handleAddUrl}
         />
         {urls.map((url) => (
-          <Url key={url.id} state="url" text={url.url[0]} />
+          <Url key={url.urlItemId} state="url" text={url.url} />
         ))}
       </div>
     </div>

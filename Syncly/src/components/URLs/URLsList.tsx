@@ -30,9 +30,7 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
     queryKey: ["urlsTapList", spaceId],
     queryFn: () => GetAllTaps({ workspaceId: spaceId }),
   });
-  console.log("urlsTapList : ", urlsTapList);
 
-  // 데이터가 없거나 taps가 undefined인 경우 안전하게 처리
   const taps = urlsTapList?.result?.taps || [];
   const hasTaps = taps.length > 0;
 
