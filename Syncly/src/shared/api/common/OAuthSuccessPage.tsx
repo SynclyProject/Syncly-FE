@@ -1,6 +1,6 @@
 // src/pages/OAuthSuccessPage.tsx (TS) / .jsx도 OK
 import { useEffect } from "react";
-import { axiosInstance } from "../common/axiosInstance";
+import { axiosInstance } from "./axiosInstance";
 
 export default function OAuthSuccessPage() {
   useEffect(() => {
