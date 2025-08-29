@@ -3,8 +3,7 @@ import Space from "./Space";
 import { useNavigate, useLocation } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
 import InputSpace from "./InputSpace";
-import { useQuery } from "@tanstack/react-query";
-import { GetSpaceList } from "../../api/WorkSpace/get";
+import { useSpaceList } from "../../../hooks/useSpaceList";
 
 interface TeamSpaceProps {
   showInput: boolean;
@@ -19,13 +18,7 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     setShowInput(false);
   };
 
-  const { data: spaceList } = useQuery({
-    queryFn: GetSpaceList,
-    queryKey: ["spaceList"],
-  });
-  const teamSpaceList = spaceList?.result?.filter(
-    (space: TTeamSpace) => space.workspaceType === "TEAM"
-  );
+  const { teamSpaceList } = useSpaceList();
 
   return (
     <div className="flex flex-col gap-[8px]">
@@ -46,7 +39,7 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
           />
         );
       })}
-      {(spaceList?.result?.length === 0 || showInput) && (
+      {(teamSpaceList?.length === 0 || showInput) && (
         <InputSpace
           onAdd={handleAddTeam}
           onCancel={() => setShowInput(false)}

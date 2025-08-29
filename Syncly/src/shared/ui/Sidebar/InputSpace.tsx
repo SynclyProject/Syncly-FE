@@ -2,6 +2,7 @@ import { useState } from "react";
 import Icon from "../Icon";
 import { useMutation } from "@tanstack/react-query";
 import { PostTeamSpace } from "../../api/WorkSpace/post";
+import { useSpaceList } from "../../../hooks/useSpaceList";
 
 interface IInputSpaceProps {
   onAdd?: () => void;
@@ -17,6 +18,8 @@ const InputSpace = ({
   initialValue = "",
 }: IInputSpaceProps) => {
   const [inputValue, setInputValue] = useState(initialValue);
+
+  const { refetch } = useSpaceList();
 
   const handleSubmit = () => {
     if (inputValue.trim()) {
@@ -50,7 +53,7 @@ const InputSpace = ({
     mutationFn: PostTeamSpace,
     onSuccess: () => {
       console.log("팀 워크스페이스 생성 성공");
-      window.location.reload();
+      refetch();
       onCancel();
     },
   });
