@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Button from "../../shared/ui/Button";
 import Url from "./Url";
-import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
+import { TMySpaceURLs } from "../../shared/type/mySpaceType";
 import { useMutation } from "@tanstack/react-query";
-import { PostTaps, PostTabItems } from "../../shared/api/URL/personal";
+import { PostTabItems, PostTaps } from "../../shared/api/URL/personal";
 
 interface IURLsInputProps {
   onAdd?: (urls: TMySpaceURLs) => void;
@@ -11,15 +11,17 @@ interface IURLsInputProps {
   initialValue?: string;
 }
 
-const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
+let tabId: number;
+
+const URLsInput = ({ onCancel, initialValue = "" }: IURLsInputProps) => {
   const [title, setTitle] = useState(initialValue);
-  const [urls, setUrls] = useState<TUrl[]>([]);
   const [currentUrl, setCurrentUrl] = useState("");
 
   const { mutate: postTapsMutation } = useMutation({
     mutationFn: PostTaps,
     onSuccess: (data) => {
       console.log("탭 생성 성공", data);
+      tabId = data.result.urlTabId;
       window.location.reload();
     },
   });
@@ -33,12 +35,7 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
 
   const handleAddUrl = () => {
     if (currentUrl.trim()) {
-      const newUrl: TUrl = {
-        urlItemId: urls.length + 1, // 임시 ID 생성
-        url: currentUrl,
-        createdAt: new Date().toISOString(),
-      };
-      setUrls([...urls, newUrl]);
+      postUrlsMutation({ tabId: tabId, url: currentUrl });
       setCurrentUrl("");
     }
   };
@@ -54,7 +51,6 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
 
     // 상태 초기화
     setTitle("");
-    setUrls([]);
     setCurrentUrl("");
   };
 
@@ -88,10 +84,11 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
           value={currentUrl}
           onChange={handleUrlChange}
           onAdd={handleAddUrl}
+          tabId={tabId}
         />
-        {urls.map((url: TUrl) => (
-          <Url key={url.urlItemId} state="url" text={url.url} />
-        ))}
+        {/* {urls.map((url: TUrl) => (
+          <Url key={url.urlItemId} state="url" text={url.url} tabId={tabId} />
+        ))} */}
       </div>
     </div>
   );

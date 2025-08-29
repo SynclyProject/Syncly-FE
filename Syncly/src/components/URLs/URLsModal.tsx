@@ -1,18 +1,12 @@
-import { TMySpaceURLs } from "../../shared/type/mySpaceType";
+import { DeleteTaps } from "../../shared/api/URL/personal";
 
 interface IURLsModalProps {
-  urlsId: number;
-  setURLs: React.Dispatch<React.SetStateAction<TMySpaceURLs[]>>;
+  tabId: number;
   editTitle: boolean;
   setEditTitle: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const URLsModal = ({
-  urlsId,
-  setURLs,
-  editTitle,
-  setEditTitle,
-}: IURLsModalProps) => {
+const URLsModal = ({ tabId, editTitle, setEditTitle }: IURLsModalProps) => {
   return (
     <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
       <p
@@ -26,7 +20,8 @@ const URLsModal = ({
       <p
         className="text-[#F45B69] cursor-pointer"
         onClick={() => {
-          setURLs((prev) => prev.filter((url) => url.id !== urlsId));
+          DeleteTaps({ tabId: tabId });
+          window.location.reload();
         }}
       >
         삭제하기

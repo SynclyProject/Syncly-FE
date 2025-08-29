@@ -2,20 +2,19 @@ import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
 import Url from "./Url";
 import URLsModal from "./URLsModal";
-import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
+import { TUrl } from "../../shared/type/mySpaceType";
 import { useState, useRef, useEffect } from "react";
+import { PatchTaps } from "../../shared/api/URL/personal";
+import { useMutation } from "@tanstack/react-query";
 
 interface IURLsProps {
   title: string;
   urls: TUrl[];
-  urlsId: number;
-  setURLs?: React.Dispatch<React.SetStateAction<TMySpaceURLs[]>>;
-  onUpdateUrls?: (newUrls: TUrl[]) => void;
+  tabId: number;
 }
 
-const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
+const URLs = ({ title, urls, tabId }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
-  const [urlList, setUrlList] = useState<TUrl[]>(urls);
   const [inputValue, setInputValue] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [modalShow, setModalShow] = useState(false);
@@ -24,26 +23,20 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLButtonElement>(null);
 
-  const handleAddUrl = (url: string) => {
-    if (url.trim()) {
-      const newUrlList = [...urlList, { id: urlList.length + 1, url: [url] }];
-      setUrlList(newUrlList);
-      onUpdateUrls?.(newUrlList);
-      setShowInput(false);
-      setInputValue("");
-    }
-  };
+  const { mutate: patchTapsMutation } = useMutation({
+    mutationFn: PatchTaps,
+    onSuccess: () => {
+      setEditTitle(false);
+      window.location.reload();
+    },
+  });
+
   const handleTitleChange = (value: string) => {
     setEditTitleValue(value);
   };
   const handleTitleSubmit = () => {
     if (!editTitleValue.trim()) return;
-    setURLs((prev) =>
-      prev.map((url) =>
-        url.id === urlsId ? { ...url, title: editTitleValue } : url
-      )
-    );
-    setEditTitle(false);
+    patchTapsMutation({ tabId: tabId, urlTabName: editTitleValue });
   };
 
   const handleInputChange = (value: string) => {
@@ -117,8 +110,7 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
               style={modalPosition()}
             >
               <URLsModal
-                urlsId={urlsId}
-                setURLs={setURLs}
+                tabId={tabId}
                 editTitle={editTitle}
                 setEditTitle={setEditTitle}
               />
@@ -137,26 +129,26 @@ const URLs = ({ title, urls, onUpdateUrls, urlsId, setURLs }: IURLsProps) => {
       </div>
       <p className="text-[#828282] text-[16px] font-semibold">Source</p>
       <div className="flex flex-col">
-        {(urlList.length === 0 || showInput) && (
+        {(urls.length === 0 || showInput) && (
           <Url
             state="input"
             value={inputValue}
             onChange={handleInputChange}
-            onAdd={handleAddUrl}
             onCancel={() => setShowInput(false)}
+            tabId={tabId}
           />
         )}
 
-        {urlList.slice(0, showAll ? urlList.length : 2).map((url: TUrl) => (
+        {urls.slice(0, showAll ? urls.length : 2).map((url: TUrl) => (
           <Url
-            key={url.id}
+            key={url.urlItemId}
             state="url"
-            text={url.url[0]}
-            id={url.id}
-            setUrlList={setUrlList}
+            text={url.url}
+            tabId={tabId}
+            urlItemId={url.urlItemId}
           />
         ))}
-        {urlList.length > 2 && (
+        {urls.length > 2 && (
           <button
             className="flex items-center justify-center cursor-pointer"
             onClick={handleShowAll}

@@ -45,7 +45,7 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
               key={urls.tabId}
               title={urls.tabName}
               urls={urls.urls}
-              urlsId={urls.tabId}
+              tabId={urls.tabId}
             />
           ))}
         </div>

@@ -1,5 +1,6 @@
 import Icon from "../../shared/ui/Icon";
-import { TUrl } from "../../shared/type/mySpaceType";
+import { useMutation } from "@tanstack/react-query";
+import { DeleteTabItems } from "../../shared/api/URL/personal";
 
 type TUrlStateProps = {
   state: "input" | "url";
@@ -11,8 +12,8 @@ interface IUrlProps extends TUrlStateProps {
   onChange?: (value: string) => void;
   onAdd?: (url: string) => void;
   onCancel?: () => void;
-  id?: number;
-  setUrlList?: React.Dispatch<React.SetStateAction<TUrl[]>>;
+  tabId: number;
+  urlItemId?: number;
 }
 
 const Url = ({
@@ -22,12 +23,20 @@ const Url = ({
   onChange,
   onAdd,
   onCancel,
-  id,
-  setUrlList,
+  tabId,
+  urlItemId,
 }: IUrlProps) => {
+  const { mutate: deleteTabItemsMutation } = useMutation({
+    mutationFn: DeleteTabItems,
+    onSuccess: () => {
+      window.location.reload();
+    },
+  });
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && onAdd) {
-      onAdd(value || "");
+    if (e.key === "Enter" && value?.trim()) {
+      onAdd?.(value);
+      window.location.reload();
     }
   };
   const handleBlur = () => {
@@ -55,8 +64,8 @@ const Url = ({
           <button
             className="cursor-pointer"
             onClick={() => {
-              if (setUrlList) {
-                setUrlList((prev) => prev.filter((url) => url.id !== id));
+              if (urlItemId) {
+                deleteTabItemsMutation({ tabId: tabId, itemId: urlItemId });
               }
             }}
           >
