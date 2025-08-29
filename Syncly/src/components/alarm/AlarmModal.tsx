@@ -9,8 +9,8 @@ interface AlarmModalProps {
   onClose: () => void;
 }
 
-const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
-  const { data } = useQuery({
+const AlarmModal = ({ isOpen }: AlarmModalProps) => {
+  const { data, refetch } = useQuery({
     queryKey: ["spaceInviteList"],
     queryFn: () => GetSpaceInvite(),
   });
@@ -42,6 +42,7 @@ const AlarmModal = ({ isOpen, onClose }: AlarmModalProps) => {
                 message="팀스페이스에서의 초대"
                 onAccept={() => handleAccept(item.workspaceName)}
                 invitationId={item.invitationId}
+                refetch={refetch}
               />
             ))}
           </>

@@ -12,9 +12,11 @@ import axios from "axios";
 const Profile = ({
   name,
   profile,
+  refetch,
 }: {
   name: string;
   profile: string | null;
+  refetch: () => void;
 }) => {
   const [nickname, setNickname] = useState(name);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -26,6 +28,7 @@ const Profile = ({
     try {
       await PatchNickname({ newName: debouncedNickname });
       console.log("닉네임 변경 성공");
+      refetch();
     } catch (error) {
       console.error("닉네임 변경 실패", error);
     }
@@ -78,6 +81,7 @@ const Profile = ({
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
+        refetch();
       }
     },
   });
