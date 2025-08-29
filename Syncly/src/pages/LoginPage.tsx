@@ -8,6 +8,7 @@ import { PostLogin } from "../shared/api/Auth";
 import { useAuthContext } from "../context/AuthContext";
 import { AxiosError } from "axios";
 import { BeginGoogleLogin } from "../shared/api/Social";
+import { PostPersonalSpace } from "../shared/api/WorkSpace/post";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const LoginPage = () => {
       alert("로그인 성공!");
       localStorage.setItem("accessToken", response.result);
       checkLoginStatus(); // AuthContext 상태 업데이트
+      PostPersonalSpace();
 
       // redirectTo가 있으면 해당 경로로, 없으면 기본 경로로 이동
       if (redirectTo) {

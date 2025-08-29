@@ -23,11 +23,14 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     queryFn: GetSpaceList,
     queryKey: ["spaceList"],
   });
+  const teamSpaceList = spaceList?.result?.filter(
+    (space: TTeamSpace) => space.workspaceType === "TEAM"
+  );
 
   return (
     <div className="flex flex-col gap-[8px]">
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
-      {spaceList?.result?.map((space: TTeamSpace) => {
+      {teamSpaceList?.map((space: TTeamSpace) => {
         const isActive =
           location.pathname.startsWith("/team-urls") &&
           location.pathname.includes(`/${space.workspaceId}`);
