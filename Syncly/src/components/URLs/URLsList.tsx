@@ -1,5 +1,5 @@
 import URLsListContent from "./URLsListContent";
-import { useURLsList } from "../../shared/hooks/useURLsList";
+import { useURLsList } from "../../hooks/useURLsList";
 
 interface IURLsListProps {
   showInput: boolean;

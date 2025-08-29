@@ -4,7 +4,7 @@ import Url from "./Url";
 import { TMySpaceURLs } from "../../shared/type/mySpaceType";
 import { useMutation } from "@tanstack/react-query";
 import { PostTabItems, PostTaps } from "../../shared/api/URL/personal";
-import { useURLsList } from "../../shared/hooks/useURLsList";
+import { useURLsList } from "../../hooks/useURLsList";
 
 interface IURLsInputProps {
   onAdd?: (urls: TMySpaceURLs) => void;

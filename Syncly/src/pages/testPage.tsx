@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useWebSocket } from "../shared/hooks/useWebSocket";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 const TestPage = () => {
   const [jwtToken, setJwtToken] = useState("");

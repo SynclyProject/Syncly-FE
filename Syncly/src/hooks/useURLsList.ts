@@ -1,6 +1,6 @@
-import { useWorkSpaceContext } from "../../context/workSpaceContext";
+import { useWorkSpaceContext } from "../context/workSpaceContext";
 import { useQuery } from "@tanstack/react-query";
-import { GetAllTaps } from "../../shared/api/URL/getList";
+import { GetAllTaps } from "../shared/api/URL/getList";
 import { useLocation, useParams } from "react-router-dom";
 
 export const useURLsList = () => {

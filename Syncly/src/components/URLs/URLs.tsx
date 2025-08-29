@@ -6,7 +6,7 @@ import { TUrl } from "../../shared/type/mySpaceType";
 import { useState, useRef, useEffect } from "react";
 import { PatchTaps, PostTabItems } from "../../shared/api/URL/personal";
 import { useMutation } from "@tanstack/react-query";
-import { useURLsList } from "../../shared/hooks/useURLsList";
+import { useURLsList } from "../../hooks/useURLsList";
 
 interface IURLsProps {
   title: string;

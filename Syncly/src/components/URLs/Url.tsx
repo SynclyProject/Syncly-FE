@@ -1,7 +1,7 @@
 import Icon from "../../shared/ui/Icon";
 import { useMutation } from "@tanstack/react-query";
 import { DeleteTabItems } from "../../shared/api/URL/personal";
-import { useURLsList } from "../../shared/hooks/useURLsList";
+import { useURLsList } from "../../hooks/useURLsList";
 
 type TUrlStateProps = {
   state: "input" | "url";

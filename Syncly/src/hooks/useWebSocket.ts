@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Stomp } from "stompjs";
-import { TMySpaceURLs } from "../type/mySpaceType";
+import { TMySpaceURLs } from "../shared/type/mySpaceType";
 
 interface WebSocketMessage {
   workspaceId: number;

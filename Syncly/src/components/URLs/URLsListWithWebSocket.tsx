@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useWebSocket } from "../../shared/hooks/useWebSocket";
-import { useURLsList } from "../../shared/hooks/useURLsList";
+import { useWebSocket } from "../../hooks/useWebSocket";
+import { useURLsList } from "../../hooks/useURLsList";
 import URLsListContent from "./URLsListContent";
 
 interface IURLsListWithWebSocketProps {
@@ -51,7 +51,7 @@ const URLsListWithWebSocket = ({
     <URLsListContent
       showInput={showInput}
       setShowInput={setShowInput}
-      urlsTapList={urlsTapList}
+      urlsTapList={urlsTapListData}
     />
   );
 };
