@@ -8,7 +8,10 @@ export const BeginGoogleLogin = (onModalClose?: (open: boolean) => void) => {
   const RAW = import.meta.env.VITE_OAUTH_REDIRECT_PATH || "/oauth2/callback";
   const REDIRECT_PATH = RAW.startsWith("/") ? RAW : `/${RAW}`;
 
-  const redirectUri = `${window.location.origin}${REDIRECT_PATH}`;
+  const next = "/my-urls";
+
+  const redirectUri = `${window.location.origin}${REDIRECT_PATH}?next=${encodeURIComponent(next)}`;
+ 
   window.location.href = `${API_BASE}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
     redirectUri
   )}`;

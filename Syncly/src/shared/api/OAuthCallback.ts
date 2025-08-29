@@ -1,4 +1,4 @@
-// src/pages/OAuthCallback.tsx
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { refreshAxios } from "../api/common/axiosInstance";
@@ -20,7 +20,7 @@ export default function OAuthCallback() {
         await getMe();
 
         // 3) 홈으로 이동
-        nav("/", { replace: true });
+        nav("/my-urls", { replace: true });
       } catch (e) {
         console.error("소셜 로그인 콜백 처리 실패", e);
         nav("/login", { replace: true });
