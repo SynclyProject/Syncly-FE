@@ -24,8 +24,6 @@ export default function OAuthSuccessPage() {
     })();
   }, []);
 
-  return 
-  <p>구글 로그인 처리</p>
-  ;
+  return <p>구글 로그인 처리</p>;
 
 }
