@@ -1,6 +1,7 @@
 import Icon from "../../shared/ui/Icon";
 import { useMutation } from "@tanstack/react-query";
 import { DeleteTabItems } from "../../shared/api/URL/personal";
+import { useURLsList } from "../../shared/hooks/useURLsList";
 
 type TUrlStateProps = {
   state: "input" | "url";
@@ -26,17 +27,19 @@ const Url = ({
   tabId,
   urlItemId,
 }: IUrlProps) => {
+  const { refetch } = useURLsList();
+
   const { mutate: deleteTabItemsMutation } = useMutation({
     mutationFn: DeleteTabItems,
     onSuccess: () => {
-      window.location.reload();
+      refetch();
     },
   });
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && value?.trim()) {
       onAdd?.(value);
-      window.location.reload();
+      refetch();
     }
   };
   const handleBlur = () => {

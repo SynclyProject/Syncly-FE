@@ -4,6 +4,7 @@ import Url from "./Url";
 import { TMySpaceURLs } from "../../shared/type/mySpaceType";
 import { useMutation } from "@tanstack/react-query";
 import { PostTabItems, PostTaps } from "../../shared/api/URL/personal";
+import { useURLsList } from "../../shared/hooks/useURLsList";
 
 interface IURLsInputProps {
   onAdd?: (urls: TMySpaceURLs) => void;
@@ -17,19 +18,20 @@ const URLsInput = ({ onCancel, initialValue = "" }: IURLsInputProps) => {
   const [title, setTitle] = useState(initialValue);
   const [currentUrl, setCurrentUrl] = useState("");
 
+  const { refetch } = useURLsList();
+
   const { mutate: postTapsMutation } = useMutation({
     mutationFn: PostTaps,
     onSuccess: (data) => {
-      console.log("탭 생성 성공", data);
       tabId = data.result.urlTabId;
-      window.location.reload();
+      refetch();
     },
   });
 
   const { mutate: postUrlsMutation } = useMutation({
     mutationFn: PostTabItems,
-    onSuccess: (data) => {
-      console.log("URL 생성 성공", data);
+    onSuccess: () => {
+      refetch();
     },
   });
 

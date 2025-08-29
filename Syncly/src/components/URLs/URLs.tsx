@@ -4,8 +4,9 @@ import Url from "./Url";
 import URLsModal from "./URLsModal";
 import { TUrl } from "../../shared/type/mySpaceType";
 import { useState, useRef, useEffect } from "react";
-import { PatchTaps } from "../../shared/api/URL/personal";
+import { PatchTaps, PostTabItems } from "../../shared/api/URL/personal";
 import { useMutation } from "@tanstack/react-query";
+import { useURLsList } from "../../shared/hooks/useURLsList";
 
 interface IURLsProps {
   title: string;
@@ -20,14 +21,24 @@ const URLs = ({ title, urls, tabId }: IURLsProps) => {
   const [modalShow, setModalShow] = useState(false);
   const [editTitle, setEditTitle] = useState(false);
   const [editTitleValue, setEditTitleValue] = useState(title);
+
   const modalRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLButtonElement>(null);
+
+  const { refetch } = useURLsList();
 
   const { mutate: patchTapsMutation } = useMutation({
     mutationFn: PatchTaps,
     onSuccess: () => {
       setEditTitle(false);
-      window.location.reload();
+      refetch();
+    },
+  });
+
+  const { mutate: postUrlsMutation } = useMutation({
+    mutationFn: PostTabItems,
+    onSuccess: () => {
+      refetch();
     },
   });
 
@@ -50,6 +61,11 @@ const URLs = ({ title, urls, tabId }: IURLsProps) => {
   const handleIconClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setModalShow(true);
+  };
+
+  const handleAddUrl = () => {
+    postUrlsMutation({ tabId: tabId, url: inputValue });
+    setInputValue("");
   };
 
   const modalPosition = () => {
@@ -136,6 +152,7 @@ const URLs = ({ title, urls, tabId }: IURLsProps) => {
             onChange={handleInputChange}
             onCancel={() => setShowInput(false)}
             tabId={tabId}
+            onAdd={handleAddUrl}
           />
         )}
 
