@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { PostTaps } from "../../shared/api/URL/personal";
 
 interface IURLsInputProps {
-  onAdd: (urls: TMySpaceURLs) => void;
+  onAdd?: (urls: TMySpaceURLs) => void;
   onCancel: () => void;
   initialValue?: string;
 }

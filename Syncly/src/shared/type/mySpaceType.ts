@@ -1,10 +1,12 @@
 export type TMySpaceURLs = {
-  id: number;
-  title: string;
+  tapId: number;
+  tapName: string;
+  createdAt: string;
   urls: TUrl[];
 };
 
 export type TUrl = {
-  id: number;
-  url: string[];
+  urlItemId: number;
+  url: string;
+  createdAt: string;
 };

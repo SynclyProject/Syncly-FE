@@ -1,8 +1,11 @@
 //import URLsListData from "../../shared/api/mock/URLsList";
 import { TMySpaceURLs } from "../../shared/type/mySpaceType";
-import { useState } from "react";
 import URLsInput from "./URLsInput";
 import URLs from "./URLs";
+import { useWorkSpaceContext } from "../../context/workSpaceContext";
+import { useQuery } from "@tanstack/react-query";
+import { GetAllTaps } from "../../shared/api/URL/getList";
+import { useLocation, useParams } from "react-router-dom";
 
 interface IURLsListProps {
   showInput: boolean;
@@ -10,36 +13,42 @@ interface IURLsListProps {
 }
 
 const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
-  const [urlsList, setUrlsList] = useState<TMySpaceURLs[]>([]);
+  const { personalSpaceId, setWorkspaceId } = useWorkSpaceContext();
+  const location = useLocation();
+  const { id } = useParams();
+  setWorkspaceId(Number(id));
 
-  const handleAddUrls = (urls: TMySpaceURLs) => {
-    if (!urls.title.trim()) return;
-    const newUrls: TMySpaceURLs = {
-      id: urlsList.length + 1,
-      title: urls.title,
-      urls: urls.urls,
-    };
-    setUrlsList((prev) => [...prev, newUrls]);
-  };
+  let spaceId: number;
+
+  if (location.pathname === "/my-urls") {
+    spaceId = personalSpaceId;
+  } else {
+    spaceId = Number(id);
+  }
+
+  const { data: urlsTapList } = useQuery({
+    queryKey: ["urlsTapList", spaceId],
+    queryFn: () => GetAllTaps({ workspaceId: spaceId }),
+  });
+  console.log("urlsTapList : ", urlsTapList);
+
+  // 데이터가 없거나 taps가 undefined인 경우 안전하게 처리
+  const taps = urlsTapList?.result?.taps || [];
+  const hasTaps = taps.length > 0;
 
   return (
     <div className="flex flex-col gap-5 w-full">
-      {urlsList.length === 0 && (
-        <URLsInput onAdd={handleAddUrls} onCancel={() => setShowInput(false)} />
-      )}
-      {showInput && (
-        <URLsInput onAdd={handleAddUrls} onCancel={() => setShowInput(false)} />
-      )}
+      {!hasTaps && <URLsInput onCancel={() => setShowInput(false)} />}
+      {showInput && <URLsInput onCancel={() => setShowInput(false)} />}
 
-      {urlsList && (
+      {hasTaps && (
         <div className="flex flex-col gap-5 w-full">
-          {urlsList.map((urls: TMySpaceURLs) => (
+          {taps.map((urls: TMySpaceURLs) => (
             <URLs
-              key={urls.id}
-              title={urls.title}
+              key={urls.tapId}
+              title={urls.tapName}
               urls={urls.urls}
-              urlsId={urls.id}
-              setURLs={setUrlsList}
+              urlsId={urls.tapId}
             />
           ))}
         </div>

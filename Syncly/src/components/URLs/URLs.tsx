@@ -9,7 +9,7 @@ interface IURLsProps {
   title: string;
   urls: TUrl[];
   urlsId: number;
-  setURLs: React.Dispatch<React.SetStateAction<TMySpaceURLs[]>>;
+  setURLs?: React.Dispatch<React.SetStateAction<TMySpaceURLs[]>>;
   onUpdateUrls?: (newUrls: TUrl[]) => void;
 }
 
