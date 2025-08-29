@@ -3,7 +3,7 @@ import Button from "../../shared/ui/Button";
 import Url from "./Url";
 import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
 import { useMutation } from "@tanstack/react-query";
-import { PostTaps } from "../../shared/api/URL/personal";
+import { PostTaps, PostTabItems } from "../../shared/api/URL/personal";
 
 interface IURLsInputProps {
   onAdd?: (urls: TMySpaceURLs) => void;
@@ -20,6 +20,14 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
     mutationFn: PostTaps,
     onSuccess: (data) => {
       console.log("탭 생성 성공", data);
+      window.location.reload();
+    },
+  });
+
+  const { mutate: postUrlsMutation } = useMutation({
+    mutationFn: PostTabItems,
+    onSuccess: (data) => {
+      console.log("URL 생성 성공", data);
     },
   });
 
@@ -42,7 +50,7 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    postTapsMutation({ urlTapName: title });
+    postTapsMutation({ urlTabName: title });
 
     // 상태 초기화
     setTitle("");

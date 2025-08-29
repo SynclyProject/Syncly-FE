@@ -1,11 +1,10 @@
 import { axiosInstance } from "../common/axiosInstance";
 
 //URL 탭 생성
-export const PostTaps = async (data: { urlTapName: string }) => {
-  console.log("data : ", data);
+export const PostTaps = async (data: { urlTabName: string }) => {
   try {
-    const response = await axiosInstance.post("/api/workspaces/taps", {
-      urlTapName: data.urlTapName,
+    const response = await axiosInstance.post("/api/workspaces/tabs", {
+      urlTabName: data.urlTabName,
     });
     return response.data;
   } catch (error) {
@@ -17,7 +16,7 @@ export const PostTaps = async (data: { urlTapName: string }) => {
 export const PostTabItems = async (data: { tabId: number }) => {
   try {
     const response = await axiosInstance.post(
-      `/api/workspaces/taps/${data.tabId}/items`,
+      `/api/workspaces/tabs/${data.tabId}/items`,
       data
     );
     return response.data;
@@ -30,7 +29,7 @@ export const PostTabItems = async (data: { tabId: number }) => {
 export const DeleteTaps = async (data: { tapId: number }) => {
   try {
     const response = await axiosInstance.delete(
-      `/api/workspaces/taps/${data.tapId}`
+      `/api/workspaces/tabs/${data.tapId}`
     );
     return response.data;
   } catch (error) {
@@ -45,7 +44,7 @@ export const DeleteTabItems = async (data: {
 }) => {
   try {
     const response = await axiosInstance.delete(
-      `/api/workspaces/taps/${data.tabId}/${data.itemId}`
+      `/api/workspaces/tabs/${data.tabId}/${data.itemId}`
     );
     return response.data;
   } catch (error) {
@@ -60,7 +59,7 @@ export const PatchTaps = async (data: {
 }) => {
   try {
     const response = await axiosInstance.patch(
-      `/api/workspaces/taps/${data.tapId}`,
+      `/api/workspaces/tabs/${data.tapId}`,
       {
         newUrlTapName: data.urlTapName,
       }

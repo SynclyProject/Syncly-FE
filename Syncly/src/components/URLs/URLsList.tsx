@@ -31,11 +31,6 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
     queryFn: () => GetAllTaps({ workspaceId: spaceId }),
   });
 
-  // const taps = urlsTapList?.result?.taps || [];
-  // const hasTaps = taps.length > 0;
-
-  console.log("data : ", urlsTapList);
-
   return (
     <div className="flex flex-col gap-5 w-full">
       {!urlsTapList?.result?.tabs?.length && (
