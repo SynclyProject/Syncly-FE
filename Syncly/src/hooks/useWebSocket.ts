@@ -34,7 +34,9 @@ export const useWebSocket = (): UseWebSocketReturn => {
   const connect = useCallback(async (token: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       try {
-        const socket = new WebSocket("ws://localhost:8080/ws-stomp");
+        const socket = new WebSocket(
+          `ws://${import.meta.env.VITE_API_URL}/ws-stomp`
+        );
         const stompClient = Stomp.over(socket);
         stompClient.debug = null;
 
