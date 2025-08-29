@@ -2,6 +2,7 @@ import { axiosInstance } from "../common/axiosInstance";
 
 //URL 탭 생성
 export const PostTaps = async (data: { urlTapName: string }) => {
+  console.log("data : ", data);
   try {
     const response = await axiosInstance.post("/api/workspaces/taps", {
       urlTapName: data.urlTapName,

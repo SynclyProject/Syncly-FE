@@ -1,6 +1,6 @@
 export type TMySpaceURLs = {
-  tapId: number;
-  tapName: string;
+  tabId: number;
+  tabName: string;
   createdAt: string;
   urls: TUrl[];
 };

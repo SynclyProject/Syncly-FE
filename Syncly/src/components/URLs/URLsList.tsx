@@ -31,22 +31,26 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
     queryFn: () => GetAllTaps({ workspaceId: spaceId }),
   });
 
-  const taps = urlsTapList?.result?.taps || [];
-  const hasTaps = taps.length > 0;
+  // const taps = urlsTapList?.result?.taps || [];
+  // const hasTaps = taps.length > 0;
+
+  console.log("data : ", urlsTapList);
 
   return (
     <div className="flex flex-col gap-5 w-full">
-      {!hasTaps && <URLsInput onCancel={() => setShowInput(false)} />}
+      {!urlsTapList?.result?.tabs?.length && (
+        <URLsInput onCancel={() => setShowInput(false)} />
+      )}
       {showInput && <URLsInput onCancel={() => setShowInput(false)} />}
 
-      {hasTaps && (
+      {urlsTapList?.result?.tabs && (
         <div className="flex flex-col gap-5 w-full">
-          {taps.map((urls: TMySpaceURLs) => (
+          {urlsTapList?.result?.tabs.map((urls: TMySpaceURLs) => (
             <URLs
-              key={urls.tapId}
-              title={urls.tapName}
+              key={urls.tabId}
+              title={urls.tabName}
               urls={urls.urls}
-              urlsId={urls.tapId}
+              urlsId={urls.tabId}
             />
           ))}
         </div>

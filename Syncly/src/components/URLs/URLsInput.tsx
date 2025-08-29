@@ -42,25 +42,12 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    const newUrls: TMySpaceURLs = {
-      tapId: urls.length + 1, // 임시 ID 생성
-      tapName: title,
-      createdAt: new Date().toISOString(),
-      urls: urls,
-    };
-
-    // 먼저 onAdd 호출하여 UI 업데이트
-    onAdd?.(newUrls);
+    postTapsMutation({ urlTapName: title });
 
     // 상태 초기화
     setTitle("");
     setUrls([]);
     setCurrentUrl("");
-
-    // 마지막에 API 호출 (setTimeout으로 비동기 처리)
-    setTimeout(() => {
-      postTapsMutation({ urlTapName: title });
-    }, 0);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -94,7 +81,7 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
           onChange={handleUrlChange}
           onAdd={handleAddUrl}
         />
-        {urls.map((url) => (
+        {urls.map((url: TUrl) => (
           <Url key={url.urlItemId} state="url" text={url.url} />
         ))}
       </div>
