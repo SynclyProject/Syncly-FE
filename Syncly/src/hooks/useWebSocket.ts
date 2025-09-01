@@ -11,7 +11,7 @@ interface WebSocketMessage {
 
 interface UseWebSocketReturn {
   isConnected: boolean;
-  connect: (token: string) => Promise<void>;
+  connect: (token: string, workspaceId: number) => Promise<void>;
   disconnect: () => void;
   createUrlTab: (workspaceId: number, urlTabName: string) => void;
   deleteUrlTab: (workspaceId: number, urlTabId: number) => void;
@@ -31,12 +31,10 @@ export const useWebSocket = (): UseWebSocketReturn => {
   const stompClientRef = useRef<Stomp.Client | null>(null);
   const subscriptionsRef = useRef<Map<string, Stomp.Subscription>>(new Map());
 
-  const connect = useCallback(async (token: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      try {
-        const socket = new WebSocket(
-          `ws://${import.meta.env.VITE_API_URL}/ws-stomp`
-        );
+  const connect = useCallback(
+    async (token: string, workspaceId: number): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        const socket = new WebSocket("ws://www.syncly-io.com/ws-stomp");
         const stompClient = Stomp.over(socket);
         stompClient.debug = null;
 
@@ -44,20 +42,31 @@ export const useWebSocket = (): UseWebSocketReturn => {
           { Authorization: "Bearer " + token },
           (frame) => {
             console.log("✅ WebSocket 연결 성공!");
-            stompClientRef.current = stompClient;
-            setIsConnected(true);
-            resolve();
+            // stompClientRef.current = stompClient;
+            stompClient.subscribe(
+              `/topic/workspace.${workspaceId}`,
+              (message) => {
+                const body = JSON.parse(message.body);
+                console.log("📨 수신 메시지: " + JSON.stringify(body));
+              }
+            );
+
+            stompClient.subscribe("user/queue/errors", (message) => {
+              const error = JSON.parse(message.body);
+              console.error("❌ 오류 메시지: " + JSON.stringify(error));
+            });
+            // setIsConnected(true);
+            // resolve();
           },
           (error) => {
             console.error("❌ WebSocket 연결 실패:", error);
-            reject(error);
+            // reject(error);
           }
         );
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }, []);
+      });
+    },
+    []
+  );
 
   const disconnect = useCallback(() => {
     if (stompClientRef.current && stompClientRef.current.connected) {

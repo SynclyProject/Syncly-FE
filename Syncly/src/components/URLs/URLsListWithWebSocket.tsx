@@ -19,10 +19,9 @@ const URLsListWithWebSocket = ({
   useEffect(() => {
     const initializeWebSocket = async () => {
       try {
-        // JWT 토큰을 localStorage나 context에서 가져오기
         const token = localStorage.getItem("accessToken");
         if (token && !isConnected) {
-          await connect(token);
+          await connect(token, spaceId);
         }
       } catch (error) {
         console.error("WebSocket 연결 실패:", error);

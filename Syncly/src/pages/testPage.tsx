@@ -34,7 +34,7 @@ const TestPage = () => {
     }
 
     try {
-      await connect(jwtToken);
+      await connect(jwtToken, Number(workspaceId));
       log("✅ WebSocket 연결 성공!");
 
       // 워크스페이스 구독
