@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Stomp } from "stompjs";
+import * as Stomp from "stompjs";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
 
 interface WebSocketMessage {
@@ -34,15 +34,17 @@ export const useWebSocket = (): UseWebSocketReturn => {
   const connect = useCallback(
     async (token: string, workspaceId: number): Promise<void> => {
       return new Promise((resolve, reject) => {
-        const socket = new WebSocket("ws://www.syncly-io.com/ws-stomp");
+        // 개발 환경에서는 HTTP, 프로덕션에서는 HTTPS 사용
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const socket = new WebSocket(`${protocol}//www.syncly-io.com/ws-stomp`);
         const stompClient = Stomp.over(socket);
-        stompClient.debug = null;
+        stompClient.debug = () => {};
 
         stompClient.connect(
           { Authorization: "Bearer " + token },
-          (frame) => {
+          () => {
             console.log("✅ WebSocket 연결 성공!");
-            // stompClientRef.current = stompClient;
+            stompClientRef.current = stompClient;
             stompClient.subscribe(
               `/topic/workspace.${workspaceId}`,
               (message) => {
@@ -55,12 +57,12 @@ export const useWebSocket = (): UseWebSocketReturn => {
               const error = JSON.parse(message.body);
               console.error("❌ 오류 메시지: " + JSON.stringify(error));
             });
-            // setIsConnected(true);
-            // resolve();
+            setIsConnected(true);
+            resolve();
           },
           (error) => {
             console.error("❌ WebSocket 연결 실패:", error);
-            // reject(error);
+            reject(error);
           }
         );
       });
@@ -76,7 +78,9 @@ export const useWebSocket = (): UseWebSocketReturn => {
       });
       subscriptionsRef.current.clear();
 
-      stompClientRef.current.disconnect();
+      stompClientRef.current.disconnect(() => {
+        console.log("WebSocket 연결이 정상적으로 해제되었습니다.");
+      });
       stompClientRef.current = null;
       setIsConnected(false);
       console.log("🔌 WebSocket 연결 해제됨");

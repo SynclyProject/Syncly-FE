@@ -2,13 +2,19 @@ import { useWorkSpaceContext } from "../context/workSpaceContext";
 import { useQuery } from "@tanstack/react-query";
 import { GetAllTaps } from "../shared/api/URL/getList";
 import { useLocation, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export const useURLsList = () => {
   const { personalSpaceId, setWorkspaceId } = useWorkSpaceContext();
   const location = useLocation();
   const { id } = useParams();
 
-  setWorkspaceId(Number(id));
+  // 렌더링 후에 workspaceId 업데이트
+  useEffect(() => {
+    if (id) {
+      setWorkspaceId(Number(id));
+    }
+  }, [id, setWorkspaceId]);
 
   let spaceId: number;
   if (location.pathname === "/my-urls") {
