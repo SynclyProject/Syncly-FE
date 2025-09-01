@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetInitInfo, GetLiveToken } from "../../shared/api/Live";
 import { useParams } from "react-router-dom";
 import { useLiveKitContext } from "../../context/LiveKitContext";
+import { useEffect } from "react";
 
 const ParticipantsList = ({
   setIsVoice,
@@ -12,7 +13,7 @@ const ParticipantsList = ({
   setIsVoice: (isVoice: boolean) => void;
 }) => {
   const { id } = useParams();
-  const { joinRoom } = useLiveKitContext();
+  const { joinRoom, setLiveKitToken } = useLiveKitContext();
 
   const { data } = useQuery({
     queryKey: ["live-room-members", id],
@@ -26,7 +27,12 @@ const ParticipantsList = ({
     queryFn: () => GetLiveToken(Number(id)),
   });
 
-  console.log(liveKitToken);
+  // liveKitToken이 변경될 때만 setLiveKitToken 호출
+  useEffect(() => {
+    if (liveKitToken?.result) {
+      setLiveKitToken(liveKitToken.result);
+    }
+  }, [liveKitToken, setLiveKitToken]);
 
   return (
     <div className="w-[335px] rounded-[10px] bg-white p-[14px] flex flex-col gap-3">

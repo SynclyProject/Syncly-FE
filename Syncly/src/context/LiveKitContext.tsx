@@ -1,8 +1,5 @@
 import { createContext, useState, useContext, PropsWithChildren } from "react";
-import { useParams } from "react-router-dom";
 import { Room } from "livekit-client";
-
-import { GetLiveToken } from "../shared/api/Live";
 
 type TLiveKitContext = {
   room: Room;
@@ -14,6 +11,8 @@ type TLiveKitContext = {
   toggleMic: () => Promise<void>;
   toggleCam: () => Promise<void>;
   toggleScreenSharing: () => Promise<void>;
+  liveKitToken: string | null;
+  setLiveKitToken: (token: string | null) => void;
 };
 
 const LiveKitContext = createContext<TLiveKitContext | null>(null);
@@ -23,16 +22,14 @@ export const LiveKitProvider = ({ children }: PropsWithChildren) => {
   const [micEnabled, setMicEnabled] = useState(false);
   const [camEnabled, setCamEnabled] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
+  const [liveKitToken, setLiveKitToken] = useState<string | null>(null);
 
-  const { id } = useParams();
   const serverUrl = import.meta.env.VITE_LIVEKIT_URL;
 
   const joinRoom = async () => {
     try {
-      const response = await GetLiveToken(Number(id));
-      const livekitToken = response?.result;
-      if (livekitToken) {
-        await room.connect(serverUrl, livekitToken);
+      if (liveKitToken) {
+        await room.connect(serverUrl, liveKitToken);
       } else console.log("방 참가 실패 (이유: 라이브킷 토큰 발급 실패)");
     } catch (error) {
       console.log("방 참가 실패 (이유: 라이브킷 연결 실패)", error);
@@ -70,6 +67,8 @@ export const LiveKitProvider = ({ children }: PropsWithChildren) => {
         toggleMic,
         toggleCam,
         toggleScreenSharing,
+        liveKitToken,
+        setLiveKitToken,
       }}
     >
       {children}
