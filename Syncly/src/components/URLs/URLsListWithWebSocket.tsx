@@ -20,7 +20,7 @@ const URLsListWithWebSocket = ({
     const initializeWebSocket = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        if (token && !isConnected) {
+        if (token && !isConnected && spaceId) {
           await connect(token, spaceId);
         }
       } catch (error) {
@@ -29,7 +29,7 @@ const URLsListWithWebSocket = ({
     };
 
     initializeWebSocket();
-  }, [connect, isConnected]);
+  }, [connect, isConnected, spaceId]);
 
   // 워크스페이스 구독
   useEffect(() => {
