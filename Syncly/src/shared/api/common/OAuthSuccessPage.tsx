@@ -1,4 +1,4 @@
-// src/pages/OAuthSuccessPage.tsx (TS) / .jsx도 OK
+/* // src/pages/OAuthSuccessPage.tsx (TS) / .jsx도 OK
 import { useEffect } from "react";
 import { axiosInstance } from "./axiosInstance";
 
@@ -26,4 +26,26 @@ export default function OAuthSuccessPage() {
 
   return <p>구글 로그인 처리</p>;
 
+} */
+
+import { useEffect } from "react";
+import axios from "axios";
+
+export default function OAuthSuccessPage() {
+  useEffect(() => {
+    // RefreshToken은 이미 쿠키에 있으므로
+    // 여기서 /auth/reissue 호출해서 AccessToken 받아오기
+    axios.post("/auth/reissue", null, { withCredentials: true })
+      .then(res => {
+        const { accessToken } = res.data;
+        localStorage.setItem("token", accessToken);
+        window.location.href = "/"; // 메인 페이지로 이동
+      })
+      .catch(() => {
+        alert("로그인 실패, 다시 시도해주세요.");
+        window.location.href = "/login";
+      });
+  }, []);
+
+  return <p>구글 로그인 처리중...</p>;
 }
