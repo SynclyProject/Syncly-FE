@@ -29,7 +29,6 @@ export default function OAuthSuccessPage() {
 } */
 
 import { useEffect } from "react";
-import axios from "axios";
 import { axiosInstance} from "./axiosInstance";
 
 
@@ -63,7 +62,7 @@ export default function OAuthSuccessPage() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axiosInstance.post("/auth/reissue");
+        const { data } = await axiosInstance.post("/api/auth/reissue");
         const accessToken: string = data?.accessToken;
         if (!accessToken) throw new Error("No accessToken");
 

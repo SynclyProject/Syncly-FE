@@ -14,7 +14,7 @@ export const BeginGoogleLogin = () => {
 
   const redirectUri = `${window.location.origin}${REDIRECT_PATH}`;
 
-  window.location.href = `${API_BASE}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
+  window.location.href = `${API_BASE}/api/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
     redirectUri
   )}`;
 };
