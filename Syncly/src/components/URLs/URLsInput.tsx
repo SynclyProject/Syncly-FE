@@ -1,35 +1,43 @@
 import { useState } from "react";
 import Button from "../../shared/ui/Button";
 import Url from "./Url";
-import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
+import { TMySpaceURLs } from "../../shared/type/mySpaceType";
 import { useMutation } from "@tanstack/react-query";
-import { PostTaps } from "../../shared/api/URL/personal";
+import { PostTabItems, PostTaps } from "../../shared/api/URL/personal";
+import { useURLsList } from "../../hooks/useURLsList";
 
 interface IURLsInputProps {
-  onAdd: (urls: TMySpaceURLs) => void;
+  onAdd?: (urls: TMySpaceURLs) => void;
   onCancel: () => void;
   initialValue?: string;
 }
 
-const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
+let tabId: number;
+
+const URLsInput = ({ onCancel, initialValue = "" }: IURLsInputProps) => {
   const [title, setTitle] = useState(initialValue);
-  const [urls, setUrls] = useState<TUrl[]>([]);
   const [currentUrl, setCurrentUrl] = useState("");
+
+  const { refetch } = useURLsList();
 
   const { mutate: postTapsMutation } = useMutation({
     mutationFn: PostTaps,
     onSuccess: (data) => {
-      console.log("탭 생성 성공", data);
+      tabId = data.result.urlTabId;
+      refetch();
+    },
+  });
+
+  const { mutate: postUrlsMutation } = useMutation({
+    mutationFn: PostTabItems,
+    onSuccess: () => {
+      refetch();
     },
   });
 
   const handleAddUrl = () => {
     if (currentUrl.trim()) {
-      const newUrl: TUrl = {
-        id: urls.length + 1, // 임시 ID 생성
-        url: [currentUrl],
-      };
-      setUrls([...urls, newUrl]);
+      postUrlsMutation({ tabId: tabId, url: currentUrl });
       setCurrentUrl("");
     }
   };
@@ -41,24 +49,11 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    const newUrls: TMySpaceURLs = {
-      id: urls.length + 1, // 임시 ID 생성
-      title: title,
-      urls: urls,
-    };
-
-    // 먼저 onAdd 호출하여 UI 업데이트
-    onAdd(newUrls);
+    postTapsMutation({ urlTabName: title });
 
     // 상태 초기화
     setTitle("");
-    setUrls([]);
     setCurrentUrl("");
-
-    // 마지막에 API 호출 (setTimeout으로 비동기 처리)
-    setTimeout(() => {
-      postTapsMutation({ urlTapName: title });
-    }, 0);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -91,10 +86,11 @@ const URLsInput = ({ onAdd, onCancel, initialValue = "" }: IURLsInputProps) => {
           value={currentUrl}
           onChange={handleUrlChange}
           onAdd={handleAddUrl}
+          tabId={tabId}
         />
-        {urls.map((url) => (
-          <Url key={url.id} state="url" text={url.url[0]} />
-        ))}
+        {/* {urls.map((url: TUrl) => (
+          <Url key={url.urlItemId} state="url" text={url.url} tabId={tabId} />
+        ))} */}
       </div>
     </div>
   );

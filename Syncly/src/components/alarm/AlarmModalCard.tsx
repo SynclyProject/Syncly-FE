@@ -10,6 +10,7 @@ interface AlarmModalCardProps {
   message: string;
   onAccept: () => void;
   invitationId: number;
+  refetch: () => void;
 }
 
 const AlarmModalCard = ({
@@ -17,11 +18,12 @@ const AlarmModalCard = ({
   message,
   onAccept,
   invitationId,
+  refetch,
 }: AlarmModalCardProps) => {
   const { mutate: postSpaceAcceptMutation } = useMutation({
     mutationFn: PostSpaceAccept,
     onSuccess: () => {
-      window.location.reload();
+      refetch();
       onAccept();
     },
   });
@@ -29,7 +31,7 @@ const AlarmModalCard = ({
   const { mutate: postSpaceRejectMutation } = useMutation({
     mutationFn: PostSpaceReject,
     onSuccess: () => {
-      window.location.reload();
+      refetch();
     },
   });
 

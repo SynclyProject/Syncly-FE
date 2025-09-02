@@ -1,5 +1,5 @@
 import TeamNavigate from "../../components/TeamNavigate";
-import URLsList from "../../components/URLs/URLsList";
+import URLsListWithWebSocket from "../../components/URLs/URLsListWithWebSocket";
 import Button from "../../shared/ui/Button";
 import { useState } from "react";
 
@@ -15,7 +15,10 @@ const TeamURLsPage = () => {
           onClick={() => setShowInput(true)}
         />
       </div>
-      <URLsList showInput={showInput} setShowInput={setShowInput} />
+      <URLsListWithWebSocket
+        showInput={showInput}
+        setShowInput={setShowInput}
+      />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetSpaceRole } from "../../../shared/api/WorkSpace/get";
 import { DeleteSpace, DeleteSpaceLeave } from "../../api/WorkSpace/delete";
 import { useNavigate } from "react-router-dom";
+import { useSpaceList } from "../../../hooks/useSpaceList";
 
 interface ISideModalProps {
   editTeam: boolean;
@@ -14,6 +15,7 @@ interface ISideModalProps {
 const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
   const [showInviteModel, setShowInviteModel] = useState(false);
   const navigate = useNavigate();
+  const { refetch } = useSpaceList();
 
   const { data } = useQuery({
     queryKey: ["role", spaceId],
@@ -26,7 +28,7 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
     try {
       await DeleteSpaceLeave({ workspaceId: spaceId });
       console.log("팀스페이스 나가기 성공");
-      window.location.reload();
+      refetch();
       navigate("/my-urls");
     } catch (error) {
       console.log("팀스페이스 나가기 실패", error);
@@ -36,7 +38,7 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
     try {
       await DeleteSpace({ workspaceId: spaceId });
       console.log("팀스페이스 삭제 성공");
-      window.location.reload();
+      refetch();
       navigate("/my-urls");
     } catch (error) {
       console.log("팀스페이스 삭제 실패", error);

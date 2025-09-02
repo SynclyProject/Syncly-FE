@@ -1,10 +1,10 @@
 import { axiosInstance } from "../common/axiosInstance";
 
 //URL 탭 생성
-export const PostTaps = async (data: { urlTapName: string }) => {
+export const PostTaps = async (data: { urlTabName: string }) => {
   try {
-    const response = await axiosInstance.post("/api/workspaces/taps", {
-      urlTapName: data.urlTapName,
+    const response = await axiosInstance.post("/api/workspaces/tabs", {
+      urlTabName: data.urlTabName,
     });
     return response.data;
   } catch (error) {
@@ -13,11 +13,14 @@ export const PostTaps = async (data: { urlTapName: string }) => {
 };
 
 //URL 아이템 생성
-export const PostTabItems = async (data: { tabId: number }) => {
+export const PostTabItems = async (data: { tabId: number; url: string }) => {
+  console.log("URL 아이템 생성 data", data);
   try {
     const response = await axiosInstance.post(
-      `/api/workspaces/taps/${data.tabId}/items`,
-      data
+      `/api/workspaces/tabs/${data.tabId}`,
+      {
+        url: data.url,
+      }
     );
     return response.data;
   } catch (error) {
@@ -26,10 +29,10 @@ export const PostTabItems = async (data: { tabId: number }) => {
 };
 
 // URL 탭 삭제
-export const DeleteTaps = async (data: { tapId: number }) => {
+export const DeleteTaps = async (data: { tabId: number }) => {
   try {
     const response = await axiosInstance.delete(
-      `/api/workspaces/taps/${data.tapId}`
+      `/api/workspaces/tabs/${data.tabId}`
     );
     return response.data;
   } catch (error) {
@@ -44,7 +47,7 @@ export const DeleteTabItems = async (data: {
 }) => {
   try {
     const response = await axiosInstance.delete(
-      `/api/workspaces/taps/${data.tabId}/${data.itemId}`
+      `/api/workspaces/tabs/${data.tabId}/${data.itemId}`
     );
     return response.data;
   } catch (error) {
@@ -54,14 +57,14 @@ export const DeleteTabItems = async (data: {
 
 // URL 탭 이름 변경
 export const PatchTaps = async (data: {
-  tapId: number;
-  urlTapName: string;
+  tabId: number;
+  urlTabName: string;
 }) => {
   try {
     const response = await axiosInstance.patch(
-      `/api/workspaces/taps/${data.tapId}`,
+      `/api/workspaces/tabs/${data.tabId}`,
       {
-        newUrlTapName: data.urlTapName,
+        newUrlTabName: data.urlTabName,
       }
     );
     return response.data;
