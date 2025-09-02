@@ -21,8 +21,7 @@ import { PropsWithChildren } from "react";
 import { AuthProvider, useAuthContext } from "./context/AuthContext";
 import { WorkSpaceProvider } from "./context/workSpaceContext";
 import TestPage from "./pages/testPage";
-import OAuthCallback from "./shared/api/OAuthCallback";
-
+import OAuthCallback from "./shared/api/common/OAuthSuccessPage";
 
 const queryClient = new QueryClient();
 
