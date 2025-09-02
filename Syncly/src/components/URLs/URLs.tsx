@@ -12,9 +12,21 @@ interface IURLsProps {
   title: string;
   urls: TUrl[];
   tabId: number;
+  index: number;
+  dragStart: (e: React.MouseEvent, position: number) => void;
+  dragEnter: (e: React.MouseEvent, position: number) => void;
+  drop: () => void;
 }
 
-const URLs = ({ title, urls, tabId }: IURLsProps) => {
+const URLs = ({
+  title,
+  urls,
+  tabId,
+  index,
+  dragStart,
+  dragEnter,
+  drop,
+}: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showAll, setShowAll] = useState(false);
@@ -91,7 +103,13 @@ const URLs = ({ title, urls, tabId }: IURLsProps) => {
   }, [modalShow]);
 
   return (
-    <div className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]">
+    <div
+      className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]"
+      draggable
+      onDragStart={(e) => dragStart(e, index)}
+      onDragEnter={(e) => dragEnter(e, index)}
+      onDragEnd={drop}
+    >
       <div className="flex gap-4 h-[52px] items-center justify-between">
         <div className="flex gap-5 items-center relative">
           {editTitle ? (

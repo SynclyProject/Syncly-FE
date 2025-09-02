@@ -1,6 +1,7 @@
 import { TMySpaceURLs } from "../../shared/type/mySpaceType";
 import URLsInput from "./URLsInput";
 import URLs from "./URLs";
+import useDragDrop from "../../hooks/useDragDrop";
 
 interface IURLsListContentProps {
   showInput: boolean;
@@ -16,6 +17,10 @@ const URLsListContent = ({
   const tabs = urlsTapList || [];
   const hasTabs = tabs.length > 0;
 
+  const { dragStart, dragEnter, drop, list } = useDragDrop({
+    urlTapList: tabs,
+  });
+
   return (
     <div className="flex flex-col gap-5 w-full">
       {!hasTabs && <URLsInput onCancel={() => setShowInput(false)} />}
@@ -23,12 +28,16 @@ const URLsListContent = ({
 
       {hasTabs && (
         <div className="flex flex-col gap-5 w-full">
-          {tabs.map((urls: TMySpaceURLs) => (
+          {(list as TMySpaceURLs[]).map((urls, index) => (
             <URLs
               key={urls.tabId}
               title={urls.tabName}
               urls={urls.urls}
               tabId={urls.tabId}
+              index={index}
+              dragStart={dragStart}
+              dragEnter={dragEnter}
+              drop={drop}
             />
           ))}
         </div>
