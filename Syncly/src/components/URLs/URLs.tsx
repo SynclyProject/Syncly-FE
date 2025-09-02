@@ -104,10 +104,11 @@ const URLs = ({
 
   return (
     <div
-      className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]"
+      className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]"
       draggable
       onDragStart={(e) => dragStart(e, index)}
       onDragEnter={(e) => dragEnter(e, index)}
+      onDragOver={(e) => e.preventDefault()}
       onDragEnd={drop}
     >
       <div className="flex gap-4 h-[52px] items-center justify-between">
