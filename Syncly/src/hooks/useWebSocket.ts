@@ -35,8 +35,8 @@ export const useWebSocket = (): UseWebSocketReturn => {
     async (token: string, workspaceId: number): Promise<void> => {
       return new Promise((resolve, reject) => {
         // 개발 환경에서는 HTTP, 프로덕션에서는 HTTPS 사용
-        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        const socket = new WebSocket(`${protocol}//www.syncly-io.com/ws-stomp`);
+        // const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const socket = new WebSocket(`wss://www.syncly-io.com/ws-stomp`);
         const stompClient = Stomp.over(socket);
         stompClient.debug = () => {};
 
