@@ -63,7 +63,14 @@ const Url = ({
         </>
       ) : (
         <>
-          <p className="flex-1 text-[16px] font-semibold">{text}</p>
+          <a
+            className="flex-1 text-[16px] font-semibold"
+            href={text}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {text}
+          </a>
           <button
             className="cursor-pointer"
             onClick={() => {
