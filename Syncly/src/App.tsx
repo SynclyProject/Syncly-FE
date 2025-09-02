@@ -113,7 +113,7 @@ const router = createBrowserRouter([
       },
       {
         path: "oauth2/callback", 
-        element: <OAuthCallback />,
+        element: <OAuthSuccessPage />,
       },
 
     ],
