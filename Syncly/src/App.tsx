@@ -112,7 +112,7 @@ const router = createBrowserRouter([
         element: <TestPage />,
       },
       {
-        path: "oauth2/success", 
+        path: "/oauth2/success", 
         element: <OAuthSuccessPage />,
       },
 
