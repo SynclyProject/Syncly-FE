@@ -5,9 +5,9 @@ import {
   useEffect,
   PropsWithChildren,
 } from "react";
-import { useParams } from "react-router-dom";
 
 type TWorkSpaceContext = {
+  personalSpaceId: number;
   workspaceId: number;
   setWorkspaceId: (workspaceId: number) => void;
 };
@@ -15,12 +15,12 @@ type TWorkSpaceContext = {
 const WorkSpaceContext = createContext<TWorkSpaceContext | null>(null);
 
 export const WorkSpaceProvider = ({ children }: PropsWithChildren) => {
-  const { id } = useParams();
-  const [workspaceId, setWorkspaceId] = useState<number>(Number(id));
+  const personalSpaceId = 17;
+
+  // 초기값을 0으로 설정하여 NaN 방지
+  const [workspaceId, setWorkspaceId] = useState<number>(0);
 
   useEffect(() => {
-    setWorkspaceId(Number(id));
-
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "workspaceId") {
         setWorkspaceId(Number(e.newValue));
@@ -29,21 +29,15 @@ export const WorkSpaceProvider = ({ children }: PropsWithChildren) => {
 
     window.addEventListener("storage", handleStorageChange);
 
-    const handleWorkspaceIdChange = () => {
-      setWorkspaceId(Number(id));
-    };
-
-    window.addEventListener("workspaceIdChanged", handleWorkspaceIdChange);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("workspaceIdChanged", handleWorkspaceIdChange);
     };
-  }, [id]);
+  }, []);
 
   return (
     <WorkSpaceContext.Provider
       value={{
+        personalSpaceId,
         workspaceId,
         setWorkspaceId,
       }}

@@ -16,7 +16,7 @@ export const GetLiveToken = async (workspaceId: number) => {
 
 export const GetInitInfo = async (data: { workspaceId: number }) => {
   try {
-    const response = await axiosInstance.get("/api/livekit/init", {
+    const response = await axiosInstance.get("/api/livekit/init-info", {
       params: data,
     });
     return response.data;

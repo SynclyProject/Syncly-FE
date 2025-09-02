@@ -4,7 +4,7 @@ import { axiosInstance } from "../common/axiosInstance";
 export const GetAllTaps = async (data: { workspaceId: number }) => {
   try {
     const response = await axiosInstance.get(
-      `/api/workspaces/${data.workspaceId}/taps-with-urls`
+      `/api/workspaces/${data.workspaceId}/tabs-with-urls`
     );
     return response.data;
   } catch (error) {

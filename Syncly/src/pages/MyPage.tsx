@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetMemberInfo } from "../shared/api/Member/get_delete";
 
 const MyPage = () => {
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["memberInfo"],
     queryFn: GetMemberInfo,
   });
@@ -14,6 +14,7 @@ const MyPage = () => {
       <Profile
         name={data?.result.name}
         profile={data?.result.profileImageObjectKey}
+        refetch={refetch}
       />
       <Security email={data?.result.email} />
     </div>

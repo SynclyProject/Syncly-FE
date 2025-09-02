@@ -8,6 +8,7 @@ import { PostLogin } from "../shared/api/Auth";
 import { useAuthContext } from "../context/AuthContext";
 import { AxiosError } from "axios";
 import { BeginGoogleLogin } from "../shared/api/Social";
+import { PostPersonalSpace } from "../shared/api/WorkSpace/post";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const LoginPage = () => {
       alert("로그인 성공!");
       localStorage.setItem("accessToken", response.result);
       checkLoginStatus(); // AuthContext 상태 업데이트
+      PostPersonalSpace();
 
       // redirectTo가 있으면 해당 경로로, 없으면 기본 경로로 이동
       if (redirectTo) {
@@ -128,9 +130,10 @@ const LoginPage = () => {
         <div className="w-[459px] h-px bg-[#E6E6E6] mt-2 " />
         {/* Google Sign-In */}
 
-        <button 
+        <button
           onClick={() => BeginGoogleLogin()}
-          className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
+          className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer text-black text-sm font-medium leading-6 font-['inter']"
+        >
           <img src="/google-logo.png" className="w-6 h-6" alt="Google" />{" "}
           <p>Continue with Google</p>
         </button>
