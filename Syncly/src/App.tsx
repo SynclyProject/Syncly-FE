@@ -21,7 +21,7 @@ import { PropsWithChildren } from "react";
 import { AuthProvider, useAuthContext } from "./context/AuthContext";
 import { WorkSpaceProvider } from "./context/workSpaceContext";
 import TestPage from "./pages/testPage";
-import OAuthCallback from "./shared/api/OAuthCallback";
+import OAuthSuccessPage from "./shared/api/common/OAuthSuccessPage";
 
 const queryClient = new QueryClient();
 
@@ -112,9 +112,10 @@ const router = createBrowserRouter([
         element: <TestPage />,
       },
       {
-        path: "oauth2/callback",
-        element: <OAuthCallback />,
+        path: "/oauth2/success", 
+        element: <OAuthSuccessPage />,
       },
+
     ],
   },
 ]);
