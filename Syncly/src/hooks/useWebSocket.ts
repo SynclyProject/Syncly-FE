@@ -3,10 +3,13 @@ import * as Stomp from "stompjs";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
 
 interface WebSocketMessage {
-  workspaceId: number;
+  workspaceId?: number;
   urlTabName?: string;
   urlTabId?: number;
+  tabId?: number;
   newUrlTabName?: string;
+  url?: string;
+  urlItemId?: number;
 }
 
 interface UseWebSocketReturn {
@@ -20,6 +23,8 @@ interface UseWebSocketReturn {
     urlTabId: number,
     newUrlTabName: string
   ) => void;
+  addUrl: (urlTabId: number, url: string) => void;
+  deleteUrl: (urlTabId: number, urlItemId: number) => void;
   subscribeToWorkspace: (
     workspaceId: number,
     callback: (message: TMySpaceURLs) => void
@@ -34,8 +39,6 @@ export const useWebSocket = (): UseWebSocketReturn => {
   const connect = useCallback(
     async (token: string, workspaceId: number): Promise<void> => {
       return new Promise((resolve, reject) => {
-        // 개발 환경에서는 HTTP, 프로덕션에서는 HTTPS 사용
-        // const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const socket = new WebSocket(`wss://www.syncly-io.com/ws-stomp`);
         const stompClient = Stomp.over(socket);
         stompClient.debug = () => {};
@@ -135,8 +138,33 @@ export const useWebSocket = (): UseWebSocketReturn => {
     []
   );
 
+  const addUrl = useCallback((tabId: number, url: string) => {
+    if (!stompClientRef.current?.connected) {
+      throw new Error("WebSocket이 연결되지 않았습니다.");
+    }
+
+    const message: WebSocketMessage = {
+      tabId,
+      url,
+    };
+    stompClientRef.current.send("/app/addUrl", {}, JSON.stringify(message));
+    console.log("🔗 URL 추가 요청 전송됨:", message);
+  }, []);
+
+  const deleteUrl = useCallback((tabId: number, urlItemId: number) => {
+    if (!stompClientRef.current?.connected) {
+      throw new Error("WebSocket이 연결되지 않았습니다.");
+    }
+    const message: WebSocketMessage = {
+      tabId,
+      urlItemId,
+    };
+    stompClientRef.current.send("/app/deleteUrl", {}, JSON.stringify(message));
+    console.log("🔗 URL 삭제 요청 전송됨:", message);
+  }, []);
+
   const subscribeToWorkspace = useCallback(
-    (workspaceId: number, callback: (message) => void) => {
+    (workspaceId: number, callback: (message: TMySpaceURLs) => void) => {
       if (!stompClientRef.current?.connected) {
         throw new Error("WebSocket이 연결되지 않았습니다.");
       }
@@ -181,6 +209,8 @@ export const useWebSocket = (): UseWebSocketReturn => {
     createUrlTab,
     deleteUrlTab,
     updateUrlTabName,
+    addUrl,
+    deleteUrl,
     subscribeToWorkspace,
   };
 };

@@ -16,6 +16,8 @@ interface IURLsProps {
   dragStart: (e: React.MouseEvent, position: number) => void;
   dragEnter: (e: React.MouseEvent, position: number) => void;
   drop: () => void;
+  onWebSocketAction?: (action: string, data: Record<string, unknown>) => void;
+  communicationType?: "http" | "websocket";
 }
 
 const URLs = ({
@@ -26,6 +28,8 @@ const URLs = ({
   dragStart,
   dragEnter,
   drop,
+  onWebSocketAction,
+  communicationType,
 }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -37,7 +41,7 @@ const URLs = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLButtonElement>(null);
 
-  const { refetch } = useURLsList();
+  const { refetch, spaceId } = useURLsList();
 
   const { mutate: patchTapsMutation } = useMutation({
     mutationFn: PatchTaps,
@@ -59,7 +63,15 @@ const URLs = ({
   };
   const handleTitleSubmit = () => {
     if (!editTitleValue.trim()) return;
-    patchTapsMutation({ tabId: tabId, urlTabName: editTitleValue });
+    if (communicationType === "http") {
+      patchTapsMutation({ tabId: tabId, urlTabName: editTitleValue });
+    } else if (communicationType === "websocket" && onWebSocketAction) {
+      onWebSocketAction("updateUrlTabName", {
+        workspaceId: spaceId,
+        urlTabId: tabId,
+        newTabName: editTitleValue,
+      });
+    }
   };
 
   const handleInputChange = (value: string) => {
@@ -76,7 +88,14 @@ const URLs = ({
   };
 
   const handleAddUrl = () => {
-    postUrlsMutation({ tabId: tabId, url: inputValue });
+    if (communicationType === "http") {
+      postUrlsMutation({ tabId: tabId, url: inputValue });
+    } else if (communicationType === "websocket" && onWebSocketAction) {
+      onWebSocketAction("addUrl", {
+        tabId: tabId,
+        url: inputValue,
+      });
+    }
     setInputValue("");
   };
 
@@ -148,6 +167,8 @@ const URLs = ({
                 tabId={tabId}
                 editTitle={editTitle}
                 setEditTitle={setEditTitle}
+                onWebSocketAction={onWebSocketAction}
+                communicationType={communicationType}
               />
             </div>
           )}
@@ -172,6 +193,8 @@ const URLs = ({
             onCancel={() => setShowInput(false)}
             tabId={tabId}
             onAdd={handleAddUrl}
+            communicationType={communicationType}
+            onWebSocketAction={onWebSocketAction}
           />
         )}
 

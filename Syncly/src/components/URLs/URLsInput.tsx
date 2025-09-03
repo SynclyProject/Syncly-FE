@@ -10,16 +10,26 @@ interface IURLsInputProps {
   onAdd?: (urls: TMySpaceURLs) => void;
   onCancel: () => void;
   initialValue?: string;
+  communicationType?: "http" | "websocket"; // 통신 방식 지정
+  workspaceId?: number; // 웹소켓 사용 시 필요
+  onWebSocketAction?: (action: string, data: Record<string, unknown>) => void; // 웹소켓 액션 콜백
 }
 
 let tabId: number;
 
-const URLsInput = ({ onCancel, initialValue = "" }: IURLsInputProps) => {
+const URLsInput = ({
+  onCancel,
+  initialValue = "",
+  communicationType = "http",
+  workspaceId,
+  onWebSocketAction,
+}: IURLsInputProps) => {
   const [title, setTitle] = useState(initialValue);
   const [currentUrl, setCurrentUrl] = useState("");
 
   const { refetch } = useURLsList();
 
+  // HTTP 통신을 위한 mutation
   const { mutate: postTapsMutation } = useMutation({
     mutationFn: PostTaps,
     onSuccess: (data) => {
@@ -37,7 +47,20 @@ const URLsInput = ({ onCancel, initialValue = "" }: IURLsInputProps) => {
 
   const handleAddUrl = () => {
     if (currentUrl.trim()) {
-      postUrlsMutation({ tabId: tabId, url: currentUrl });
+      if (communicationType === "http") {
+        postUrlsMutation({ tabId: tabId, url: currentUrl });
+      } else if (
+        communicationType === "websocket" &&
+        workspaceId &&
+        onWebSocketAction
+      ) {
+        // 웹소켓을 통한 URL 추가
+        onWebSocketAction("addUrl", {
+          workspaceId,
+          urlTabId: tabId,
+          url: currentUrl,
+        });
+      }
       setCurrentUrl("");
     }
   };
@@ -49,7 +72,19 @@ const URLsInput = ({ onCancel, initialValue = "" }: IURLsInputProps) => {
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    postTapsMutation({ urlTabName: title });
+    if (communicationType === "http") {
+      postTapsMutation({ urlTabName: title });
+    } else if (
+      communicationType === "websocket" &&
+      workspaceId &&
+      onWebSocketAction
+    ) {
+      // 웹소켓을 통한 탭 생성
+      onWebSocketAction("createUrlTab", {
+        workspaceId,
+        urlTabName: title,
+      });
+    }
 
     // 상태 초기화
     setTitle("");

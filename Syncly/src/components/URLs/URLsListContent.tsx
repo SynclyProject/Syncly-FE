@@ -7,12 +7,18 @@ interface IURLsListContentProps {
   showInput: boolean;
   setShowInput: (show: boolean) => void;
   urlsTapList: TMySpaceURLs[];
+  communicationType?: "http" | "websocket";
+  workspaceId?: number;
+  onWebSocketAction?: (action: string, data: Record<string, unknown>) => void;
 }
 
 const URLsListContent = ({
   showInput,
   setShowInput,
   urlsTapList,
+  communicationType = "http",
+  workspaceId,
+  onWebSocketAction,
 }: IURLsListContentProps) => {
   const tabs = urlsTapList || [];
   const hasTabs = tabs.length > 0;
@@ -23,8 +29,22 @@ const URLsListContent = ({
 
   return (
     <div className="flex flex-col gap-5 w-full">
-      {!hasTabs && <URLsInput onCancel={() => setShowInput(false)} />}
-      {showInput && <URLsInput onCancel={() => setShowInput(false)} />}
+      {!hasTabs && (
+        <URLsInput
+          onCancel={() => setShowInput(false)}
+          communicationType={communicationType}
+          workspaceId={workspaceId}
+          onWebSocketAction={onWebSocketAction}
+        />
+      )}
+      {showInput && (
+        <URLsInput
+          onCancel={() => setShowInput(false)}
+          communicationType={communicationType}
+          workspaceId={workspaceId}
+          onWebSocketAction={onWebSocketAction}
+        />
+      )}
 
       {hasTabs && (
         <div className="flex flex-col gap-5 w-full">
@@ -38,6 +58,8 @@ const URLsListContent = ({
               dragStart={dragStart}
               dragEnter={dragEnter}
               drop={drop}
+              communicationType={communicationType}
+              onWebSocketAction={onWebSocketAction}
             />
           ))}
         </div>
