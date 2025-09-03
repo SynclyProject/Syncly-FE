@@ -1,35 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as Stomp from "stompjs";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
-
-interface WebSocketMessage {
-  workspaceId?: number;
-  urlTabName?: string;
-  urlTabId?: number;
-  tabId?: number;
-  newUrlTabName?: string;
-  url?: string;
-  urlItemId?: number;
-}
-
-interface UseWebSocketReturn {
-  isConnected: boolean;
-  connect: (token: string, workspaceId: number) => Promise<void>;
-  disconnect: () => void;
-  createUrlTab: (workspaceId: number, urlTabName: string) => void;
-  deleteUrlTab: (workspaceId: number, urlTabId: number) => void;
-  updateUrlTabName: (
-    workspaceId: number,
-    urlTabId: number,
-    newUrlTabName: string
-  ) => void;
-  addUrl: (urlTabId: number, url: string) => void;
-  deleteUrl: (urlTabId: number, urlItemId: number) => void;
-  subscribeToWorkspace: (
-    workspaceId: number,
-    callback: (message: TMySpaceURLs) => void
-  ) => void;
-}
+import { UseWebSocketReturn, WebSocketMessage } from "../shared/type/webSocket";
 
 export const useWebSocket = (): UseWebSocketReturn => {
   const [isConnected, setIsConnected] = useState(false);
@@ -195,6 +167,37 @@ export const useWebSocket = (): UseWebSocketReturn => {
     []
   );
 
+  const subscribeToTab = useCallback(
+    (tabId: number, callback: (message: TMySpaceURLs) => void) => {
+      if (!stompClientRef.current?.connected) {
+        throw new Error("WebSocket이 연결되지 않았습니다.");
+      }
+
+      const topic = `/topic/tab.${tabId}`;
+
+      // 기존 구독이 있다면 해제
+      if (subscriptionsRef.current.has(topic)) {
+        subscriptionsRef.current.get(topic)?.unsubscribe();
+      }
+
+      // 새로운 구독 생성
+      const subscription = stompClientRef.current.subscribe(
+        topic,
+        (message) => {
+          try {
+            const body = JSON.parse(message.body);
+            callback(body);
+          } catch (error) {
+            console.error("메시지 파싱 오류:", error);
+          }
+        }
+      );
+      subscriptionsRef.current.set(topic, subscription);
+      console.log(`📨 탭 ${tabId} 구독 시작`);
+    },
+    []
+  );
+
   // 컴포넌트 언마운트 시 연결 해제
   useEffect(() => {
     return () => {
@@ -212,5 +215,6 @@ export const useWebSocket = (): UseWebSocketReturn => {
     addUrl,
     deleteUrl,
     subscribeToWorkspace,
+    subscribeToTab,
   };
 };
