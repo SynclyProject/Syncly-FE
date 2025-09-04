@@ -205,7 +205,6 @@ export const useWebSocket = (): UseWebSocketReturn => {
       const subscription = stompClientRef.current.subscribe(
         topic,
         (message) => {
-          console.log("📨 원시 메시지 수신:", message.body);
           try {
             const body = JSON.parse(message.body);
             console.log("📨 파싱된 메시지:", body);
