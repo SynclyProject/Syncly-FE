@@ -32,7 +32,10 @@ export const useWebSocket = (): UseWebSocketReturn => {
               const error = JSON.parse(message.body);
               console.error("❌ 오류 메시지: " + JSON.stringify(error));
             });
+
+            console.log("🔄 isConnected 상태를 true로 설정...");
             setIsConnected(true);
+            console.log("✅ WebSocket 연결 및 상태 설정 완료!");
             resolve();
           },
           (error) => {
@@ -111,16 +114,31 @@ export const useWebSocket = (): UseWebSocketReturn => {
   );
 
   const addUrl = useCallback((tabId: number, url: string) => {
+    console.log("🔍 addUrl 호출:", {
+      tabId,
+      url,
+      connected: stompClientRef.current?.connected,
+    });
+
     if (!stompClientRef.current?.connected) {
       throw new Error("WebSocket이 연결되지 않았습니다.");
     }
 
     const message: WebSocketMessage = {
-      tabId,
+      urlTabId: tabId,
       url,
     };
+
+    console.log("🔗 전송할 메시지:", message);
+
     stompClientRef.current.send("/app/addUrl", {}, JSON.stringify(message));
     console.log("🔗 URL 추가 요청 전송됨:", message);
+
+    // 현재 구독 상태 확인
+    console.log(
+      "📨 현재 구독 목록:",
+      Array.from(subscriptionsRef.current.keys())
+    );
   }, []);
 
   const deleteUrl = useCallback((tabId: number, urlItemId: number) => {
@@ -176,9 +194,11 @@ export const useWebSocket = (): UseWebSocketReturn => {
       }
 
       const topic = `/topic/tab.${tabId}`;
+      console.log("🔍 탭 구독 토픽:", topic);
 
       // 기존 구독이 있다면 해제
       if (subscriptionsRef.current.has(topic)) {
+        console.log("🔌 기존 구독 해제:", topic);
         subscriptionsRef.current.get(topic)?.unsubscribe();
       }
 
@@ -186,8 +206,10 @@ export const useWebSocket = (): UseWebSocketReturn => {
       const subscription = stompClientRef.current.subscribe(
         topic,
         (message) => {
+          console.log("📨 원시 메시지 수신:", message.body);
           try {
             const body = JSON.parse(message.body);
+            console.log("📨 파싱된 메시지:", body);
             callback(body);
           } catch (error) {
             console.error("메시지 파싱 오류:", error);
@@ -195,7 +217,10 @@ export const useWebSocket = (): UseWebSocketReturn => {
         }
       );
       subscriptionsRef.current.set(topic, subscription);
-      console.log(`📨 탭 ${tabId} 구독 시작`);
+      console.log(
+        "📨 현재 구독 목록:",
+        Array.from(subscriptionsRef.current.keys())
+      );
     },
     []
   );

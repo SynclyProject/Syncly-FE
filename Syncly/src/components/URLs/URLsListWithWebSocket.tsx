@@ -17,6 +17,8 @@ const URLsListWithWebSocket = ({
     isConnected,
     connect,
     subscribeToWorkspace,
+    subscribeToTab,
+    unsubscribeFromTab,
     createUrlTab,
     deleteUrlTab,
     addUrl,
@@ -29,11 +31,19 @@ const URLsListWithWebSocket = ({
     const initializeWebSocket = async () => {
       try {
         const token = localStorage.getItem("accessToken");
+
         if (token && !isConnected && spaceId) {
           await connect(token, spaceId);
+          console.log("✅ WebSocket 연결 완료!");
+        } else {
+          console.log("⏭️ WebSocket 연결 건너뜀:", {
+            hasToken: !!token,
+            isConnected,
+            hasSpaceId: !!spaceId,
+          });
         }
       } catch (error) {
-        console.error("WebSocket 연결 실패:", error);
+        console.error("❌ WebSocket 연결 실패:", error);
       }
     };
 
@@ -118,6 +128,9 @@ const URLsListWithWebSocket = ({
       communicationType="websocket"
       workspaceId={spaceId}
       onWebSocketAction={handleWebSocketAction}
+      isConnected={isConnected}
+      subscribeToTab={subscribeToTab}
+      unsubscribeFromTab={unsubscribeFromTab}
     />
   );
 };

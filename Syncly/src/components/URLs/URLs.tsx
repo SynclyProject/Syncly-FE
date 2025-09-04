@@ -2,12 +2,11 @@ import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
 import Url from "./Url";
 import URLsModal from "./URLsModal";
-import { TUrl } from "../../shared/type/mySpaceType";
+import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
 import { useState, useRef, useEffect } from "react";
 import { PatchTaps, PostTabItems } from "../../shared/api/URL/personal";
 import { useMutation } from "@tanstack/react-query";
 import { useURLsList } from "../../hooks/useURLsList";
-import { useWebSocket } from "../../hooks/useWebSocket";
 
 interface IURLsProps {
   title: string;
@@ -19,6 +18,12 @@ interface IURLsProps {
   drop: () => void;
   onWebSocketAction?: (action: string, data: Record<string, unknown>) => void;
   communicationType?: "http" | "websocket";
+  isConnected: boolean;
+  subscribeToTab: (
+    tabId: number,
+    callback: (message: TMySpaceURLs) => void
+  ) => void;
+  unsubscribeFromTab: (tabId: number) => void;
 }
 
 const URLs = ({
@@ -31,6 +36,9 @@ const URLs = ({
   drop,
   onWebSocketAction,
   communicationType,
+  isConnected,
+  subscribeToTab,
+  unsubscribeFromTab,
 }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -43,26 +51,32 @@ const URLs = ({
   const iconRef = useRef<HTMLButtonElement>(null);
 
   const { refetch, spaceId } = useURLsList();
-  const { isConnected, subscribeToTab, unsubscribeFromTab } = useWebSocket();
 
   // 탭 구독
   useEffect(() => {
-    if (isConnected && subscribeToTab) {
-      subscribeToTab(tabId, (message) => {
-        console.log("📨 탭 메시지 수신:", message);
-        console.log("📨 탭 ID:", tabId, "메시지 타입:", typeof message);
+    // subscribeToTab 함수가 없으면 구독하지 않음
+    if (!subscribeToTab) {
+      return;
+    }
+
+    try {
+      subscribeToTab(tabId, () => {
         // 탭 관련 변경사항이 있을 때 데이터 리페치
         refetch();
       });
+      console.log("✅ 탭 구독 성공:", tabId);
+    } catch (error) {
+      console.error("❌ 탭 구독 실패:", error);
     }
 
     // 컴포넌트 언마운트 시 탭 구독 해제
     return () => {
       if (unsubscribeFromTab) {
+        console.log("🔌 탭 구독 해제:", tabId);
         unsubscribeFromTab(tabId);
       }
     };
-  }, [isConnected, subscribeToTab, tabId, refetch, unsubscribeFromTab]);
+  }, [subscribeToTab, tabId, refetch, unsubscribeFromTab, isConnected]);
 
   const { mutate: patchTapsMutation } = useMutation({
     mutationFn: PatchTaps,

@@ -10,6 +10,12 @@ interface IURLsListContentProps {
   communicationType?: "http" | "websocket";
   workspaceId?: number;
   onWebSocketAction?: (action: string, data: Record<string, unknown>) => void;
+  isConnected?: boolean;
+  subscribeToTab?: (
+    tabId: number,
+    callback: (message: TMySpaceURLs) => void
+  ) => void;
+  unsubscribeFromTab?: (tabId: number) => void;
 }
 
 const URLsListContent = ({
@@ -19,6 +25,9 @@ const URLsListContent = ({
   communicationType = "http",
   workspaceId,
   onWebSocketAction,
+  isConnected,
+  subscribeToTab,
+  unsubscribeFromTab,
 }: IURLsListContentProps) => {
   const tabs = urlsTapList || [];
   const hasTabs = tabs.length > 0;
@@ -60,6 +69,14 @@ const URLsListContent = ({
               drop={drop}
               communicationType={communicationType}
               onWebSocketAction={onWebSocketAction}
+              isConnected={!!isConnected}
+              subscribeToTab={
+                subscribeToTab as (
+                  tabId: number,
+                  callback: (message: TMySpaceURLs) => void
+                ) => void
+              }
+              unsubscribeFromTab={unsubscribeFromTab as (tabId: number) => void}
             />
           ))}
         </div>
