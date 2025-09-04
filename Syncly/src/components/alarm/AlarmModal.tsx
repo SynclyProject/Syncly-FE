@@ -3,6 +3,7 @@ import AlarmModalCard from "./AlarmModalCard";
 import { useQuery } from "@tanstack/react-query";
 import { GetSpaceInvite } from "../../shared/api/WorkSpace/get";
 import { TInvite } from "../../shared/type/teamSpaceType";
+import { useSpaceList } from "../../hooks/useSpaceList";
 
 interface AlarmModalProps {
   isOpen: boolean;
@@ -14,11 +15,13 @@ const AlarmModal = ({ isOpen }: AlarmModalProps) => {
     queryKey: ["spaceInviteList"],
     queryFn: () => GetSpaceInvite(),
   });
+  const { refetch: refetchSpaceList } = useSpaceList();
 
   if (!isOpen) return null;
 
   const handleAccept = (title: string) => {
     alert(`${title}에 입장했습니다`);
+    refetchSpaceList();
   };
 
   return (
