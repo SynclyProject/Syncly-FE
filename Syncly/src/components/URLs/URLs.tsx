@@ -242,6 +242,8 @@ const URLs = ({
             text={url.url}
             tabId={tabId}
             urlItemId={url.urlItemId}
+            communicationType={communicationType}
+            onWebSocketAction={onWebSocketAction}
           />
         ))}
         {urls.length > 2 && (
