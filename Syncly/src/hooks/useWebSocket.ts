@@ -200,6 +200,16 @@ export const useWebSocket = (): UseWebSocketReturn => {
     []
   );
 
+  // 특정 탭 구독 해제
+  const unsubscribeFromTab = useCallback((tabId: number) => {
+    const topic = `/topic/tab.${tabId}`;
+    if (subscriptionsRef.current.has(topic)) {
+      subscriptionsRef.current.get(topic)?.unsubscribe();
+      subscriptionsRef.current.delete(topic);
+      console.log(`📨 탭 ${tabId} 구독 해제됨`);
+    }
+  }, []);
+
   // 컴포넌트 언마운트 시 연결 해제
   useEffect(() => {
     return () => {
@@ -218,5 +228,6 @@ export const useWebSocket = (): UseWebSocketReturn => {
     deleteUrl,
     subscribeToWorkspace,
     subscribeToTab,
+    unsubscribeFromTab,
   };
 };

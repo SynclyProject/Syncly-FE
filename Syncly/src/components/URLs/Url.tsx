@@ -42,15 +42,7 @@ const Url = ({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && value?.trim()) {
-      if (communicationType === "http") {
-        onAdd?.(value);
-      } else if (communicationType === "websocket" && onWebSocketAction) {
-        onWebSocketAction("addUrl", {
-          tabId: tabId,
-          url: value,
-        });
-      }
-      refetch();
+      onAdd?.(value);
     }
   };
   const handleBlur = () => {
@@ -81,7 +73,10 @@ const Url = ({
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
           />
-          <Icon name="plus_blue" onClick={() => onAdd?.(value || "")} />
+          <Icon
+            name="plus_blue"
+            onClick={() => value?.trim() && onAdd?.(value)}
+          />
         </>
       ) : (
         <>

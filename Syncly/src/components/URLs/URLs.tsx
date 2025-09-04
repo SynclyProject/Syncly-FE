@@ -43,15 +43,26 @@ const URLs = ({
   const iconRef = useRef<HTMLButtonElement>(null);
 
   const { refetch, spaceId } = useURLsList();
-  const { isConnected, subscribeToTab } = useWebSocket();
+  const { isConnected, subscribeToTab, unsubscribeFromTab } = useWebSocket();
 
+  // 탭 구독
   useEffect(() => {
     if (isConnected && subscribeToTab) {
       subscribeToTab(tabId, (message) => {
         console.log("📨 탭 메시지 수신:", message);
+        console.log("📨 탭 ID:", tabId, "메시지 타입:", typeof message);
+        // 탭 관련 변경사항이 있을 때 데이터 리페치
+        refetch();
       });
     }
-  }, [isConnected, subscribeToTab, tabId]);
+
+    // 컴포넌트 언마운트 시 탭 구독 해제
+    return () => {
+      if (unsubscribeFromTab) {
+        unsubscribeFromTab(tabId);
+      }
+    };
+  }, [isConnected, subscribeToTab, tabId, refetch, unsubscribeFromTab]);
 
   const { mutate: patchTapsMutation } = useMutation({
     mutationFn: PatchTaps,
@@ -98,6 +109,8 @@ const URLs = ({
   };
 
   const handleAddUrl = () => {
+    if (!inputValue.trim()) return;
+
     if (communicationType === "http") {
       postUrlsMutation({ tabId: tabId, url: inputValue });
     } else if (communicationType === "websocket" && onWebSocketAction) {

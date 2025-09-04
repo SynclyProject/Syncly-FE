@@ -69,7 +69,6 @@ const URLsListWithWebSocket = ({
       case "createUrlTab":
         try {
           createUrlTab(data.workspaceId as number, data.urlTabName as string);
-          console.log("🚀 탭 생성 요청 전송됨:", data);
         } catch (error) {
           console.error("탭 생성 실패:", error);
         }
@@ -77,7 +76,6 @@ const URLsListWithWebSocket = ({
       case "deleteUrlTab":
         try {
           deleteUrlTab(data.workspaceId as number, data.urlTabId as number);
-          console.log("🗑️ 탭 삭제 요청 전송됨:", data);
         } catch (error) {
           console.error("탭 삭제 실패:", error);
         }
@@ -89,7 +87,6 @@ const URLsListWithWebSocket = ({
             data.urlTabId as number,
             data.newTabName as string
           );
-          console.log("🔗 탭 이름 변경 요청 전송됨:", data);
         } catch (error) {
           console.error("탭 이름 변경 실패:", error);
         }
@@ -97,7 +94,6 @@ const URLsListWithWebSocket = ({
       case "addUrl":
         try {
           addUrl(data.tabId as number, data.url as string);
-          console.log("🔗 URL 추가 요청 전송됨:", data);
         } catch (error) {
           console.error("URL 추가 실패:", error);
         }
@@ -105,7 +101,6 @@ const URLsListWithWebSocket = ({
       case "deleteUrl":
         try {
           deleteUrl(data.tabId as number, data.urlItemId as number);
-          console.log("🔗 URL 삭제 요청 전송됨:", data);
         } catch (error) {
           console.error("URL 삭제 실패:", error);
         }
