@@ -135,6 +135,7 @@ export const useWebSocket = (): UseWebSocketReturn => {
     console.log("🔗 URL 삭제 요청 전송됨:", message);
   }, []);
 
+  //워크스페이스 1회 구독
   const subscribeToWorkspace = useCallback(
     (workspaceId: number, callback: (message: TMySpaceURLs) => void) => {
       if (!stompClientRef.current?.connected) {
@@ -167,6 +168,7 @@ export const useWebSocket = (): UseWebSocketReturn => {
     []
   );
 
+  // 탭 N회 구독
   const subscribeToTab = useCallback(
     (tabId: number, callback: (message: TMySpaceURLs) => void) => {
       if (!stompClientRef.current?.connected) {
@@ -198,6 +200,32 @@ export const useWebSocket = (): UseWebSocketReturn => {
     []
   );
 
+  //개인용 에러 큐 구독
+  const subscribeToErrorQueue = useCallback(
+    (callback: (message: TMySpaceURLs) => void) => {
+      if (!stompClientRef.current?.connected) {
+        throw new Error("WebSocket이 연결되지 않았습니다.");
+      }
+
+      const topic = "/user/queue/errors";
+
+      const subscription = stompClientRef.current.subscribe(
+        topic,
+        (message) => {
+          try {
+            const body = JSON.parse(message.body);
+            callback(body);
+          } catch (error) {
+            console.error("메시지 파싱 오류:", error);
+          }
+        }
+      );
+      subscriptionsRef.current.set(topic, subscription);
+      console.log(`📨 에러 큐 구독 시작`);
+    },
+    []
+  );
+
   // 컴포넌트 언마운트 시 연결 해제
   useEffect(() => {
     return () => {
@@ -216,5 +244,6 @@ export const useWebSocket = (): UseWebSocketReturn => {
     deleteUrl,
     subscribeToWorkspace,
     subscribeToTab,
+    subscribeToErrorQueue,
   };
 };
