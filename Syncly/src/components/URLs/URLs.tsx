@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import { PatchTaps, PostTabItems } from "../../shared/api/URL/personal";
 import { useMutation } from "@tanstack/react-query";
 import { useURLsList } from "../../hooks/useURLsList";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 interface IURLsProps {
   title: string;
@@ -42,6 +43,15 @@ const URLs = ({
   const iconRef = useRef<HTMLButtonElement>(null);
 
   const { refetch, spaceId } = useURLsList();
+  const { isConnected, subscribeToTab } = useWebSocket();
+
+  useEffect(() => {
+    if (isConnected && subscribeToTab) {
+      subscribeToTab(tabId, (message) => {
+        console.log("📨 탭 메시지 수신:", message);
+      });
+    }
+  }, [isConnected, subscribeToTab, tabId]);
 
   const { mutate: patchTapsMutation } = useMutation({
     mutationFn: PatchTaps,

@@ -31,5 +31,4 @@ export interface UseWebSocketReturn {
     tabId: number,
     callback: (message: TMySpaceURLs) => void
   ) => void;
-  subscribeToErrorQueue: (callback: (message: TMySpaceURLs) => void) => void;
 }
