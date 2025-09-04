@@ -125,20 +125,19 @@ export const useWebSocket = (): UseWebSocketReturn => {
     }
 
     const message: WebSocketMessage = {
-      urlTabId: tabId,
+      tabId,
       url,
     };
-
-    console.log("🔗 전송할 메시지:", message);
-
-    stompClientRef.current.send("/app/addUrl", {}, JSON.stringify(message));
-    console.log("🔗 URL 추가 요청 전송됨:", message);
 
     // 현재 구독 상태 확인
     console.log(
       "📨 현재 구독 목록:",
       Array.from(subscriptionsRef.current.keys())
     );
+
+    stompClientRef.current.send("/app/addUrl", {}, JSON.stringify(message));
+
+    console.log("🔗 URL 추가 요청 전송됨:", message);
   }, []);
 
   const deleteUrl = useCallback((tabId: number, urlItemId: number) => {
