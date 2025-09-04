@@ -20,3 +20,10 @@ export type TInvite = {
   inviterName: string;
   workspaceName: string;
 };
+
+export type TScreenInitInfo = {
+  participantId: string;
+  profile?: string;
+  audioSharing: boolean;
+  screenSharing: boolean;
+};

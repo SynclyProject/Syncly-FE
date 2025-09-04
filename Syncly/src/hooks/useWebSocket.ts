@@ -1,30 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as Stomp from "stompjs";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
-
-interface WebSocketMessage {
-  workspaceId: number;
-  urlTabName?: string;
-  urlTabId?: number;
-  newUrlTabName?: string;
-}
-
-interface UseWebSocketReturn {
-  isConnected: boolean;
-  connect: (token: string, workspaceId: number) => Promise<void>;
-  disconnect: () => void;
-  createUrlTab: (workspaceId: number, urlTabName: string) => void;
-  deleteUrlTab: (workspaceId: number, urlTabId: number) => void;
-  updateUrlTabName: (
-    workspaceId: number,
-    urlTabId: number,
-    newUrlTabName: string
-  ) => void;
-  subscribeToWorkspace: (
-    workspaceId: number,
-    callback: (message: TMySpaceURLs) => void
-  ) => void;
-}
+import { UseWebSocketReturn, WebSocketMessage } from "../shared/type/webSocket";
 
 export const useWebSocket = (): UseWebSocketReturn => {
   const [isConnected, setIsConnected] = useState(false);
@@ -34,8 +11,6 @@ export const useWebSocket = (): UseWebSocketReturn => {
   const connect = useCallback(
     async (token: string, workspaceId: number): Promise<void> => {
       return new Promise((resolve, reject) => {
-        // 개발 환경에서는 HTTP, 프로덕션에서는 HTTPS 사용
-        // const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const socket = new WebSocket(`wss://www.syncly-io.com/ws-stomp`);
         const stompClient = Stomp.over(socket);
         stompClient.debug = () => {};
@@ -57,7 +32,10 @@ export const useWebSocket = (): UseWebSocketReturn => {
               const error = JSON.parse(message.body);
               console.error("❌ 오류 메시지: " + JSON.stringify(error));
             });
+
+            console.log("🔄 isConnected 상태를 true로 설정...");
             setIsConnected(true);
+            console.log("✅ WebSocket 연결 및 상태 설정 완료!");
             resolve();
           },
           (error) => {
@@ -135,8 +113,48 @@ export const useWebSocket = (): UseWebSocketReturn => {
     []
   );
 
+  const addUrl = useCallback((tabId: number, url: string) => {
+    console.log("🔍 addUrl 호출:", {
+      tabId,
+      url,
+      connected: stompClientRef.current?.connected,
+    });
+
+    if (!stompClientRef.current?.connected) {
+      throw new Error("WebSocket이 연결되지 않았습니다.");
+    }
+
+    const message: WebSocketMessage = {
+      tabId,
+      url,
+    };
+
+    // 현재 구독 상태 확인
+    console.log(
+      "📨 현재 구독 목록:",
+      Array.from(subscriptionsRef.current.keys())
+    );
+
+    stompClientRef.current.send("/app/addUrl", {}, JSON.stringify(message));
+
+    console.log("🔗 URL 추가 요청 전송됨:", message);
+  }, []);
+
+  const deleteUrl = useCallback((tabId: number, urlItemId: number) => {
+    if (!stompClientRef.current?.connected) {
+      throw new Error("WebSocket이 연결되지 않았습니다.");
+    }
+    const message: WebSocketMessage = {
+      tabId,
+      urlItemId,
+    };
+    stompClientRef.current.send("/app/deleteUrl", {}, JSON.stringify(message));
+    console.log("🔗 URL 삭제 요청 전송됨:", message);
+  }, []);
+
+  //워크스페이스 1회 구독
   const subscribeToWorkspace = useCallback(
-    (workspaceId: number, callback: (message) => void) => {
+    (workspaceId: number, callback: (message: TMySpaceURLs) => void) => {
       if (!stompClientRef.current?.connected) {
         throw new Error("WebSocket이 연결되지 않았습니다.");
       }
@@ -167,6 +185,54 @@ export const useWebSocket = (): UseWebSocketReturn => {
     []
   );
 
+  // 탭 N회 구독
+  const subscribeToTab = useCallback(
+    (tabId: number, callback: (message: TMySpaceURLs) => void) => {
+      if (!stompClientRef.current?.connected) {
+        throw new Error("WebSocket이 연결되지 않았습니다.");
+      }
+
+      const topic = `/topic/tab.${tabId}`;
+      console.log("🔍 탭 구독 토픽:", topic);
+
+      // 기존 구독이 있다면 해제
+      if (subscriptionsRef.current.has(topic)) {
+        console.log("🔌 기존 구독 해제:", topic);
+        subscriptionsRef.current.get(topic)?.unsubscribe();
+      }
+
+      // 새로운 구독 생성
+      const subscription = stompClientRef.current.subscribe(
+        topic,
+        (message) => {
+          try {
+            const body = JSON.parse(message.body);
+            console.log("📨 파싱된 메시지:", body);
+            callback(body);
+          } catch (error) {
+            console.error("메시지 파싱 오류:", error);
+          }
+        }
+      );
+      subscriptionsRef.current.set(topic, subscription);
+      console.log(
+        "📨 현재 구독 목록:",
+        Array.from(subscriptionsRef.current.keys())
+      );
+    },
+    []
+  );
+
+  // 특정 탭 구독 해제
+  const unsubscribeFromTab = useCallback((tabId: number) => {
+    const topic = `/topic/tab.${tabId}`;
+    if (subscriptionsRef.current.has(topic)) {
+      subscriptionsRef.current.get(topic)?.unsubscribe();
+      subscriptionsRef.current.delete(topic);
+      console.log(`📨 탭 ${tabId} 구독 해제됨`);
+    }
+  }, []);
+
   // 컴포넌트 언마운트 시 연결 해제
   useEffect(() => {
     return () => {
@@ -181,6 +247,10 @@ export const useWebSocket = (): UseWebSocketReturn => {
     createUrlTab,
     deleteUrlTab,
     updateUrlTabName,
+    addUrl,
+    deleteUrl,
     subscribeToWorkspace,
+    subscribeToTab,
+    unsubscribeFromTab,
   };
 };

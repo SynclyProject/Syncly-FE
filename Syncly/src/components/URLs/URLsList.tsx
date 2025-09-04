@@ -15,6 +15,7 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
         showInput={showInput}
         setShowInput={setShowInput}
         urlsTapList={urlsTapListData}
+        communicationType="http"
       />
     </div>
   );

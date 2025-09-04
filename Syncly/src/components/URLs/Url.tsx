@@ -15,6 +15,8 @@ interface IUrlProps extends TUrlStateProps {
   onCancel?: () => void;
   tabId: number;
   urlItemId?: number;
+  communicationType?: "http" | "websocket";
+  onWebSocketAction?: (action: string, data: Record<string, unknown>) => void;
 }
 
 const Url = ({
@@ -26,6 +28,8 @@ const Url = ({
   onCancel,
   tabId,
   urlItemId,
+  communicationType,
+  onWebSocketAction,
 }: IUrlProps) => {
   const { refetch } = useURLsList();
 
@@ -39,11 +43,21 @@ const Url = ({
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && value?.trim()) {
       onAdd?.(value);
-      refetch();
     }
   };
   const handleBlur = () => {
     if (!value?.trim()) onCancel?.();
+  };
+
+  const handleDeleteUrl = () => {
+    if (communicationType === "http") {
+      deleteTabItemsMutation({ tabId: tabId, itemId: urlItemId as number });
+    } else if (communicationType === "websocket" && onWebSocketAction) {
+      onWebSocketAction("deleteUrl", {
+        tabId: tabId,
+        urlItemId: urlItemId,
+      });
+    }
   };
 
   return (
@@ -59,7 +73,10 @@ const Url = ({
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
           />
-          <Icon name="plus_blue" onClick={() => onAdd?.(value || "")} />
+          <Icon
+            name="plus_blue"
+            onClick={() => value?.trim() && onAdd?.(value)}
+          />
         </>
       ) : (
         <>
@@ -75,7 +92,7 @@ const Url = ({
             className="cursor-pointer"
             onClick={() => {
               if (urlItemId) {
-                deleteTabItemsMutation({ tabId: tabId, itemId: urlItemId });
+                handleDeleteUrl();
               }
             }}
           >

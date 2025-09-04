@@ -2,7 +2,7 @@ import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
 import Url from "./Url";
 import URLsModal from "./URLsModal";
-import { TUrl } from "../../shared/type/mySpaceType";
+import { TMySpaceURLs, TUrl } from "../../shared/type/mySpaceType";
 import { useState, useRef, useEffect } from "react";
 import { PatchTaps, PostTabItems } from "../../shared/api/URL/personal";
 import { useMutation } from "@tanstack/react-query";
@@ -16,6 +16,14 @@ interface IURLsProps {
   dragStart: (e: React.MouseEvent, position: number) => void;
   dragEnter: (e: React.MouseEvent, position: number) => void;
   drop: () => void;
+  onWebSocketAction?: (action: string, data: Record<string, unknown>) => void;
+  communicationType?: "http" | "websocket";
+  isConnected: boolean;
+  subscribeToTab: (
+    tabId: number,
+    callback: (message: TMySpaceURLs) => void
+  ) => void;
+  unsubscribeFromTab: (tabId: number) => void;
 }
 
 const URLs = ({
@@ -26,6 +34,11 @@ const URLs = ({
   dragStart,
   dragEnter,
   drop,
+  onWebSocketAction,
+  communicationType,
+  isConnected,
+  subscribeToTab,
+  unsubscribeFromTab,
 }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -37,7 +50,33 @@ const URLs = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLButtonElement>(null);
 
-  const { refetch } = useURLsList();
+  const { refetch, spaceId } = useURLsList();
+
+  // 탭 구독
+  useEffect(() => {
+    // subscribeToTab 함수가 없으면 구독하지 않음
+    if (!subscribeToTab) {
+      return;
+    }
+
+    try {
+      subscribeToTab(tabId, () => {
+        // 탭 관련 변경사항이 있을 때 데이터 리페치
+        refetch();
+      });
+      console.log("✅ 탭 구독 성공:", tabId);
+    } catch (error) {
+      console.error("❌ 탭 구독 실패:", error);
+    }
+
+    // 컴포넌트 언마운트 시 탭 구독 해제
+    return () => {
+      if (unsubscribeFromTab) {
+        console.log("🔌 탭 구독 해제:", tabId);
+        unsubscribeFromTab(tabId);
+      }
+    };
+  }, [subscribeToTab, tabId, refetch, unsubscribeFromTab, isConnected]);
 
   const { mutate: patchTapsMutation } = useMutation({
     mutationFn: PatchTaps,
@@ -59,7 +98,15 @@ const URLs = ({
   };
   const handleTitleSubmit = () => {
     if (!editTitleValue.trim()) return;
-    patchTapsMutation({ tabId: tabId, urlTabName: editTitleValue });
+    if (communicationType === "http") {
+      patchTapsMutation({ tabId: tabId, urlTabName: editTitleValue });
+    } else if (communicationType === "websocket" && onWebSocketAction) {
+      onWebSocketAction("updateUrlTabName", {
+        workspaceId: spaceId,
+        urlTabId: tabId,
+        newTabName: editTitleValue,
+      });
+    }
   };
 
   const handleInputChange = (value: string) => {
@@ -76,7 +123,16 @@ const URLs = ({
   };
 
   const handleAddUrl = () => {
-    postUrlsMutation({ tabId: tabId, url: inputValue });
+    if (!inputValue.trim()) return;
+
+    if (communicationType === "http") {
+      postUrlsMutation({ tabId: tabId, url: inputValue });
+    } else if (communicationType === "websocket" && onWebSocketAction) {
+      onWebSocketAction("addUrl", {
+        tabId: tabId,
+        url: inputValue,
+      });
+    }
     setInputValue("");
   };
 
@@ -148,6 +204,8 @@ const URLs = ({
                 tabId={tabId}
                 editTitle={editTitle}
                 setEditTitle={setEditTitle}
+                onWebSocketAction={onWebSocketAction}
+                communicationType={communicationType}
               />
             </div>
           )}
@@ -172,6 +230,8 @@ const URLs = ({
             onCancel={() => setShowInput(false)}
             tabId={tabId}
             onAdd={handleAddUrl}
+            communicationType={communicationType}
+            onWebSocketAction={onWebSocketAction}
           />
         )}
 
@@ -182,6 +242,8 @@ const URLs = ({
             text={url.url}
             tabId={tabId}
             urlItemId={url.urlItemId}
+            communicationType={communicationType}
+            onWebSocketAction={onWebSocketAction}
           />
         ))}
         {urls.length > 2 && (
