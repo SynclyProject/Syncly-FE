@@ -6,6 +6,7 @@ import { GetInitInfo, GetLiveToken } from "../../shared/api/Live";
 import { useParams } from "react-router-dom";
 import { useLiveKitContext } from "../../context/LiveKitContext";
 import { useEffect } from "react";
+import { TScreenInitInfo } from "../../shared/type/teamSpaceType";
 
 const ParticipantsList = ({
   setIsVoice,
@@ -22,7 +23,7 @@ const ParticipantsList = ({
 
   console.log(data);
 
-  const { data: liveKitToken } = useQuery({
+  const { data: liveKitToken, refetch: refetchLiveKitToken } = useQuery({
     queryKey: ["liveKit-token", id],
     queryFn: () => GetLiveToken(Number(id)),
   });
@@ -31,8 +32,9 @@ const ParticipantsList = ({
   useEffect(() => {
     if (liveKitToken?.result) {
       setLiveKitToken(liveKitToken.result);
+      refetchLiveKitToken();
     }
-  }, [liveKitToken, setLiveKitToken]);
+  }, [liveKitToken, setLiveKitToken, refetchLiveKitToken]);
 
   return (
     <div className="w-[335px] rounded-[10px] bg-white p-[14px] flex flex-col gap-3">
@@ -51,9 +53,21 @@ const ParticipantsList = ({
         />
       </div>
       <div className="p-5 rounded-[4px] border border-[#E0E0E0] max-h-[332px] h-full flex flex-col gap-5 overflow-y-auto">
-        <People profile="User_Circle" name="John Doe" />
-        <People profile="User_Circle" name="John Doe" />
-        <People profile="User_Circle" name="John Doe" />
+        {data?.result.length > 0 ? (
+          data?.result.map((item: TScreenInitInfo) => (
+            <People
+              key={item.participantId}
+              profile={item.profile || ""}
+              name={item.participantId}
+              audio={item.audioSharing}
+              screen={item.screenSharing}
+            />
+          ))
+        ) : (
+          <div className="w-full h-full flex justify-center items-center">
+            <p className="text-[16px]">No participants</p>
+          </div>
+        )}
       </div>
     </div>
   );
