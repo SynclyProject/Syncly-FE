@@ -3,12 +3,16 @@ import File from "./File";
 import { TFilesType, TFiles } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useState } from "react";
+import { useWorkSpaceContext } from "../../context/workSpaceContext";
+import { PostFolder } from "../../shared/api/Folder";
+import { useMutation } from "@tanstack/react-query";
 
 interface IFileListProps {
   searchValue: string;
   setShowInput: (boolean: boolean) => void;
   showInput: boolean;
   sort: boolean;
+  type: "my" | "team";
 }
 
 const FileList = ({
@@ -16,27 +20,36 @@ const FileList = ({
   setShowInput,
   showInput,
   sort,
+  type,
 }: IFileListProps) => {
   const [fileList, setFileList] = useState<TFiles[]>(FilesData);
   const filteredFiles = fileList.filter((file) =>
     file.title.toLowerCase().includes(searchValue.toLowerCase())
   );
+  const { workspaceId, personalSpaceId } = useWorkSpaceContext();
+  const spaceId = type === "my" ? personalSpaceId : workspaceId;
 
   const filesToShow = searchValue ? filteredFiles : fileList;
   const noDataMessage = searchValue
     ? "검색된 파일이 없습니다."
     : "저장한 파일이 없습니다.";
 
-  const handleAddFile = (text: string) => {
+  const { mutate: postFolderMutation } = useMutation({
+    mutationFn: PostFolder,
+    onSuccess: () => {
+      console.log("폴더 생성 성공");
+      // refetch();
+    },
+  });
+  const handleAddFolder = (text: string) => {
     if (!text.trim()) return;
-    const newFile: TFiles = {
-      id: fileList.length + 1,
-      type: "folder",
-      title: text,
-      date: new Date().toISOString().split("T")[0],
-      user: "userProfile",
-    };
-    setFileList([...fileList, newFile]);
+
+    postFolderMutation({
+      workspaceId: spaceId,
+      parentId: null,
+      name: text,
+    });
+    // setFileList([...fileList, newFile]);
   };
 
   return (
@@ -87,7 +100,7 @@ const FileList = ({
         <FileInput
           type="folder"
           user={"userProfile"}
-          onAdd={handleAddFile}
+          onAdd={handleAddFolder}
           onCancel={() => setShowInput(false)}
         />
       )}
