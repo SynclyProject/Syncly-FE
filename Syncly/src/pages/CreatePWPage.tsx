@@ -40,21 +40,6 @@ const CreatePWPage = () => {
       navigate("/login");
     },
   });
-  /*
-  const handleVerifyClick = async () => {
-    const isValid = await trigger("code"); // 코드 필드 검증
-    if (!isValid) return; // 유효하지 않으면 인증 안 함
-
-    setIsVerified(true);
-    alert("이메일 인증 완료!");
-  };
-
-  const handleSendClick = async () => {
-    const isValid = await trigger("email"); // email 필드만 검증
-    if (!isValid) return; // 유효하지 않으면 중단
-    setShowCodeInput(true);
-  };
-*/
 
   //useForm() react-hook-form 설정
   const {
