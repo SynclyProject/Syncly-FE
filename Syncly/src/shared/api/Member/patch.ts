@@ -17,7 +17,7 @@ export const PatchProfileImage = async (data: {
   }
 };
 
-// 비밀번호 변경
+// 비밀번호 변경 (마이페이지)
 export const PatchPassword = async (data: {
   currentPassword: string;
   newPassword: string;
@@ -26,6 +26,23 @@ export const PatchPassword = async (data: {
   try {
     const response = await axiosInstance.patch("/api/member/password", {
       currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+      confirmPassword: data.confirmPassword,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("비밀번호 변경 실패", error);
+    throw error;
+  }
+};
+
+// 비밀번호 변경 (이메일 인증 기반)
+export const PatchPasswordEmail = async (data: {
+  newPassword: string;
+  confirmPassword: string;
+}) => {
+  try {
+    const response = await axiosInstance.patch("/api/member/password/email", {
       newPassword: data.newPassword,
       confirmPassword: data.confirmPassword,
     });

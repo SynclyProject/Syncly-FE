@@ -6,8 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { CreatePsSchema } from "../shared/schema";
 import { TCreatePWSchema } from "../shared/type/sign";
 import { useMutation } from "@tanstack/react-query";
-import { PostEmailSend, PostEmailVerify } from "../shared/api/Member/post";
-import { PatchPassword } from "../shared/api/Member/patch";
+import {
+  PostPasswordEmailSend,
+  PostEmailVerify,
+} from "../shared/api/Member/post";
+import { PatchPasswordEmail } from "../shared/api/Member/patch";
 
 const CreatePWPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -17,7 +20,7 @@ const CreatePWPage = () => {
   const [isVerified, setIsVerified] = useState(false);
 
   const { mutate: postEmailSend } = useMutation({
-    mutationFn: PostEmailSend,
+    mutationFn: PostPasswordEmailSend,
     onSuccess: () => {
       alert("인증메일이 전송되었습니다!");
       setShowCodeInput(true);
@@ -30,15 +33,14 @@ const CreatePWPage = () => {
       setIsVerified(true);
     },
   });
-  const { mutate: patchPassword } = useMutation({
-    mutationFn: PatchPassword,
+  const { mutate: PatchPasswordMutate } = useMutation({
+    mutationFn: PatchPasswordEmail,
     onSuccess: () => {
       alert("비밀번호가 재설정되었습니다.");
       navigate("/login");
     },
   });
 
-  /*
   const handleVerifyClick = async () => {
     const isValid = await trigger("code"); // 코드 필드 검증
     if (!isValid) return; // 유효하지 않으면 인증 안 함
@@ -52,15 +54,14 @@ const CreatePWPage = () => {
     if (!isValid) return; // 유효하지 않으면 중단
     setShowCodeInput(true);
   };
-  */
 
   //useForm() react-hook-form 설정
   const {
     register,
     handleSubmit,
-    //trigger,
+    trigger,
     getValues,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(CreatePsSchema),
   });
@@ -68,8 +69,7 @@ const CreatePWPage = () => {
   //Onsubmit함수
   const onSubmit = (data: TCreatePWSchema) => {
     console.log("제출된 데이터:", data);
-    patchPassword({
-      currentPassword: data.currentPassword,
+    PatchPasswordMutate({
       newPassword: data.newPassword,
       confirmPassword: data.confirmPassword,
     });
@@ -213,7 +213,12 @@ const CreatePWPage = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full h-[45px] bg-[#FDF5F2] rounded-[8px] border border-[#E0E0E0] text-[#EB5757] font-medium"
+            className={`w-full h-[45px] rounded-[8px] font-medium ${
+              isValid
+                ? "bg-[#028090] text-[#FFFFFF] border-none"
+                : "bg-[#FDF5F2] border border-[#E0E0E0] text-[#EB5757]"
+            }`}
+            disabled={!isValid}
           >
             Create new password
           </button>
