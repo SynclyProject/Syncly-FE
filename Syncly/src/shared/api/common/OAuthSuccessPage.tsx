@@ -10,7 +10,7 @@ export default function OAuthSuccessPage() {
         const accessToken: string = data?.accessToken;
         if (!accessToken) throw new Error("No accessToken");
 
-        localStorage.setItem("token", accessToken);
+        localStorage.setItem("accessToken", accessToken);
         axiosInstance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
         window.location.replace("/my-urls");
