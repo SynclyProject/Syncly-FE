@@ -11,7 +11,6 @@ export const PostRegister = async (data: {
     return response.data;
   } catch (error) {
     console.error("회원가입 실패", error);
-    throw error;
   }
 };
 
@@ -27,7 +26,6 @@ export const PostEmailVerify = async (data: {
     return response.data;
   } catch (error) {
     console.error("이메일 인증 실패", error);
-    throw error;
   }
 };
 
@@ -40,7 +38,6 @@ export const PostEmailSend = async (data: { email: string }) => {
     return response.data;
   } catch (error) {
     console.error("이메일 인증코드 전송 실패", error);
-    throw error;
   }
 };
 
@@ -53,7 +50,6 @@ export const PostPasswordEmailSend = async (data: { email: string }) => {
     return response.data;
   } catch (error) {
     console.error("비밀번호 변경용 이메일 인증코드 발송 실패", error);
-    throw error;
   }
 };
 
