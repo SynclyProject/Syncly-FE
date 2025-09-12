@@ -38,7 +38,7 @@ const TeamScreenPage = () => {
               </div>
               <Chatting />
             </div>
-            <BottomBar />
+            <BottomBar isVoice={isVoice} />
           </div>
         </div>
       </div>
