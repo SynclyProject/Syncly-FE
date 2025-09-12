@@ -22,7 +22,7 @@ const ParticipantsList = ({
     queryFn: () => GetInitInfo({ workspaceId: Number(id) }),
   });
 
-  const { data: liveKitToken, refetch: refetchLiveKitToken } = useQuery({
+  const { data: liveKitToken } = useQuery({
     queryKey: ["liveKit-token", id],
     queryFn: () => GetLiveToken(Number(id)),
   });
@@ -31,9 +31,8 @@ const ParticipantsList = ({
   useEffect(() => {
     if (liveKitToken?.result) {
       setLiveKitToken(liveKitToken.result);
-      refetchLiveKitToken();
     }
-  }, [liveKitToken, setLiveKitToken, refetchLiveKitToken]);
+  }, [liveKitToken, setLiveKitToken]);
 
   return (
     <RoomContext.Provider value={room}>

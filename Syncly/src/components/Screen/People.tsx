@@ -14,7 +14,7 @@ const People = ({ profile, name, audio, screen }: TPeopleProps) => {
         <Icon name="User_Circle" />
       ) : (
         <img
-          src={`https://cdn.syncly-io.com/${profile}`}
+          src={`${import.meta.env.VITE_IMAGE_URL}/${profile}`}
           alt="profile"
           className="w-[30px] h-[30px] rounded-full"
         />

@@ -86,8 +86,16 @@ export const LiveKitProvider = ({ children }: PropsWithChildren) => {
   };
 
   const toggleScreenSharing = async () => {
-    setScreenSharing(!screenSharing);
-    await room.localParticipant.setCameraEnabled(!screenSharing);
+    const next = !screenSharing;
+    setScreenSharing(next);
+    try {
+      // LiveKit 화면 공유 토글
+      await room.localParticipant.setScreenShareEnabled(next);
+    } catch (e) {
+      // 실패 시 UI 상태를 원복
+      setScreenSharing(!next);
+      throw e;
+    }
   };
 
   return (
