@@ -8,7 +8,7 @@ import { TCreatePWSchema } from "../shared/type/sign";
 import { useMutation } from "@tanstack/react-query";
 import {
   PostPasswordEmailSend,
-  PostEmailVerify,
+  PostPasswordEmailVerify,
 } from "../shared/api/Member/post";
 import { PatchPasswordEmail } from "../shared/api/Member/patch";
 
@@ -27,7 +27,7 @@ const CreatePWPage = () => {
     },
   });
   const { mutate: postEmailVerify } = useMutation({
-    mutationFn: PostEmailVerify,
+    mutationFn: PostPasswordEmailVerify,
     onSuccess: () => {
       alert("인증되었습니다.");
       setIsVerified(true);
@@ -55,6 +55,7 @@ const CreatePWPage = () => {
   const onSubmit = (data: TCreatePWSchema) => {
     console.log("제출된 데이터:", data);
     PatchPasswordMutate({
+      email: data.email,
       newPassword: data.newPassword,
       confirmPassword: data.confirmPassword,
     });

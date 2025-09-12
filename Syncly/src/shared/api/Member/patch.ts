@@ -38,11 +38,13 @@ export const PatchPassword = async (data: {
 
 // 비밀번호 변경 (이메일 인증 기반)
 export const PatchPasswordEmail = async (data: {
+  email: string;
   newPassword: string;
   confirmPassword: string;
 }) => {
   try {
     const response = await axiosInstance.patch("/api/member/password/email", {
+      email: data.email,
       newPassword: data.newPassword,
       confirmPassword: data.confirmPassword,
     });

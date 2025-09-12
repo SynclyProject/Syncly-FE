@@ -56,3 +56,18 @@ export const PostPasswordEmailSend = async (data: { email: string }) => {
     throw error;
   }
 };
+
+//비밀번호 변경용 이메일 인증코드 인증
+export const PostPasswordEmailVerify = async (data: {
+  email: string;
+  code: string;
+}) => {
+  try {
+    const response = await axiosInstance.post(
+      `/api/member/password/email/verify?email=${data.email}&code=${data.code}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("비밀번호 변경용 이메일 인증코드 인증 실패", error);
+  }
+};
