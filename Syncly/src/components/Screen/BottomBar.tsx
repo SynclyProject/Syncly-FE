@@ -15,17 +15,17 @@ const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
       {isVoice ? (
         <>
           <Button
-            iconName={screenSharing ? "Screen_off" : "Screen"}
+            iconName={screenSharing ? "Screen" : "Screen_off"}
             colorType="white"
             onClick={toggleScreenSharing}
           />
           <Button
-            iconName={camEnabled ? "Cam_off" : "Cam_on"}
+            iconName={camEnabled ? "Cam_on" : "Cam_off"}
             colorType="white"
             onClick={toggleCam}
           />
           <Button
-            iconName={micEnabled ? "Microphone_off" : "Microphone_on"}
+            iconName={micEnabled ? "Microphone_on" : "Microphone_off"}
             colorType="white"
             onClick={toggleMic}
           />

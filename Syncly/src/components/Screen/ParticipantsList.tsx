@@ -64,7 +64,7 @@ const ParticipantsList = ({
             ))
           ) : (
             <div className="w-full h-full flex justify-center items-center">
-              <p className="text-[16px]">No participants</p>
+              <p className="text-[16px]">현재 음성채널에 아무도 없어요</p>
             </div>
           )}
         </div>

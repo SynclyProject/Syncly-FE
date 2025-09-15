@@ -27,7 +27,7 @@ const LiveKitContext = createContext<TLiveKitContext | null>(null);
 export const LiveKitProvider = ({ children }: PropsWithChildren) => {
   const [room] = useState(() => new Room({ adaptiveStream: true }));
   const [connected, setConnected] = useState(false);
-  const [micEnabled, setMicEnabled] = useState(false);
+  const [micEnabled, setMicEnabled] = useState(true);
   const [camEnabled, setCamEnabled] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
   const [liveKitToken, setLiveKitToken] = useState<string | null>(null);
@@ -76,13 +76,15 @@ export const LiveKitProvider = ({ children }: PropsWithChildren) => {
   };
 
   const toggleMic = async () => {
-    setMicEnabled(!micEnabled);
-    await room.localParticipant.setMicrophoneEnabled(!micEnabled);
+    const newState = !micEnabled;
+    await room.localParticipant.setMicrophoneEnabled(newState);
+    setMicEnabled(newState);
   };
 
   const toggleCam = async () => {
-    setCamEnabled(!camEnabled);
-    await room.localParticipant.setCameraEnabled(!camEnabled);
+    const newState = !camEnabled;
+    await room.localParticipant.setCameraEnabled(newState);
+    setCamEnabled(newState);
   };
 
   const toggleScreenSharing = async () => {
