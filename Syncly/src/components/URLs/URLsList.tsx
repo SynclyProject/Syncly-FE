@@ -10,7 +10,7 @@ const URLsList = ({ showInput, setShowInput }: IURLsListProps) => {
   const { urlsTapListData } = useURLsList();
 
   return (
-    <div className="flex flex-col gap-5 w-full">
+    <div className="flex flex-col gap-5 w-full flex-1 min-h-0 overflow-y-auto">
       <URLsListContent
         showInput={showInput}
         setShowInput={setShowInput}

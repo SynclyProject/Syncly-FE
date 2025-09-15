@@ -7,11 +7,11 @@ const pastelColors = [
   "#C8E6C9", // light green
   "#B3E5FC", // light blue
   "#E1BEE7", // light purple
-  "#FFF9C4", // soft lemon
-  "#F8BBD0", // pastel rose
-  "#D1C4E9", // lavender
-  "#F0F4C3", // light lime
-  "#B2DFDB", // turquoise
+  // "#FFF9C4", // soft lemon
+  // "#F8BBD0", // pastel rose
+  // "#D1C4E9", // lavender
+  // "#F0F4C3", // light lime
+  // "#B2DFDB", // turquoise
 ];
 
 const VoicePeople = ({
@@ -23,10 +23,14 @@ const VoicePeople = ({
   onClick: () => void;
   size: "small" | "large" | "default";
 }) => {
+  // profile을 기반으로 일관된 색상 생성
   const bgColor = useMemo(() => {
-    const randomIndex = Math.floor(Math.random() * pastelColors.length);
-    return pastelColors[randomIndex];
-  }, []);
+    const hash = profile.split("").reduce((a, b) => {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    return pastelColors[Math.abs(hash) % pastelColors.length];
+  }, [profile]);
 
   const iconSize = {
     small: "w-[70px]",

@@ -4,7 +4,7 @@ import VoicePeople from "./VoicePeople";
 import { useState } from "react";
 import {
   RoomContext,
-  // RoomAudioRenderer,
+  RoomAudioRenderer,
   // ControlBar,
 } from "@livekit/components-react";
 import { useLiveKitContext } from "../../context/LiveKitContext";
@@ -22,6 +22,7 @@ const VoiceList = ({
 
   return (
     <RoomContext.Provider value={room}>
+      <RoomAudioRenderer />
       <div className="w-full h-full flex flex-col gap-3 relative">
         <div className="w-full flex justify-between items-center">
           <p className="text-[20px] font-bold">Title</p>

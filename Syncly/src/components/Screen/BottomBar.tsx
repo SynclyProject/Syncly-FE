@@ -1,22 +1,39 @@
 import Button from "../../shared/ui/Button";
 import { useLiveKitContext } from "../../context/LiveKitContext";
 
-const BottomBar = () => {
-  const { toggleMic, toggleScreenSharing, micEnabled, screenSharing } =
-    useLiveKitContext();
+const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
+  const {
+    toggleMic,
+    toggleScreenSharing,
+    toggleCam,
+    micEnabled,
+    screenSharing,
+    camEnabled,
+  } = useLiveKitContext();
   return (
     <div className="w-full flex gap-2 ">
-      <Button
-        iconName={screenSharing ? "Screen_off" : "Screen"}
-        colorType="white"
-        onClick={toggleScreenSharing}
-      />
-      <Button iconName="Headset" colorType="white" />
-      <Button
-        iconName={micEnabled ? "Microphone_off" : "Microphone_on"}
-        colorType="white"
-        onClick={toggleMic}
-      />
+      {isVoice ? (
+        <>
+          <Button
+            iconName={screenSharing ? "Screen_off" : "Screen"}
+            colorType="white"
+            onClick={toggleScreenSharing}
+          />
+          <Button
+            iconName={camEnabled ? "Cam_off" : "Cam_on"}
+            colorType="white"
+            onClick={toggleCam}
+          />
+          <Button
+            iconName={micEnabled ? "Microphone_off" : "Microphone_on"}
+            colorType="white"
+            onClick={toggleMic}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+
       <input
         className="w-full border border-[#E0E0E0] bg-white rounded-[8px] p-[10px] outline-none"
         placeholder="Enter your Message"
