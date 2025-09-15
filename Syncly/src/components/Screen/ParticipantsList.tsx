@@ -6,8 +6,8 @@ import { GetInitInfo, GetLiveToken } from "../../shared/api/Live";
 import { useParams } from "react-router-dom";
 import { useLiveKitContext } from "../../context/LiveKitContext";
 import { useEffect } from "react";
-import { TScreenInitInfo } from "../../shared/type/teamSpaceType";
 import { RoomContext } from "@livekit/components-react";
+import { TScreenInitInfo } from "../../shared/type/teamSpaceType";
 
 const ParticipantsList = ({
   setIsVoice,
@@ -52,14 +52,14 @@ const ParticipantsList = ({
           />
         </div>
         <div className="p-5 rounded-[4px] border border-[#E0E0E0] max-h-[332px] h-full flex flex-col gap-5 overflow-y-auto">
-          {data?.result.length > 0 ? (
-            data?.result.map((item: TScreenInitInfo) => (
+          {data?.result.participants.length > 0 ? (
+            data?.result.participants.map((participant: TScreenInitInfo) => (
               <People
-                key={item.participantId}
-                profile={item.profile || ""}
-                name={item.participantId}
-                audio={item.audioSharing}
-                screen={item.screenSharing}
+                key={participant.participantId}
+                profile={participant.profile || null}
+                name={participant.participantId}
+                audio={participant.audioSharing}
+                screen={participant.screenSharing}
               />
             ))
           ) : (
