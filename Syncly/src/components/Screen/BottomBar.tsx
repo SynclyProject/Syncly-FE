@@ -2,8 +2,14 @@ import Button from "../../shared/ui/Button";
 import { useLiveKitContext } from "../../context/LiveKitContext";
 
 const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
-  const { toggleMic, toggleScreenSharing, micEnabled, screenSharing } =
-    useLiveKitContext();
+  const {
+    toggleMic,
+    toggleScreenSharing,
+    toggleCam,
+    micEnabled,
+    screenSharing,
+    camEnabled,
+  } = useLiveKitContext();
   return (
     <div className="w-full flex gap-2 ">
       {isVoice ? (
@@ -13,7 +19,11 @@ const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
             colorType="white"
             onClick={toggleScreenSharing}
           />
-          <Button iconName="Headset" colorType="white" />
+          <Button
+            iconName={camEnabled ? "Cam_off" : "Cam_on"}
+            colorType="white"
+            onClick={toggleCam}
+          />
           <Button
             iconName={micEnabled ? "Microphone_off" : "Microphone_on"}
             colorType="white"
