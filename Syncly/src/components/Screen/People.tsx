@@ -21,7 +21,7 @@ const People = ({ profile, name, audio, screen, cam }: TPeopleProps) => {
         />
       )}
       <p className="text-[16px] flex-1">{name}</p>
-      <Icon name={screen ? "Screen_on" : "Screen_off"} />
+      <Icon name={screen ? "Screen" : "Screen_off"} />
       <Icon name={cam ? "Cam_on" : "Cam_off"} />
       <Icon name={audio ? "Microphone_on" : "Microphone_off"} />
     </div>
