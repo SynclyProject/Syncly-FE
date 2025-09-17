@@ -57,7 +57,7 @@ const ParticipantsList = ({
               <People
                 key={participant.participantId}
                 profile={participant.profile || null}
-                name={participant.participantId}
+                name={participant.participantName}
                 audio={participant.audioSharing}
                 screen={participant.screenSharing}
               />

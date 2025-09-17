@@ -65,11 +65,17 @@ const VoiceListContent = ({
         />
       </div>
       {/* 화면공유 트랙이 있을 때 화면공유 영역 표시 */}
-      {tracks.some((track) => track.source === Track.Source.ScreenShare) && (
+      {tracks.some(
+        (track) =>
+          track.source === Track.Source.ScreenShare ||
+          track.source === Track.Source.Camera
+      ) && (
         <div className="w-full h-1/2 mb-4">
           <GridLayout
             tracks={tracks.filter(
-              (track) => track.source === Track.Source.ScreenShare
+              (track) =>
+                track.source === Track.Source.ScreenShare ||
+                track.source === Track.Source.Camera
             )}
           >
             <ParticipantTile />
