@@ -27,7 +27,7 @@ const LiveKitContext = createContext<TLiveKitContext | null>(null);
 export const LiveKitProvider = ({ children }: PropsWithChildren) => {
   const [room] = useState(() => new Room({ adaptiveStream: true }));
   const [connected, setConnected] = useState(false);
-  const [micEnabled, setMicEnabled] = useState(true);
+  const [micEnabled, setMicEnabled] = useState(false);
   const [camEnabled, setCamEnabled] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
   const [liveKitToken, setLiveKitToken] = useState<string | null>(null);
