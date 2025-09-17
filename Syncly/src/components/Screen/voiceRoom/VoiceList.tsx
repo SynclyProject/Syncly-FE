@@ -97,7 +97,7 @@ const VoiceListContent = ({
               trackRef={tracks.find((t) => t.participant.sid === selectedId)}
             >
               <VoicePeople
-                participantId={selected.identity || selected.name || "User"}
+                participantId={selected.identity}
                 onClick={() => setSelectedId(null)}
                 size="large"
                 showTracks={true}

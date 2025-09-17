@@ -50,6 +50,9 @@ const VoicePeople = ({
       participant.participantId === participantId
   );
 
+  console.log("내 아이디 : ", participantId);
+  console.log("participant : ", participant);
+
   // participantId을 기반으로 일관된 색상 생성
   const bgColor = useMemo(() => {
     const hash = participantId.split("").reduce((a, b) => {
@@ -165,7 +168,12 @@ const VoicePeople = ({
       {/* 화면공유 트랙이 있으면 오른쪽 상단에 표시 */}
       {renderTrack()}
 
-      <div className="absolute bottom-2 left-2 bg-black/50 text-white text-sm px-2 py-1 rounded z-10">
+      <div className="absolute bottom-2 left-2 bg-black/50 text-white text-sm px-2 py-1 rounded z-10 flex items-center gap-2">
+        {participant?.audioSharing === false && (
+          <div className="w-[16px] h-[16px]">
+            <Icon name="Microphone_white" />
+          </div>
+        )}
         {participant?.participantName}
       </div>
     </div>
