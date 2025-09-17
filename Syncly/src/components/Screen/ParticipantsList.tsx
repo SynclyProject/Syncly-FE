@@ -56,7 +56,7 @@ const ParticipantsList = ({
             data?.result.participants.map((participant: TScreenInitInfo) => (
               <People
                 key={participant.participantId}
-                profile={participant.profile || null}
+                profile={participant.profileImageObjectKey || null}
                 name={participant.participantName}
                 audio={participant.audioSharing}
                 screen={participant.screenSharing}

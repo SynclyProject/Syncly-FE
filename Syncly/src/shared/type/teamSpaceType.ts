@@ -24,7 +24,7 @@ export type TInvite = {
 export type TScreenInitInfo = {
   participantId: string;
   participantName: string;
-  profile?: string;
+  profileImageObjectKey?: string;
   audioSharing: boolean;
   screenSharing: boolean;
 };
