@@ -10,14 +10,16 @@ import { RoomContext } from "@livekit/components-react";
 import { TScreenInitInfo } from "../../shared/type/teamSpaceType";
 
 const ParticipantsList = ({
+  isVoice,
   setIsVoice,
 }: {
+  isVoice: boolean;
   setIsVoice: (isVoice: boolean) => void;
 }) => {
   const { id } = useParams();
   const { joinRoom, setLiveKitToken, room } = useLiveKitContext();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["live-room-members", id],
     queryFn: () => GetInitInfo({ workspaceId: Number(id) }),
   });
@@ -32,7 +34,9 @@ const ParticipantsList = ({
     if (liveKitToken?.result) {
       setLiveKitToken(liveKitToken.result);
     }
-  }, [liveKitToken, setLiveKitToken]);
+
+    refetch();
+  }, [liveKitToken, setLiveKitToken, isVoice, refetch]);
 
   return (
     <RoomContext.Provider value={room}>

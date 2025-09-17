@@ -33,7 +33,7 @@ const TeamScreenPage = () => {
                 {isVoice ? (
                   <VoiceList setIsVoice={setIsVoice} />
                 ) : (
-                  <ParticipantsList setIsVoice={setIsVoice} />
+                  <ParticipantsList isVoice={isVoice} setIsVoice={setIsVoice} />
                 )}
               </div>
               <Chatting />
