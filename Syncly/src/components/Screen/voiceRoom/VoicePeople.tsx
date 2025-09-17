@@ -1,5 +1,5 @@
 import Icon from "../../../shared/ui/Icon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Track } from "livekit-client";
 import {
   VideoTrack,
@@ -36,6 +36,7 @@ const VoicePeople = ({
   showTracks?: boolean;
 }) => {
   const trackRef = useTrackRefContext();
+  const [hover, setHover] = useState(false);
 
   const { id } = useParams();
 
@@ -133,12 +134,16 @@ const VoicePeople = ({
       <div
         className={`w-full ${cardHeightSize[size]} rounded-lg cursor-pointer relative`}
         onClick={onClick}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
       >
         {renderTrack()}
-        <div className="absolute bottom-2 left-2 bg-black/50 text-white text-sm px-2 py-1 rounded z-10 flex items-center gap-2">
-          <Icon name="Screen_white" />
-          {participant?.participantName}
-        </div>
+        {hover && (
+          <div className="absolute bottom-2 left-2 bg-black/50 text-white text-sm px-2 py-1 rounded z-10 flex items-center gap-2">
+            <Icon name="Screen_white" />
+            {participant?.participantName}
+          </div>
+        )}
       </div>
     );
   }
