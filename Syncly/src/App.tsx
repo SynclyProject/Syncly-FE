@@ -24,6 +24,7 @@ import TestPage from "./pages/testPage";
 import OAuthSuccessPage from "./shared/api/common/OAuthSuccessPage";
 import { LiveKitProvider } from "./context/LiveKitContext";
 
+
 const queryClient = new QueryClient();
 
 const AuthRoute = ({ children }: PropsWithChildren) => {
@@ -121,6 +122,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+
   return (
     <QueryClientProvider client={queryClient}>
       <WorkSpaceProvider>
