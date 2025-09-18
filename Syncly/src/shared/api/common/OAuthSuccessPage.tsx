@@ -8,7 +8,11 @@ export default function OAuthSuccessPage() {
       try {
         const data = await PostReissue();
         const accessToken: string = data?.accessToken;
-        if (!accessToken) throw new Error("No accessToken");
+
+        if (!accessToken) {
+          
+          throw new Error("No accessToken");
+        }
 
         localStorage.setItem("accessToken", accessToken);
         axiosInstance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
