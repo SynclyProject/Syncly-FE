@@ -4,7 +4,7 @@ import { TFilesType, TFiles } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useState } from "react";
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
-import { PostFolder } from "../../shared/api/Folder";
+import { PostFolder } from "../../shared/api/Folder/post";
 import { useMutation } from "@tanstack/react-query";
 
 interface IFileListProps {
