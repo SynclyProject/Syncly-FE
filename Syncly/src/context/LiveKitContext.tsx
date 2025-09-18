@@ -1,11 +1,18 @@
-import { createContext, useState, useContext, PropsWithChildren } from "react";
-import { Room } from "livekit-client";
+import {
+  createContext,
+  useState,
+  useContext,
+  PropsWithChildren,
+  useEffect,
+} from "react";
+import { Room, RoomEvent } from "livekit-client";
 
 type TLiveKitContext = {
   room: Room;
   micEnabled: boolean;
   camEnabled: boolean;
   screenSharing: boolean;
+  connected: boolean;
   joinRoom: () => Promise<void>;
   leaveRoom: () => void;
   toggleMic: () => Promise<void>;
@@ -19,6 +26,7 @@ const LiveKitContext = createContext<TLiveKitContext | null>(null);
 
 export const LiveKitProvider = ({ children }: PropsWithChildren) => {
   const [room] = useState(() => new Room({ adaptiveStream: true }));
+  const [connected, setConnected] = useState(false);
   const [micEnabled, setMicEnabled] = useState(false);
   const [camEnabled, setCamEnabled] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
@@ -26,33 +34,70 @@ export const LiveKitProvider = ({ children }: PropsWithChildren) => {
 
   const serverUrl = import.meta.env.VITE_LIVEKIT_URL;
 
+  // Room 이벤트 리스너 설정
+  useEffect(() => {
+    const handleConnected = () => {
+      console.log("✅ LiveKit 방에 연결됨");
+      setConnected(true);
+    };
+
+    const handleDisconnected = () => {
+      console.log("❌ LiveKit 방 연결 해제됨");
+      setConnected(false);
+    };
+
+    room.on(RoomEvent.Connected, handleConnected);
+    room.on(RoomEvent.Disconnected, handleDisconnected);
+
+    return () => {
+      room.off(RoomEvent.Connected, handleConnected);
+      room.off(RoomEvent.Disconnected, handleDisconnected);
+    };
+  }, [room]);
+
   const joinRoom = async () => {
     try {
       if (liveKitToken) {
+        console.log("🔄 LiveKit 방 연결 시도 중...");
         await room.connect(serverUrl, liveKitToken);
-      } else console.log("방 참가 실패 (이유: 라이브킷 토큰 발급 실패)");
+        // setConnected는 room 이벤트 리스너에서 처리됨
+      } else {
+        console.log("방 참가 실패 (이유: 라이브킷 토큰 발급 실패)");
+      }
     } catch (error) {
       console.log("방 참가 실패 (이유: 라이브킷 연결 실패)", error);
+      setConnected(false);
     }
   };
 
   const leaveRoom = () => {
     room.disconnect();
+    setConnected(false);
   };
 
   const toggleMic = async () => {
-    setMicEnabled(!micEnabled);
-    await room.localParticipant.setMicrophoneEnabled(!micEnabled);
+    const newState = !micEnabled;
+    await room.localParticipant.setMicrophoneEnabled(newState);
+    setMicEnabled(newState);
   };
 
   const toggleCam = async () => {
-    setCamEnabled(!camEnabled);
-    await room.localParticipant.setCameraEnabled(!camEnabled);
+    const newState = !camEnabled;
+    await room.localParticipant.setCameraEnabled(newState);
+    setCamEnabled(newState);
   };
 
   const toggleScreenSharing = async () => {
-    setScreenSharing(!screenSharing);
-    await room.localParticipant.setCameraEnabled(!screenSharing);
+    const next = !screenSharing;
+    setScreenSharing(next);
+    try {
+      // LiveKit 화면 공유 토글
+      await room.localParticipant.setScreenShareEnabled(next);
+    } catch (e) {
+      // 실패 시 UI 상태를 원복
+      setScreenSharing(!next);
+      throw e;
+    }
   };
 
   return (
@@ -62,6 +107,7 @@ export const LiveKitProvider = ({ children }: PropsWithChildren) => {
         micEnabled,
         camEnabled,
         screenSharing,
+        connected,
         joinRoom,
         leaveRoom,
         toggleMic,

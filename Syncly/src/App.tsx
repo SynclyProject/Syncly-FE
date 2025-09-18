@@ -22,6 +22,7 @@ import { AuthProvider, useAuthContext } from "./context/AuthContext";
 import { WorkSpaceProvider } from "./context/workSpaceContext";
 import TestPage from "./pages/testPage";
 import OAuthSuccessPage from "./shared/api/common/OAuthSuccessPage";
+import { LiveKitProvider } from "./context/LiveKitContext";
 
 const queryClient = new QueryClient();
 
@@ -112,10 +113,9 @@ const router = createBrowserRouter([
         element: <TestPage />,
       },
       {
-        path: "/oauth2/success", 
+        path: "/oauth2/success",
         element: <OAuthSuccessPage />,
       },
-
     ],
   },
 ]);
@@ -124,9 +124,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <WorkSpaceProvider>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
+        <LiveKitProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </LiveKitProvider>
       </WorkSpaceProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

@@ -37,7 +37,7 @@ const URLsListContent = ({
   });
 
   return (
-    <div className="flex flex-col gap-5 w-full">
+    <div className="flex flex-col gap-5 w-full overflow-y-auto">
       {!hasTabs && (
         <URLsInput
           onCancel={() => setShowInput(false)}

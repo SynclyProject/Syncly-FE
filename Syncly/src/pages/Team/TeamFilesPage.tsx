@@ -37,6 +37,7 @@ const TeamFilesPage = () => {
             setShowInput={setShowInput}
             showInput={showInput}
             sort={sort}
+            type="team"
           />
         )}
       </div>

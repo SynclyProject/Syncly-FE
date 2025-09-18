@@ -2,7 +2,7 @@ import TeamNavigate from "../../components/TeamNavigate";
 import ParticipantsList from "../../components/Screen/ParticipantsList";
 import Chatting from "../../components/Screen/Chatting";
 import BottomBar from "../../components/Screen/BottomBar";
-import VoiceList from "../../components/Screen/VoiceList";
+import VoiceList from "../../components/Screen/voiceRoom/VoiceList";
 import { useEffect, useState } from "react";
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
 import { useParams } from "react-router-dom";
@@ -33,12 +33,12 @@ const TeamScreenPage = () => {
                 {isVoice ? (
                   <VoiceList setIsVoice={setIsVoice} />
                 ) : (
-                  <ParticipantsList setIsVoice={setIsVoice} />
+                  <ParticipantsList isVoice={isVoice} setIsVoice={setIsVoice} />
                 )}
               </div>
               <Chatting />
             </div>
-            <BottomBar />
+            <BottomBar isVoice={isVoice} />
           </div>
         </div>
       </div>

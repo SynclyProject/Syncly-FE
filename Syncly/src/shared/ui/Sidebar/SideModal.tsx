@@ -46,8 +46,11 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0]">
-      <p className="text-[##828282]" onClick={() => setShowInviteModel(true)}>
+    <div className="flex flex-col gap-5 w-[210px] rounded-[8px] bg-white p-4 border border-[#E0E0E0] relative z-10">
+      <p
+        className="text-[##828282] hover:font-bold"
+        onClick={() => setShowInviteModel(true)}
+      >
         팀원 추가
       </p>
       {showInviteModel && (
@@ -66,22 +69,31 @@ const SideModal = ({ editTeam, setEditTeam, spaceId }: ISideModalProps) => {
       {role ? (
         <>
           <p
-            className="text-[##828282]"
+            className="text-[##828282] hover:font-bold"
             onClick={() => {
               setEditTeam(!editTeam);
             }}
           >
             팀스페이스 이름 변경
           </p>
-          <p className="text-[#028090]" onClick={handleLeaveClick}>
+          <p
+            className="text-[#028090] hover:font-bold"
+            onClick={handleLeaveClick}
+          >
             팀스페이스 나가기
           </p>
-          <p className="text-[#F45B69]" onClick={handleDeleteClick}>
+          <p
+            className="text-[#F45B69] hover:font-bold"
+            onClick={handleDeleteClick}
+          >
             팀스페이스 삭제
           </p>
         </>
       ) : (
-        <p className="text-[#F45B69]" onClick={handleLeaveClick}>
+        <p
+          className="text-[#F45B69] hover:font-bold"
+          onClick={handleLeaveClick}
+        >
           팀스페이스 나가기
         </p>
       )}

@@ -49,7 +49,7 @@ export const CreatePsSchema = yup.object().shape({
     .required("이메일은 필수입니다."),
   code: yup
     .string()
-    .matches(/^\d{6}$/, "인증 코드는 6자리 숫자입니다.")
+    .matches(/^[a-zA-Z0-9]{6}$/, "인증 코드는 6자리 영어,숫자입니다.")
     .required("인증 코드를 입력해주세요."),
   currentPassword: yup
     .string()
@@ -67,6 +67,6 @@ export const CreatePsSchema = yup.object().shape({
     .required("비밀번호를 입력해주세요."),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")], "비밀번호가 일치하지 않습니다.")
+    .oneOf([yup.ref("newPassword")], "비밀번호가 일치하지 않습니다.")
     .required("비밀번호 확인"),
 });
