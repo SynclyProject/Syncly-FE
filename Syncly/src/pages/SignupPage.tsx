@@ -19,6 +19,8 @@ const SignupPage = () => {
   const navigate = useNavigate();
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
 
   const { mutate: postEmailSend } = useMutation({
     mutationFn: PostEmailSend,
