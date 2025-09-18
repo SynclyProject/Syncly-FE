@@ -27,11 +27,11 @@ const VoicePeopleWrapper = ({
   const participant = participants.find(
     (p) => p.sid === trackRef?.participant.sid
   );
-  const profile = participant?.identity || participant?.name || "User";
+  const participantId = participant?.identity;
 
   return (
     <VoicePeople
-      participantId={profile}
+      participantId={String(participantId)}
       onClick={() => onSelect(trackRef?.participant.sid || null)}
       size={size}
       showTracks={true}
