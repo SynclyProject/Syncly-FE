@@ -12,6 +12,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { TSignUpSchema } from "../shared/type/sign";
 import { BeginGoogleLogin } from "../shared/api/Social";
+import { Loading } from "../shared/ui/Loading";
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
