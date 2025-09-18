@@ -1,5 +1,5 @@
 import Icon from "../../../shared/ui/Icon";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Track } from "livekit-client";
 import {
   VideoTrack,
@@ -46,9 +46,7 @@ const VoicePeople = ({
     queryFn: () => GetInitInfo({ workspaceId: Number(id) }),
   });
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  refetch();
 
   const participant = data?.result.participants.find(
     (participant: TScreenInitInfo) =>
