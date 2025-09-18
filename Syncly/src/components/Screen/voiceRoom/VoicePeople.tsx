@@ -1,10 +1,11 @@
 import Icon from "../../../shared/ui/Icon";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Track } from "livekit-client";
 import {
   VideoTrack,
   useTrackRefContext,
   isTrackReference,
+  TrackReferenceOrPlaceholder,
 } from "@livekit/components-react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -44,7 +45,10 @@ const VoicePeople = ({
     queryKey: ["live-room-members", id],
     queryFn: () => GetInitInfo({ workspaceId: Number(id) }),
   });
-  refetch();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const participant = data?.result.participants.find(
     (participant: TScreenInitInfo) =>
@@ -80,6 +84,10 @@ const VoicePeople = ({
       return null;
     }
 
+    const pub = trackRef.publication;
+    const active = !!pub && pub.isSubscribed && !pub.isMuted && !!pub.track;
+    if (!active) return null;
+
     // 화면공유 트랙인 경우
     if (trackRef.source === Track.Source.ScreenShare) {
       return (
@@ -106,18 +114,26 @@ const VoicePeople = ({
     return null;
   };
 
+  function isActiveTrack(ref?: TrackReferenceOrPlaceholder) {
+    if (!ref || !isTrackReference(ref)) return false;
+    const pub = ref.publication;
+    return !!pub && pub.isSubscribed && !pub.isMuted && !!pub.track;
+  }
+
   // 캠이 켜져있으면 전체를 비디오로 교체
   const hasCameraTrack =
     showTracks &&
     trackRef &&
     isTrackReference(trackRef) &&
-    trackRef.source === Track.Source.Camera;
+    trackRef.source === Track.Source.Camera &&
+    isActiveTrack(trackRef);
 
   const hasScreenTrack =
     showTracks &&
     trackRef &&
     isTrackReference(trackRef) &&
-    trackRef.source === Track.Source.ScreenShare;
+    trackRef.source === Track.Source.ScreenShare &&
+    isActiveTrack(trackRef);
 
   if (hasCameraTrack) {
     return (
@@ -170,8 +186,6 @@ const VoicePeople = ({
           />
         )}
       </div>
-      {/* 화면공유 트랙이 있으면 오른쪽 상단에 표시 */}
-      {renderTrack()}
 
       <div className="absolute bottom-2 left-2 bg-black/50 text-white text-sm px-2 py-1 rounded z-10 flex items-center gap-2">
         {participant?.audioSharing === false && (
