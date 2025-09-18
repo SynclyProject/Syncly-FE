@@ -10,14 +10,16 @@ import { RoomContext } from "@livekit/components-react";
 import { TScreenInitInfo } from "../../shared/type/teamSpaceType";
 
 const ParticipantsList = ({
+  isVoice,
   setIsVoice,
 }: {
+  isVoice: boolean;
   setIsVoice: (isVoice: boolean) => void;
 }) => {
   const { id } = useParams();
   const { joinRoom, setLiveKitToken, room } = useLiveKitContext();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["live-room-members", id],
     queryFn: () => GetInitInfo({ workspaceId: Number(id) }),
   });
@@ -32,7 +34,9 @@ const ParticipantsList = ({
     if (liveKitToken?.result) {
       setLiveKitToken(liveKitToken.result);
     }
-  }, [liveKitToken, setLiveKitToken]);
+
+    refetch();
+  }, [liveKitToken, setLiveKitToken, isVoice, refetch]);
 
   return (
     <RoomContext.Provider value={room}>
@@ -56,15 +60,15 @@ const ParticipantsList = ({
             data?.result.participants.map((participant: TScreenInitInfo) => (
               <People
                 key={participant.participantId}
-                profile={participant.profile || null}
-                name={participant.participantId}
+                profile={participant.profileImageObjectKey || null}
+                name={participant.participantName}
                 audio={participant.audioSharing}
                 screen={participant.screenSharing}
               />
             ))
           ) : (
             <div className="w-full h-full flex justify-center items-center">
-              <p className="text-[16px]">No participants</p>
+              <p className="text-[16px]">현재 음성채널에 아무도 없어요</p>
             </div>
           )}
         </div>

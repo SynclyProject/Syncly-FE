@@ -76,13 +76,15 @@ export const LiveKitProvider = ({ children }: PropsWithChildren) => {
   };
 
   const toggleMic = async () => {
-    setMicEnabled(!micEnabled);
-    await room.localParticipant.setMicrophoneEnabled(!micEnabled);
+    const newState = !micEnabled;
+    await room.localParticipant.setMicrophoneEnabled(newState);
+    setMicEnabled(newState);
   };
 
   const toggleCam = async () => {
-    setCamEnabled(!camEnabled);
-    await room.localParticipant.setCameraEnabled(!camEnabled);
+    const newState = !camEnabled;
+    await room.localParticipant.setCameraEnabled(newState);
+    setCamEnabled(newState);
   };
 
   const toggleScreenSharing = async () => {

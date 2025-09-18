@@ -1,16 +1,43 @@
-import Button from "../../shared/ui/Button";
+import Button from "../../../shared/ui/Button";
 import VoicePeople from "./VoicePeople";
 import { useState } from "react";
 import {
   RoomContext,
   RoomAudioRenderer,
-  GridLayout,
-  ParticipantTile,
   useTracks,
+  TrackLoop,
+  TrackRefContextIfNeeded,
+  useTrackRefContext,
 } from "@livekit/components-react";
 import { useParticipants } from "@livekit/components-react";
 import { Track } from "livekit-client";
-import { useLiveKitContext } from "../../context/LiveKitContext";
+import { useLiveKitContext } from "../../../context/LiveKitContext";
+
+// TrackLoop 내부에서 사용할 VoicePeople 래퍼 컴포넌트
+const VoicePeopleWrapper = ({
+  onSelect,
+  size = "default",
+}: {
+  onSelect: (participantId: string | null) => void;
+  size?: "small" | "large" | "default";
+}) => {
+  const participants = useParticipants();
+  const trackRef = useTrackRefContext();
+
+  const participant = participants.find(
+    (p) => p.sid === trackRef?.participant.sid
+  );
+  const participantId = participant?.identity;
+
+  return (
+    <VoicePeople
+      participantId={String(participantId)}
+      onClick={() => onSelect(trackRef?.participant.sid || null)}
+      size={size}
+      showTracks={true}
+    />
+  );
+};
 
 const VoiceList = ({
   setIsVoice,
@@ -39,9 +66,6 @@ const VoiceListContent = ({
   const selected = participants.find(
     (participant) => participant.sid === selectedId
   );
-  const others = participants.filter(
-    (participant) => participant.sid !== selectedId
-  );
 
   const tracks = useTracks(
     [
@@ -64,50 +88,35 @@ const VoiceListContent = ({
           }}
         />
       </div>
-      {/* 화면공유 트랙이 있을 때 화면공유 영역 표시 */}
-      {tracks.some((track) => track.source === Track.Source.ScreenShare) && (
-        <div className="w-full h-1/2 mb-4">
-          <GridLayout
-            tracks={tracks.filter(
-              (track) => track.source === Track.Source.ScreenShare
-            )}
-          >
-            <ParticipantTile />
-          </GridLayout>
-        </div>
-      )}
 
       {/* 참가자 목록 */}
       {selected ? (
         <div className="w-full h-full flex flex-col gap-3">
           <div className="w-full h-full flex justify-center items-center">
-            <VoicePeople
-              profile={selected.identity || selected.name || "User"}
-              onClick={() => setSelectedId(null)}
-              size="large"
-            />
+            <TrackRefContextIfNeeded
+              trackRef={tracks.find((t) => t.participant.sid === selectedId)}
+            >
+              <VoicePeople
+                participantId={selected.identity}
+                onClick={() => setSelectedId(null)}
+                size="large"
+                showTracks={true}
+              />
+            </TrackRefContextIfNeeded>
           </div>
           <div className="w-full flex gap-3">
-            {others.map((participant) => (
-              <VoicePeople
-                key={participant.sid}
-                profile={participant.identity || participant.name || "User"}
-                onClick={() => setSelectedId(participant.sid)}
-                size="small"
-              />
-            ))}
+            <TrackLoop
+              tracks={tracks.filter((t) => t.participant.sid !== selectedId)}
+            >
+              <VoicePeopleWrapper onSelect={setSelectedId} size="small" />
+            </TrackLoop>
           </div>
         </div>
       ) : (
         <div className="w-full h-full grid grid-cols-2 gap-3 justify-center md:grid-cols-1 lg:grid-cols-2">
-          {participants.map((participant) => (
-            <VoicePeople
-              key={participant.sid}
-              profile={participant.identity || participant.name || "User"}
-              onClick={() => setSelectedId(participant.sid)}
-              size="default"
-            />
-          ))}
+          <TrackLoop tracks={tracks}>
+            <VoicePeopleWrapper onSelect={setSelectedId} size="default" />
+          </TrackLoop>
         </div>
       )}
     </div>
