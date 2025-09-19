@@ -12,17 +12,18 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { TSignUpSchema } from "../shared/type/sign";
 import { BeginGoogleLogin } from "../shared/api/Social";
-import { Loading } from "../shared/ui/Loading";
+import  Loading  from "../shared/ui/Loading";
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   
 
-  const { mutate: postEmailSend } = useMutation({
+
+  const { mutate: postEmailSend, 
+    isPending} = useMutation({
     mutationFn: PostEmailSend,
     onSuccess: () => {
       alert("인증메일이 전송되었습니다!");
@@ -89,9 +90,16 @@ const SignupPage = () => {
               <Button
                 colorType="main"
                 onClick={() => postEmailSend({ email: getValues("email") })}
+                disabled={isPending}
               >
-                Send
+                {isPending ? "Sending..." : "Send"}
               </Button>
+
+              {isPending && (
+                <div className="absolute inset-0 flex justify-center items-center bg-white/70 rounded-[8px] z-70">
+                  <Loading fullScreen={false} size={80} />
+                </div>
+              )}
             </div>
             <div>
               {/*에러메세지*/}
