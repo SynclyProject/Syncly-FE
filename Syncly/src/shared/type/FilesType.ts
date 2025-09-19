@@ -6,7 +6,7 @@ export type TFiles = {
   user: TUser;
 };
 
-type TUser = {
+export type TUser = {
   id: number;
   name: string;
   profileUrl: string;

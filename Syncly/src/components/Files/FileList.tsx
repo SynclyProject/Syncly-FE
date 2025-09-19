@@ -1,12 +1,11 @@
-import FilesData from "../../shared/api/mock/Files";
 import File from "./File";
 import { TFilesType, TFiles } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
-import { useState } from "react";
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
 import { PostFolder } from "../../shared/api/Folder/post";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetFolderFileList, GetRootFolder } from "../../shared/api/Folder/get";
+import { useParams } from "react-router-dom";
 
 interface IFileListProps {
   searchValue: string;
@@ -23,29 +22,35 @@ const FileList = ({
   sort,
   type,
 }: IFileListProps) => {
-  const [fileList, setFileList] = useState<TFiles[]>(FilesData);
+  const { personalSpaceId } = useWorkSpaceContext();
+  const { id } = useParams();
+  const spaceId = type === "my" ? personalSpaceId : Number(id);
 
-  const filteredFiles = fileList.filter((file) =>
-    file.name.toLowerCase().includes(searchValue.toLowerCase())
-  );
-  const { workspaceId, personalSpaceId } = useWorkSpaceContext();
-  const spaceId = type === "my" ? personalSpaceId : workspaceId;
-
-  const { data: rootFolder } = useQuery({
+  const { data: rootFolder, isPending } = useQuery({
     queryKey: ["rootFolder"],
     queryFn: () => GetRootFolder({ workspaceId: spaceId }),
   });
+
+  console.log("rootFolder", rootFolder);
 
   const { data: folderList, refetch: folderListRefetch } = useQuery({
     queryKey: ["folderList"],
     queryFn: () =>
       GetFolderFileList({
         workspaceId: spaceId,
-        folderId: rootFolder?.result.rootFolderId,
+        folderId: rootFolder?.result?.rootFolderId,
       }),
   });
+  console.log("folderList", folderList);
 
-  const filesToShow = searchValue ? filteredFiles : fileList;
+  const filteredFiles = folderList?.result?.items.filter((folder: TFiles) =>
+    folder.name.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const filesToShow = searchValue
+    ? filteredFiles || []
+    : folderList?.result?.items || [];
+
   const noDataMessage = searchValue
     ? "검색된 파일이 없습니다."
     : "저장한 파일이 없습니다.";
@@ -65,7 +70,6 @@ const FileList = ({
       parentId: null,
       name: text,
     });
-    // setFileList([...fileList, newFile]);
   };
 
   return (
@@ -76,34 +80,36 @@ const FileList = ({
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
       </div>
+      {isPending && (
+        //나중에 스켈레톤 UI (컴포넌트 제작) 삽입
+        <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
+      )}
       {sort ? (
         <div>
-          {[...fileList]
+          {[...filesToShow]
             .sort((a, b) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             )
-            .map((file) => (
+            .map((file: TFiles) => (
               <File
                 key={file.id}
-                type={file.type as TFilesType}
+                type={file.type.toLowerCase() as TFilesType}
                 title={file.name}
                 date={file.date}
-                user={file.user.name}
+                user={file.user}
                 fileId={file.id}
-                setFileList={setFileList}
               />
             ))}
         </div>
       ) : filesToShow.length > 0 ? (
-        filesToShow.map((file) => (
+        filesToShow.map((file: TFiles) => (
           <File
             key={file.id}
-            type={file.type as TFilesType}
+            type={file.type.toLowerCase() as TFilesType}
             title={file.name}
             date={file.date}
-            user={file.user.name}
+            user={file.user}
             fileId={file.id}
-            setFileList={setFileList}
           />
         ))
       ) : (

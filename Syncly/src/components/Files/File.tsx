@@ -1,35 +1,70 @@
 import Icon from "../../shared/ui/Icon";
 import { useState, useRef, useEffect } from "react";
-import { TFiles } from "../../shared/type/FilesType";
+import { TFilesType, TUser } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 
 type TTypeProps = {
-  type: "folder" | "image" | "file" | "video";
+  type: TFilesType;
 };
 interface IFileProps extends TTypeProps {
   title: string;
   date: string;
-  user?: string;
+  user?: TUser;
   fileId?: number;
-  setFileList?: React.Dispatch<React.SetStateAction<TFiles[]>>;
 }
 
-const File = ({ type, title, date, user, fileId, setFileList }: IFileProps) => {
+const File = ({ type, title, date, user, fileId }: IFileProps) => {
   const [modalShow, setModalShow] = useState(false);
   const [editTitle, setEditTitle] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const today = new Date().toISOString().split("T")[0];
+  // 파일 확장자에 따른 타입 결정
+  const getFileTypeFromExtension = (filename: string): TFilesType => {
+    const extension = filename.split(".").pop()?.toLowerCase();
+
+    if (!extension) return type; // 확장자가 없으면 원래 타입 유지
+
+    const imageExtensions = ["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp"];
+    const videoExtensions = [
+      "mp4",
+      "mov",
+      "avi",
+      "wmv",
+      "flv",
+      "mkv",
+      "webm",
+      "3gp",
+    ];
+    const documentExtensions = [
+      "pdf",
+      "doc",
+      "docx",
+      "xls",
+      "xlsx",
+      "ppt",
+      "pptx",
+      "txt",
+      "rtf",
+    ];
+
+    if (imageExtensions.includes(extension)) {
+      return "image";
+    } else if (videoExtensions.includes(extension)) {
+      return "video";
+    } else if (documentExtensions.includes(extension)) {
+      return "file";
+    }
+
+    return type;
+  };
+
+  const finalType = getFileTypeFromExtension(title);
 
   const handleEditTitle = (text: string) => {
     if (!text.trim()) return;
-    if (fileId && setFileList) {
-      setFileList((prev) =>
-        prev.map((file) =>
-          file.id === fileId ? { ...file, title: text, date: today } : file
-        )
-      );
+    if (fileId) {
+      //이름 변경 api 추가
     }
     setEditTitle(false);
   };
@@ -55,7 +90,7 @@ const File = ({ type, title, date, user, fileId, setFileList }: IFileProps) => {
     <>
       {editTitle ? (
         <FileInput
-          type={type}
+          type={finalType}
           onAdd={handleEditTitle}
           onCancel={() => setEditTitle(false)}
           initialValue={title}
@@ -63,12 +98,18 @@ const File = ({ type, title, date, user, fileId, setFileList }: IFileProps) => {
         />
       ) : (
         <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer">
-          <Icon name={type} />
+          <Icon name={finalType} />
           <p className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold">
             {title}
           </p>
           <p className="text-[#828282]">{date}</p>
-          {user && <Icon name={user} rounded={true} />}
+          {user && (
+            <img
+              src={user.profileUrl}
+              alt="profile"
+              className="w-[24px] h-[24px] rounded-full"
+            />
+          )}
           <div className="relative">
             <button
               className="cursor-pointer"
