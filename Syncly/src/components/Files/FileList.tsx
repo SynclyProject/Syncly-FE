@@ -5,7 +5,8 @@ import FileInput from "./FileInput";
 import { useState } from "react";
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
 import { PostFolder } from "../../shared/api/Folder/post";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { GetFolderFileList, GetRootFolder } from "../../shared/api/Folder/get";
 
 interface IFileListProps {
   searchValue: string;
@@ -23,11 +24,26 @@ const FileList = ({
   type,
 }: IFileListProps) => {
   const [fileList, setFileList] = useState<TFiles[]>(FilesData);
+
   const filteredFiles = fileList.filter((file) =>
-    file.title.toLowerCase().includes(searchValue.toLowerCase())
+    file.name.toLowerCase().includes(searchValue.toLowerCase())
   );
   const { workspaceId, personalSpaceId } = useWorkSpaceContext();
   const spaceId = type === "my" ? personalSpaceId : workspaceId;
+
+  const { data: rootFolder } = useQuery({
+    queryKey: ["rootFolder"],
+    queryFn: () => GetRootFolder({ workspaceId: spaceId }),
+  });
+
+  const { data: folderList, refetch: folderListRefetch } = useQuery({
+    queryKey: ["folderList"],
+    queryFn: () =>
+      GetFolderFileList({
+        workspaceId: spaceId,
+        folderId: rootFolder?.result.rootFolderId,
+      }),
+  });
 
   const filesToShow = searchValue ? filteredFiles : fileList;
   const noDataMessage = searchValue
@@ -38,7 +54,7 @@ const FileList = ({
     mutationFn: PostFolder,
     onSuccess: () => {
       console.log("폴더 생성 성공");
-      // refetch();
+      folderListRefetch();
     },
   });
   const handleAddFolder = (text: string) => {
@@ -64,15 +80,15 @@ const FileList = ({
         <div>
           {[...fileList]
             .sort((a, b) =>
-              a.title.toLowerCase().localeCompare(b.title.toLowerCase())
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             )
             .map((file) => (
               <File
                 key={file.id}
                 type={file.type as TFilesType}
-                title={file.title}
+                title={file.name}
                 date={file.date}
-                user={file.user}
+                user={file.user.name}
                 fileId={file.id}
                 setFileList={setFileList}
               />
@@ -83,9 +99,9 @@ const FileList = ({
           <File
             key={file.id}
             type={file.type as TFilesType}
-            title={file.title}
+            title={file.name}
             date={file.date}
-            user={file.user}
+            user={file.user.name}
             fileId={file.id}
             setFileList={setFileList}
           />
