@@ -1,22 +1,11 @@
 import { useEffect } from "react";
-import { axiosInstance} from "./axiosInstance";
-import { PostReissue } from "../Auth";
+import { reissueAndStoreToken } from "../SocialAuth";
 
 export default function OAuthSuccessPage() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await PostReissue();
-        const accessToken: string = data?.accessToken;
-
-        if (!accessToken) {
-          
-          throw new Error("No accessToken");
-        }
-
-        localStorage.setItem("accessToken", accessToken);
-        axiosInstance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-
+        await reissueAndStoreToken();
         window.location.replace("/my-urls");
       } catch (err) {
         console.error("Reissue failed:", err);
