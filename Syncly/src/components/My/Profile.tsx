@@ -21,6 +21,7 @@ const Profile = ({
   const [nickname, setNickname] = useState(name);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  // const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const debouncedNickname = useDebounce(nickname, 200);
 
@@ -90,6 +91,35 @@ const Profile = ({
     fileInputRef.current?.click();
   };
 
+  /*
+  const getProfile = useCallback(async () => {
+    try {
+      const res = await fetch(`https://cdn.syncly-io.com/${profile}`, {
+        credentials: "include",
+      });
+      if (!res?.ok) throw new Error("Forbidden or expired cookie");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      console.log("url : ", url);
+      return url;
+    } catch (error) {
+      console.error("프로필 이미지 로드 실패:", error);
+      return null;
+    }
+  }, [profile]);
+
+  // 프로필 이미지 로드
+  useEffect(() => {
+    if (profile) {
+      getProfile().then((url) => {
+        if (url) {
+          setProfileImageUrl(url);
+        }
+      });
+    }
+  }, [profile, getProfile]);
+  */
+
   return (
     <div className="w-full flex flex-col gap-[30px]">
       <p className=" pb-4 text-[32px] font-semibold border-b border-b-[#E0E0E0]">
@@ -105,6 +135,9 @@ const Profile = ({
             src={`https://cdn.syncly-io.com/${profile}`}
             alt="profile"
             className="w-[190px] h-[190px] object-cover rounded-full"
+            onError={() => {
+              console.error("이미지 로드 실패, 기본 URL로 폴백");
+            }}
           />
         )}
 
