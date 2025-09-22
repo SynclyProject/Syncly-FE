@@ -1,6 +1,7 @@
 import Button from "../../shared/ui/Button";
 import { useRef, useState, useEffect } from "react";
 import AddFile from "./AddFile";
+import { useFileContext } from "../../context/FileContext";
 
 const FilePath = ({
   setShowInput,
@@ -11,6 +12,10 @@ const FilePath = ({
   const [addFileModal, setAddFileModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const { folderPath, setFolderId, setFolderPath } = useFileContext();
+
+  console.log(folderPath);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -29,12 +34,36 @@ const FilePath = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [filePlusModal]);
 
+  const handlePathClick = (clickedKey: number) => {
+    setFolderId(clickedKey);
+
+    const nextPath = new Map<number, string>();
+    for (const [k, v] of folderPath.entries()) {
+      nextPath.set(k, v);
+      if (k === clickedKey) break;
+    }
+    setFolderPath(nextPath);
+  };
+
   return (
     <div className="w-full flex justify-between items-center mt-5">
       <div className="flex items-center gap-[50px]">
-        <p className="font-medium text-[32px] overflow-hidden overflow-ellipsis">
-          Files
-        </p>
+        <div className="flex items-center gap-3">
+          {Array.from(folderPath.entries()).map(([key, value], idx, arr) => (
+            <p
+              key={key}
+              className="font-medium text-[32px] overflow-hidden overflow-ellipsis"
+            >
+              <span
+                className="hover:cursor-pointer hover:bg-[#DEE4ED] hover:px-2 hover:py-1 hover:rounded-[8px]"
+                onClick={() => handlePathClick(key)}
+              >
+                {value}
+              </span>
+              {idx < arr.length - 1 ? " > " : ""}
+            </p>
+          ))}
+        </div>
       </div>
       <div className="relative">
         <Button

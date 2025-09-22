@@ -5,6 +5,7 @@ import { useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import TrashFileList from "../../components/Files/TrashFileList";
 import TeamNavigate from "../../components/TeamNavigate";
+import { FileProvider } from "../../context/FileContext";
 
 const TeamFilesPage = () => {
   const [showInput, setShowInput] = useState(false);
@@ -13,35 +14,37 @@ const TeamFilesPage = () => {
   const [mq, setMq] = useState("");
   const useDebouncedValue = useDebounce(mq, 500);
   return (
-    <div className="w-full mx-[74px] flex flex-col items-center gap-5">
-      <div className="w-full flex mt-5">
-        <TeamNavigate state="files" />
-      </div>
-      <div className="w-full flex flex-col gap-5">
-        <FilePath setShowInput={setShowInput} />
-        <FileSearch
-          setSearchValue={setMq}
-          setSort={setSort}
-          setTrash={setTrash}
-        />
-        {trash ? (
-          <TrashFileList
-            searchValue={useDebouncedValue}
-            setShowInput={setShowInput}
-            showInput={showInput}
-            sort={sort}
+    <FileProvider>
+      <div className="w-full mx-[74px] flex flex-col items-center gap-5">
+        <div className="w-full flex mt-5">
+          <TeamNavigate state="files" />
+        </div>
+        <div className="w-full flex flex-col gap-5">
+          <FilePath setShowInput={setShowInput} />
+          <FileSearch
+            setSearchValue={setMq}
+            setSort={setSort}
+            setTrash={setTrash}
           />
-        ) : (
-          <FileList
-            searchValue={useDebouncedValue}
-            setShowInput={setShowInput}
-            showInput={showInput}
-            sort={sort}
-            type="team"
-          />
-        )}
+          {trash ? (
+            <TrashFileList
+              searchValue={useDebouncedValue}
+              setShowInput={setShowInput}
+              showInput={showInput}
+              sort={sort}
+            />
+          ) : (
+            <FileList
+              searchValue={useDebouncedValue}
+              setShowInput={setShowInput}
+              showInput={showInput}
+              sort={sort}
+              type="team"
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </FileProvider>
   );
 };
 

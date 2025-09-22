@@ -6,6 +6,7 @@ import { PostFolder } from "../../shared/api/Folder/post";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetFolderFileList, GetRootFolder } from "../../shared/api/Folder/get";
 import { useParams } from "react-router-dom";
+import { useFileContext } from "../../context/FileContext";
 
 interface IFileListProps {
   searchValue: string;
@@ -26,22 +27,29 @@ const FileList = ({
   const { id } = useParams();
   const spaceId = type === "my" ? personalSpaceId : Number(id);
 
+  const isSpaceIdReady = typeof spaceId === "number" && !Number.isNaN(spaceId);
+
   const { data: rootFolder, isPending } = useQuery({
-    queryKey: ["rootFolder"],
+    queryKey: ["rootFolder", spaceId],
     queryFn: () => GetRootFolder({ workspaceId: spaceId }),
+    enabled: isSpaceIdReady,
   });
 
-  console.log("rootFolder", rootFolder);
+  const rootFolderId = rootFolder?.result?.rootFolderId as number;
+  const { folderId } = useFileContext();
+
+  const selectedFolderId =
+    typeof folderId === "number" && folderId > 0 ? folderId : rootFolderId;
 
   const { data: folderList, refetch: folderListRefetch } = useQuery({
-    queryKey: ["folderList"],
+    queryKey: ["folderList", spaceId, selectedFolderId],
     queryFn: () =>
       GetFolderFileList({
         workspaceId: spaceId,
-        folderId: rootFolder?.result?.rootFolderId,
+        folderId: selectedFolderId as number,
       }),
+    enabled: isSpaceIdReady && typeof selectedFolderId === "number",
   });
-  console.log("folderList", folderList);
 
   const filteredFiles = folderList?.result?.items.filter((folder: TFiles) =>
     folder.name.toLowerCase().includes(searchValue.toLowerCase())

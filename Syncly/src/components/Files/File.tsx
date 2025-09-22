@@ -2,6 +2,7 @@ import Icon from "../../shared/ui/Icon";
 import { useState, useRef, useEffect } from "react";
 import { TFilesType, TUser } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
+import { useFileContext } from "../../context/FileContext";
 
 type TTypeProps = {
   type: TFilesType;
@@ -18,6 +19,9 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
   const [editTitle, setEditTitle] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const { setFolderId, setFolderPath, folderPath } = useFileContext();
+  setFolderId(fileId as number);
 
   // 파일 확장자에 따른 타입 결정
   const getFileTypeFromExtension = (filename: string): TFilesType => {
@@ -86,6 +90,12 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [modalShow]);
 
+  const handleFolderClick = () => {
+    if (type === "folder") {
+      setFolderId(fileId as number);
+      setFolderPath(new Map([...folderPath, [fileId as number, title]]));
+    }
+  };
   return (
     <>
       {editTitle ? (
@@ -97,7 +107,10 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
           user={"userProfile"}
         />
       ) : (
-        <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer">
+        <div
+          className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer"
+          onClick={handleFolderClick}
+        >
           <Icon name={finalType} />
           <p className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold">
             {title}
