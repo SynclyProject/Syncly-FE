@@ -66,7 +66,7 @@ export const PatchFileName = async (data: {
     );
     return response.data;
   } catch (error) {
-    console.error("파일 이름 변경 실패", error);
+    return error;
   }
 };
 

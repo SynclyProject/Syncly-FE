@@ -3,6 +3,10 @@ import { useState, useRef, useEffect } from "react";
 import { TFilesType, TUser } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useFileContext } from "../../context/FileContext";
+import { PatchFolderName } from "../../shared/api/Folder/delete_patch";
+import { useMutation } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { PatchFileName } from "../../shared/api/File";
 
 type TTypeProps = {
   type: TFilesType;
@@ -21,6 +25,9 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { setFolderId, setFolderPath, folderPath } = useFileContext();
+  const { id } = useParams();
+  const workspaceId = Number(id);
+
   setFolderId(fileId as number);
 
   // 파일 확장자에 따른 타입 결정
@@ -65,12 +72,46 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
 
   const finalType = getFileTypeFromExtension(title);
 
+  const { mutate: patchFolderMutation } = useMutation({
+    mutationFn: PatchFolderName,
+    onSuccess: () => {
+      console.log("폴더 이름 변경 성공");
+      setEditTitle(false);
+    },
+    onError: (e) => {
+      console.log("폴더 이름 변경 실패", e);
+      setEditTitle(false);
+    },
+  });
+  const { mutate: patchFileMutation } = useMutation({
+    mutationFn: PatchFileName,
+    onSuccess: () => {
+      console.log("파일 이름 변경 성공");
+      setEditTitle(false);
+    },
+    onError: (e) => {
+      console.log("파일 이름 변경 실패", e);
+      setEditTitle(false);
+    },
+  });
+
   const handleEditTitle = (text: string) => {
     if (!text.trim()) return;
     if (fileId) {
-      //이름 변경 api 추가
+      if (type === "folder") {
+        patchFolderMutation({
+          workspaceId: workspaceId,
+          folderId: fileId,
+          name: text,
+        });
+      } else {
+        patchFileMutation({
+          workspaceId: workspaceId,
+          fileId: fileId,
+          name: text,
+        });
+      }
     }
-    setEditTitle(false);
   };
 
   useEffect(() => {

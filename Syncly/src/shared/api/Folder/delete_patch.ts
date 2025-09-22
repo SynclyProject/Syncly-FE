@@ -21,6 +21,7 @@ export const PatchFolderName = async (data: {
   folderId: number;
   name: string;
 }) => {
+  console.log("data : ", data);
   try {
     const response = await axiosInstance.patch(
       `/api/workspaces/${data.workspaceId}/folders/${data.folderId}`,
@@ -30,6 +31,6 @@ export const PatchFolderName = async (data: {
     );
     return response.data;
   } catch (error) {
-    console.error("폴더 이름 변경 실패", error);
+    return error;
   }
 };
