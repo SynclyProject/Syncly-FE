@@ -11,6 +11,8 @@ import {
   PostPasswordEmailVerify,
 } from "../shared/api/Member/post";
 import { PatchPasswordEmail } from "../shared/api/Member/patch";
+import  Loading  from "../shared/ui/Loading";
+
 
 const CreatePWPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -19,7 +21,7 @@ const CreatePWPage = () => {
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
 
-  const { mutate: postEmailSend } = useMutation({
+  const { mutate: postEmailSend , isPending} = useMutation({
     mutationFn: PostPasswordEmailSend,
     onSuccess: () => {
       alert("인증메일이 전송되었습니다!");
@@ -86,9 +88,17 @@ const CreatePWPage = () => {
               <Button
                 colorType="main"
                 onClick={() => postEmailSend({ email: getValues("email") })}
+                disabled={isPending}
               >
-                Send
+              {isPending ? "Sending/..." : "Send"}
               </Button>
+
+              {isPending && (
+                <div className="absolute inset-0 flex justify-center items-center bg-white/70 rounded-[8px] z-70">
+                  <Loading fullScreen={false} size={30} />
+                </div>
+              
+              )}
             </div>
             <div>
               {/*에러메세지*/}
