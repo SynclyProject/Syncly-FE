@@ -75,7 +75,7 @@ const FileList = ({
 
     postFolderMutation({
       workspaceId: spaceId,
-      parentId: null,
+      parentId: selectedFolderId,
       name: text,
     });
   };
@@ -106,6 +106,7 @@ const FileList = ({
                 date={file.date}
                 user={file.user}
                 fileId={file.id}
+                folderListRefetch={folderListRefetch}
               />
             ))}
         </div>
@@ -118,6 +119,7 @@ const FileList = ({
             date={file.date}
             user={file.user}
             fileId={file.id}
+            folderListRefetch={folderListRefetch}
           />
         ))
       ) : (
@@ -132,6 +134,7 @@ const FileList = ({
           user={"userProfile"}
           onAdd={handleAddFolder}
           onCancel={() => setShowInput(false)}
+          folderListRefetch={folderListRefetch}
         />
       )}
     </div>

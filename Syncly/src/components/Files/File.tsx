@@ -16,9 +16,17 @@ interface IFileProps extends TTypeProps {
   date: string;
   user?: TUser;
   fileId?: number;
+  folderListRefetch: () => void;
 }
 
-const File = ({ type, title, date, user, fileId }: IFileProps) => {
+const File = ({
+  type,
+  title,
+  date,
+  user,
+  fileId,
+  folderListRefetch,
+}: IFileProps) => {
   const [modalShow, setModalShow] = useState(false);
   const [editTitle, setEditTitle] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -77,6 +85,7 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
     onSuccess: () => {
       console.log("폴더 이름 변경 성공");
       setEditTitle(false);
+      folderListRefetch?.();
     },
     onError: (e) => {
       console.log("폴더 이름 변경 실패", e);
@@ -88,6 +97,7 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
     onSuccess: () => {
       console.log("파일 이름 변경 성공");
       setEditTitle(false);
+      folderListRefetch?.();
     },
     onError: (e) => {
       console.log("파일 이름 변경 실패", e);
@@ -135,6 +145,7 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
     if (type === "folder") {
       setFolderId(fileId as number);
       setFolderPath(new Map([...folderPath, [fileId as number, title]]));
+      folderListRefetch();
     }
   };
   return (
@@ -146,6 +157,7 @@ const File = ({ type, title, date, user, fileId }: IFileProps) => {
           onCancel={() => setEditTitle(false)}
           initialValue={title}
           user={"userProfile"}
+          folderListRefetch={folderListRefetch}
         />
       ) : (
         <div
