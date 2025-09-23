@@ -15,8 +15,6 @@ const FilePath = ({
 
   const { folderPath, setFolderId, setFolderPath } = useFileContext();
 
-  console.log(folderPath);
-
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
