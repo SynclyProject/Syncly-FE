@@ -27,4 +27,5 @@ export type TScreenInitInfo = {
   profileImageObjectKey?: string;
   audioSharing: boolean;
   screenSharing: boolean;
+  isMe: boolean;
 };

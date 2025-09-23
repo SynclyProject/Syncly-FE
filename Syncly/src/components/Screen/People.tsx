@@ -1,3 +1,4 @@
+import { useShowImage } from "../../hooks/useShowImage";
 import Icon from "../../shared/ui/Icon";
 
 type TPeopleProps = {
@@ -9,13 +10,14 @@ type TPeopleProps = {
 };
 
 const People = ({ profile, name, audio, screen, cam }: TPeopleProps) => {
+  const profileImageUrl = useShowImage(profile);
   return (
     <div className="flex gap-2 items-center">
       {profile === null ? (
         <Icon name="User_Circle" />
       ) : (
         <img
-          src={`${import.meta.env.VITE_IMAGE_URL}/${profile}`}
+          src={profileImageUrl ?? undefined}
           alt="profile"
           className="w-[30px] h-[30px] rounded-full"
         />

@@ -18,7 +18,7 @@ const TrashFileList = ({
 }: IFileListProps) => {
   const [fileList, setFileList] = useState<TFiles[]>([]);
   const filteredFiles = fileList.filter((file) =>
-    file.title.toLowerCase().includes(searchValue.toLowerCase())
+    file.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const filesToShow = searchValue ? filteredFiles : fileList;
@@ -28,14 +28,7 @@ const TrashFileList = ({
 
   const handleAddFile = (text: string) => {
     if (!text.trim()) return;
-    const newFile: TFiles = {
-      id: fileList.length + 1,
-      type: "folder",
-      title: text,
-      date: new Date().toISOString().split("T")[0],
-      user: "userProfile",
-    };
-    setFileList([...fileList, newFile]);
+    //완전 삭제 API가 들어가야 하나?
   };
 
   return (
@@ -50,15 +43,16 @@ const TrashFileList = ({
         <div>
           {[...fileList]
             .sort((a, b) =>
-              a.title.toLowerCase().localeCompare(b.title.toLowerCase())
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             )
             .map((file) => (
               <File
                 key={file.id}
                 type={file.type as TFilesType}
-                title={file.title}
+                title={file.name}
                 date={file.date}
                 user={file.user}
+                folderListRefetch={() => {}}
               />
             ))}
         </div>
@@ -67,9 +61,10 @@ const TrashFileList = ({
           <File
             key={file.id}
             type={file.type as TFilesType}
-            title={file.title}
+            title={file.name}
             date={file.date}
             user={file.user}
+            folderListRefetch={() => {}}
           />
         ))
       ) : (
@@ -84,6 +79,7 @@ const TrashFileList = ({
           onAdd={handleAddFile}
           onCancel={() => setShowInput(false)}
           type="folder"
+          folderListRefetch={() => {}}
         />
       )}
     </div>

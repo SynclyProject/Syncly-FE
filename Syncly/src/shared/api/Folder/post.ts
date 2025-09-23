@@ -1,4 +1,4 @@
-import { axiosInstance } from "./common/axiosInstance";
+import { axiosInstance } from "../common/axiosInstance";
 
 // 폴더 생성
 export const PostFolder = async (data: {
@@ -18,6 +18,20 @@ export const PostFolder = async (data: {
     return response.data;
   } catch (error) {
     console.error("폴더 생성 실패", error);
-    throw error;
+  }
+};
+
+// 폴더 복원
+export const PostFolderRestore = async (data: {
+  workspaceId: number;
+  folderId: number;
+}) => {
+  try {
+    const response = await axiosInstance.post(
+      `/api/workspaces/${data.workspaceId}/folders/${data.folderId}/restore`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("폴더 복원 실패", error);
   }
 };

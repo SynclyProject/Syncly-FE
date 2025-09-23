@@ -1,13 +1,18 @@
 import { axiosInstance } from "./common/axiosInstance";
 
 export const PostViewCookie = async (data: { objectKey: string }) => {
+  if (!data.objectKey) {
+    console.error("objectKey가 없습니다.");
+    return;
+  }
   try {
     const response = await axiosInstance.post(`/api/s3/view-cookie`, {
       objectKey: data.objectKey,
     });
+    console.log("view-cookie 생성 성공", response.data);
     return response.data;
   } catch (error) {
-    console.error("??? 실패", error);
+    console.error("view-cookie 생성 실패", error);
   }
 };
 
