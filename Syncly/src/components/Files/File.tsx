@@ -7,6 +7,7 @@ import { PatchFolderName } from "../../shared/api/Folder/delete_patch";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { PatchFileName } from "../../shared/api/File";
+import { useShowImage } from "../../hooks/useShowImage";
 
 type TTypeProps = {
   type: TFilesType;
@@ -148,6 +149,8 @@ const File = ({
       folderListRefetch();
     }
   };
+
+  const profileImageUrl = useShowImage(user?.profileUrl || null);
   return (
     <>
       {editTitle ? (
@@ -169,9 +172,11 @@ const File = ({
             {title}
           </p>
           <p className="text-[#828282]">{date}</p>
-          {user && (
+          {!profileImageUrl ? (
+            <Icon name="User_Default" />
+          ) : (
             <img
-              src={user.profileUrl}
+              src={profileImageUrl ?? undefined}
               alt="profile"
               className="w-[24px] h-[24px] rounded-full"
             />
