@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { GetInitInfo } from "../../../shared/api/Live";
 import { TScreenInitInfo } from "../../../shared/type/teamSpaceType";
+import { useShowImage } from "../../../hooks/useShowImage";
 
 const pastelColors = [
   "#FFD1DC", // light pink
@@ -55,6 +56,8 @@ const VoicePeople = ({
 
   console.log("내 아이디 : ", participantId);
   console.log("participant : ", participant);
+
+  const profileImageUrl = useShowImage(participant?.profileImageObjectKey);
 
   // participantId을 기반으로 일관된 색상 생성
   const bgColor = useMemo(() => {
@@ -176,11 +179,9 @@ const VoicePeople = ({
           </div>
         ) : (
           <img
-            src={`${import.meta.env.VITE_IMAGE_URL}/${
-              participant?.profileImageObjectKey
-            }`}
+            src={profileImageUrl ?? undefined}
             alt="profile"
-            className="w-[190px] h-[190px] object-cover rounded-full"
+            className="w-full aspect-square object-contain rounded-full"
           />
         )}
       </div>

@@ -108,7 +108,7 @@ const Profile = ({
           <img
             src={profileImageUrl ?? undefined}
             alt="profile"
-            className="w-[190px] h-[190px] object-cover rounded-full"
+            className="w-full max-w-[190px] aspect-square object-contain rounded-full"
             onError={() => {
               console.error("이미지 로드 실패, 기본 URL로 폴백");
             }}
