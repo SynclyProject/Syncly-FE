@@ -8,6 +8,7 @@ import useDebounce from "../../hooks/useDebounce";
 import { PostProfile } from "../../shared/api/S3";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { useShowImage } from "../../hooks/useShowImage";
 
 const Profile = ({
   name,
@@ -91,34 +92,7 @@ const Profile = ({
     fileInputRef.current?.click();
   };
 
-  /*
-  const getProfile = useCallback(async () => {
-    try {
-      const res = await fetch(`https://cdn.syncly-io.com/${profile}`, {
-        credentials: "include",
-      });
-      if (!res?.ok) throw new Error("Forbidden or expired cookie");
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      console.log("url : ", url);
-      return url;
-    } catch (error) {
-      console.error("프로필 이미지 로드 실패:", error);
-      return null;
-    }
-  }, [profile]);
-
-  // 프로필 이미지 로드
-  useEffect(() => {
-    if (profile) {
-      getProfile().then((url) => {
-        if (url) {
-          setProfileImageUrl(url);
-        }
-      });
-    }
-  }, [profile, getProfile]);
-  */
+  const profileImageUrl = useShowImage(profile || null);
 
   return (
     <div className="w-full flex flex-col gap-[30px]">
@@ -126,13 +100,13 @@ const Profile = ({
         Mypage
       </p>
       <div className="w-full flex gap-[40px] px-7">
-        {profile == null ? (
+        {!profileImageUrl ? (
           <div className="max-w-[190px] max-h-[190px] min-w-[100px] min-h-[100px] flex items-center justify-center">
             <Icon name="User_Default" />
           </div>
         ) : (
           <img
-            src={`https://cdn.syncly-io.com/${profile}`}
+            src={profileImageUrl ?? undefined}
             alt="profile"
             className="w-[190px] h-[190px] object-cover rounded-full"
             onError={() => {
