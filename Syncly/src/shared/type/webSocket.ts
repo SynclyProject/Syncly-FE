@@ -32,4 +32,9 @@ export interface UseWebSocketReturn {
     callback: (message: TMySpaceURLs) => void
   ) => void;
   unsubscribeFromTab: (tabId: number) => void;
+  subscribeToChat: (
+    workspaceId: number,
+    callback: (message: TMySpaceURLs) => void
+  ) => void;
+  sendChat: (workspaceId: number, message: string) => void;
 }
