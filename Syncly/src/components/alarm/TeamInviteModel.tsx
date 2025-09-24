@@ -7,6 +7,8 @@ import { GetSpaceMember } from "../../shared/api/WorkSpace/get";
 import { TTeamMember } from "../../shared/type/teamSpaceType";
 import { PostSpaceInvite } from "../../shared/api/WorkSpace/post";
 import { AxiosError } from "axios";
+
+
 interface TeamInviteModelProps {
   onClose: () => void;
   spaceId: number;
@@ -69,10 +71,13 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
                 postSpaceInviteMutation({ spaceId, email });
               }}
             />
+            
           </div>
 
           {/* 팀원 목록 */}
           <p className="pb-4">팀원 목록</p>
+
+          
           <div className="flex flex-col gap-1 overflow-y-auto pb-10">
             {data?.result.map((member: TTeamMember) => (
               <TeamMemberCard
