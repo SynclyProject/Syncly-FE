@@ -9,6 +9,7 @@ interface IFileInputProps extends TTypeProps {
   onAdd: (text: string) => void;
   onCancel: () => void;
   initialValue?: string;
+  folderListRefetch: () => void;
 }
 
 const FileInput = ({

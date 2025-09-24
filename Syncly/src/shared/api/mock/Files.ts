@@ -4,30 +4,46 @@ const FilesData: TFiles[] = [
   {
     id: 1,
     type: "folder",
-    title: "UMC",
+    name: "UMC",
     date: "2021-01-01",
-    user: "userProfile",
+    user: {
+      id: 1,
+      name: "userProfile",
+      profileUrl: "userProfile",
+    },
   },
   {
     id: 2,
     type: "file",
-    title: "Project",
+    name: "Project",
     date: "2021-01-01",
-    user: "userProfile",
+    user: {
+      id: 1,
+      name: "userProfile",
+      profileUrl: "userProfile",
+    },
   },
   {
     id: 3,
     type: "image",
-    title: "Project",
+    name: "Project",
     date: "2021-01-01",
-    user: "userProfile",
+    user: {
+      id: 1,
+      name: "userProfile",
+      profileUrl: "userProfile",
+    },
   },
   {
     id: 4,
     type: "video",
-    title: "Project",
+    name: "Project",
     date: "2021-01-01",
-    user: "userProfile",
+    user: {
+      id: 1,
+      name: "userProfile",
+      profileUrl: "userProfile",
+    },
   },
 ];
 

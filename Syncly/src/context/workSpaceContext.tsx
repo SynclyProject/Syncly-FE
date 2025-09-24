@@ -5,6 +5,9 @@ import {
   useEffect,
   PropsWithChildren,
 } from "react";
+import { GetSpaceList } from "../shared/api/WorkSpace/get";
+import { useQuery } from "@tanstack/react-query";
+import { TTeamSpace } from "../shared/type/teamSpaceType";
 
 type TWorkSpaceContext = {
   personalSpaceId: number;
@@ -15,7 +18,13 @@ type TWorkSpaceContext = {
 const WorkSpaceContext = createContext<TWorkSpaceContext | null>(null);
 
 export const WorkSpaceProvider = ({ children }: PropsWithChildren) => {
-  const personalSpaceId = 17;
+  const { data } = useQuery({
+    queryKey: ["spaceList"],
+    queryFn: () => GetSpaceList(),
+  });
+  const personalSpaceId = data?.result.find(
+    (space: TTeamSpace) => space.workspaceType === "PERSONAL"
+  )?.workspaceId;
 
   // 초기값을 0으로 설정하여 NaN 방지
   const [workspaceId, setWorkspaceId] = useState<number>(0);

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DeleteMember } from "../../shared/api/Member/get_delete";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const REASONS = [
   { label: "서비스 이용이 불편해요", value: "INCONVENIENT_SERVICE" },
@@ -33,6 +34,8 @@ const DeleteForm = ({
 }: {
   setShowDeleteForm: (show: boolean) => void;
 }) => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -54,6 +57,7 @@ const DeleteForm = ({
     onSuccess: () => {
       alert("계정이 삭제되었습니다");
       setShowDeleteForm(false);
+      navigate("/");
     },
   });
 

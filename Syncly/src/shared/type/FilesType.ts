@@ -1,9 +1,15 @@
 export type TFiles = {
   id: number;
   type: TFilesType;
-  title: string;
+  name: string;
   date: string;
-  user: string;
+  user: TUser;
+};
+
+export type TUser = {
+  id: number;
+  name: string;
+  profileUrl: string;
 };
 
 export type TFilesType = "folder" | "file" | "image" | "video";

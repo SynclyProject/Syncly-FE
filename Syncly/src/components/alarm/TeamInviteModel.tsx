@@ -18,7 +18,6 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
   onClose,
   spaceId,
 }) => {
-  const [showInput, setShowInput] = useState(false);
   const [email, setEmail] = useState("");
 
   const { data } = useQuery({
@@ -40,10 +39,6 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 ">
       <div className="absolute inset-0 bg-black opacity-40 pointer-events-none" />
-      {/* <div
-        className="absolute inset-0 bg-black bg-opacity-30"
-        onClick={onClose}
-      /> */}
       <div className="relative z-50 w-[703px] h-80 bg-white rounded-lg shadow-lg p-6 ">
         {/* 닫기 버튼 */}
         <button
@@ -67,7 +62,6 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
               colorType="main"
               iconName="add_circle"
               onClick={() => {
-                setShowInput(true);
                 postSpaceInviteMutation({ spaceId, email });
               }}
             />
