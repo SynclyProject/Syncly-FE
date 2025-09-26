@@ -61,6 +61,7 @@ export const useGetInfiniteChatList = ({
       GetChatLisBefore({
         workspaceId: spaceId,
         beforeSeq: pageParam as number,
+        limit: 8,
       }),
     initialPageParam: beforeSeq,
     getNextPageParam: (lastPage: TChatList) =>
