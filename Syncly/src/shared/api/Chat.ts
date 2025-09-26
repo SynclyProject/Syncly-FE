@@ -36,7 +36,8 @@ export const GetChatLisBefore = async (data: {
         },
       }
     );
-    return response.data;
+    // result 래핑을 해제하여 훅에서 TChatList로 바로 사용
+    return response.data.result;
   } catch (error) {
     console.error("과거 메세지 더 보기 실패", error);
   }

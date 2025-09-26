@@ -1,15 +1,59 @@
-import { useChatList } from "../../hooks/useChatList";
+import { useChatList, useGetInfiniteChatList } from "../../hooks/useChatList";
 import Chat from "./Chat";
-import { TChat } from "../../shared/type/chat";
+import { TChat, TChatList } from "../../shared/type/chat";
 import dayjs from "dayjs";
+import { useEffect, useMemo, useRef } from "react";
 
 const Chatting = () => {
   const { chatList, myId } = useChatList();
+  const topRef = useRef<HTMLDivElement | null>(null);
+  const nextBeforeSeq = chatList?.result?.nextBeforeSeq;
+
+  const {
+    data: beforePages,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetInfiniteChatList({
+    beforeSeq: nextBeforeSeq ?? 0,
+    afterSeq: 0,
+    queryOptions: {
+      enabled: !!nextBeforeSeq,
+      staleTime: 0,
+      queryKey: ["chatListBefore", nextBeforeSeq],
+      getNextPageParam: (lastPage: TChatList) =>
+        lastPage?.nextBeforeSeq ?? undefined,
+      initialPageParam: nextBeforeSeq ?? 0,
+    },
+  });
+
+  const items = useMemo(() => {
+    const older = beforePages ? beforePages.pages.flatMap((p) => p.items) : [];
+    const latest = chatList?.result?.items ?? [];
+    return [...older, ...latest];
+  }, [beforePages, chatList]);
+
+  console.log(beforePages);
+
+  useEffect(() => {
+    if (!topRef.current) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.01 }
+    );
+    io.observe(topRef.current);
+    return () => io.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="max-w-[350px] min-w-[140px] w-full h-full flex flex-col gap-3">
-      {chatList?.result?.items?.map((chat: TChat) => {
-        const prevChat = chatList?.result?.items[chat.id - 2];
+    <div className="max-w-[350px] min-w-[140px] w-full h-full flex flex-col gap-3 overflow-y-auto">
+      <div ref={topRef} />
+      {items.map((chat: TChat, index: number) => {
+        const prevChat = index > 0 ? items[index - 1] : undefined;
 
         let showTime = true;
         let showDate = true;
@@ -28,6 +72,7 @@ const Chatting = () => {
             // 5분 이상 차이나면 시간 표시
             showTime = currentTime.diff(prevTime, "minute") >= 5;
           } else {
+            // 다른 사람의 메시지면 시간 표시
             showTime = true;
           }
         }
