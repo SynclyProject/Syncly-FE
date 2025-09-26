@@ -63,3 +63,14 @@ export const GetChatLisAfter = async (data: {
     console.error("끊김 보정 실패", error);
   }
 };
+
+export const GetWorkspaceMemberId = async (workspaceId: number) => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/workspaces/${workspaceId}/me`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("워크스페이스 멤버 아이디 조회 실패", error);
+  }
+};

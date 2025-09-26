@@ -3,9 +3,12 @@ import { useLiveKitContext } from "../../context/LiveKitContext";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useWebSocket } from "../../hooks/useWebSocket";
+import { useChatList } from "../../hooks/useChatList";
 
 const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
   const [chatMessage, setChatMessage] = useState("");
+  const { refetch: chatListRefetch } = useChatList();
+
   const {
     toggleMic,
     toggleScreenSharing,
@@ -71,6 +74,7 @@ const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
     if (!messageToSend || !isConnected || !spaceId) return;
     sendChat(spaceId, messageToSend);
     setChatMessage("");
+    chatListRefetch();
   };
   return (
     <div className="w-full flex gap-2 ">
