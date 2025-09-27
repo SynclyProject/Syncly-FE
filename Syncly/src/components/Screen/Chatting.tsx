@@ -79,7 +79,7 @@ const Chatting = () => {
       ref={chatContainerRef}
       className="max-w-[350px] min-w-[140px] w-full flex flex-col gap-3 overflow-y-auto 
                  h-[50vh] sm:h-[60vh] md:h-[65vh] lg:h-[70vh] xl:h-[75vh]
-                 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] lg:max-h-[700px] xl:max-h-[800px]
+                 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] lg:max-h-[700px] xl:max-h-full
                  min-h-[300px] sm:min-h-[350px] md:min-h-[400px]"
     >
       <div ref={topRef} />
