@@ -2,13 +2,14 @@ import { useChatList, useGetInfiniteChatList } from "../../hooks/useChatList";
 import Chat from "./Chat";
 import { TChat, TChatList } from "../../shared/type/chat";
 import dayjs from "dayjs";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const Chatting = () => {
   const { chatList, myId } = useChatList();
   const topRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isUserAtBottom, setIsUserAtBottom] = useState(true);
   const nextBeforeSeq = chatList?.result?.nextBeforeSeq;
 
   const {
@@ -50,13 +51,28 @@ const Chatting = () => {
     return () => io.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // 채팅 목록이 업데이트될 때마다 맨 아래로 스크롤
+  // 스크롤 위치 추적
   useEffect(() => {
-    if (bottomRef.current && chatContainerRef.current) {
-      // 스크롤을 맨 아래로 이동
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    const container = chatContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const isAtBottom = scrollHeight - scrollTop - clientHeight < 10; // 10px 여유
+      setIsUserAtBottom(isAtBottom);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // 새 메시지가 추가될 때 사용자가 맨 아래에 있을 때만 자동 스크롤
+  useEffect(() => {
+    if (bottomRef.current && isUserAtBottom) {
+      // 즉시 스크롤 (애니메이션 없이)
+      bottomRef.current.scrollIntoView({ behavior: "instant" });
     }
-  }, [items.length]); // items 배열의 길이가 변경될 때마다 실행
+  }, [items.length, isUserAtBottom]); // items 배열의 길이가 변경될 때마다 실행
 
   return (
     <div
