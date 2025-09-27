@@ -33,8 +33,6 @@ const Chatting = () => {
     return [...older, ...latest];
   }, [beforePages, chatList]);
 
-  console.log(beforePages);
-
   useEffect(() => {
     if (!topRef.current) return;
     const io = new IntersectionObserver(

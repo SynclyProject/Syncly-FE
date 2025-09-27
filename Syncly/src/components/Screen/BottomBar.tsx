@@ -62,19 +62,25 @@ const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
         });
         subscribeToChat(spaceId, (message) => {
           console.log("📨 웹소켓 채팅 메시지 수신:", message);
+          chatListRefetch();
         });
       } catch (error) {
         console.error("워크스페이스, 채팅 구독 실패:", error);
       }
     }
-  }, [isConnected, spaceId, subscribeToWorkspace, subscribeToChat]);
+  }, [
+    isConnected,
+    spaceId,
+    subscribeToWorkspace,
+    subscribeToChat,
+    chatListRefetch,
+  ]);
 
   const handleSendChat = () => {
     const messageToSend = chatMessage.trim();
     if (!messageToSend || !isConnected || !spaceId) return;
     sendChat(spaceId, messageToSend);
     setChatMessage("");
-    chatListRefetch();
   };
   return (
     <div className="w-full flex gap-2 ">
