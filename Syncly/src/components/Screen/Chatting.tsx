@@ -7,6 +7,8 @@ import { useEffect, useMemo, useRef } from "react";
 const Chatting = () => {
   const { chatList, myId } = useChatList();
   const topRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const nextBeforeSeq = chatList?.result?.nextBeforeSeq;
 
   const {
@@ -33,6 +35,7 @@ const Chatting = () => {
     return [...older, ...latest];
   }, [beforePages, chatList]);
 
+  // 무한 스크롤을 위한 Intersection Observer
   useEffect(() => {
     if (!topRef.current) return;
     const io = new IntersectionObserver(
@@ -47,8 +50,22 @@ const Chatting = () => {
     return () => io.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // 채팅 목록이 업데이트될 때마다 맨 아래로 스크롤
+  useEffect(() => {
+    if (bottomRef.current && chatContainerRef.current) {
+      // 스크롤을 맨 아래로 이동
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [items.length]); // items 배열의 길이가 변경될 때마다 실행
+
   return (
-    <div className="max-w-[350px] min-w-[140px] w-full h-full flex flex-col gap-3 overflow-y-auto">
+    <div
+      ref={chatContainerRef}
+      className="max-w-[350px] min-w-[140px] w-full flex flex-col gap-3 overflow-y-auto 
+                 h-[50vh] sm:h-[60vh] md:h-[65vh] lg:h-[70vh] xl:h-[75vh]
+                 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] lg:max-h-[700px] xl:max-h-[800px]
+                 min-h-[300px] sm:min-h-[350px] md:min-h-[400px]"
+    >
       <div ref={topRef} />
       {items.map((chat: TChat, index: number) => {
         const prevChat = index > 0 ? items[index - 1] : undefined;
@@ -125,6 +142,7 @@ const Chatting = () => {
           />
         );
       })}
+      <div ref={bottomRef} />
     </div>
   );
 };
