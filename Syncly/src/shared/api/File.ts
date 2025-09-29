@@ -22,7 +22,6 @@ export const PostFilePresignedUrl = async (data: {
   fileName: string;
   fileSize: number;
 }) => {
-  console.log(data);
   try {
     const response = await axiosInstance.post(
       `/api/workspaces/${data.workspaceId}/files/presigned-url`,

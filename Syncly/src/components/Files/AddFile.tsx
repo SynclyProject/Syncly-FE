@@ -47,33 +47,42 @@ const AddFile = ({
   ) => {
     if (e instanceof File) {
       console.log(e);
-
-      const response = await PostFilePresignedUrl({
-        workspaceId: spaceId,
-        folderId: folderId,
-        fileName: e.name,
-        fileSize: e.size,
-      });
-      console.log("response", response);
-      //s3 업로드 코드 작성
-      const s3Response = await axios.put(response.result.presignedUrl, e, {
-        headers: {
-          "Content-Type": e.type,
-        },
-      });
-      console.log("s3Response", s3Response);
-      //파일 업로드 확인
-      const uploadConfirmResponse = await PostFileUploadConfirm({
-        workspaceId: spaceId,
-        fileName: e.name,
-        objectKey: response.result.objectKey,
-      });
-      console.log("uploadConfirmResponse", uploadConfirmResponse);
-
+      handleFileUpload(e);
       return;
     }
+
+    // 파일 입력을 통한 파일 선택 처리
     const files = e.target?.files;
-    console.log(files);
+
+    if (files && files.length > 0) {
+      const file = files[0]; // 첫 번째 파일만 처리
+      console.log(file);
+      handleFileUpload(file);
+    }
+  };
+
+  const handleFileUpload = async (e: File) => {
+    const response = await PostFilePresignedUrl({
+      workspaceId: spaceId,
+      folderId: folderId,
+      fileName: e.name,
+      fileSize: e.size,
+    });
+    console.log("response", response);
+    //s3 업로드 코드 작성
+    const s3Response = await axios.put(response.result.presignedUrl, e, {
+      headers: {
+        "Content-Type": e.type,
+      },
+    });
+    console.log("s3Response", s3Response);
+    //파일 업로드 확인
+    const uploadConfirmResponse = await PostFileUploadConfirm({
+      workspaceId: spaceId,
+      fileName: e.name,
+      objectKey: response.result.objectKey,
+    });
+    console.log("uploadConfirmResponse", uploadConfirmResponse);
   };
   return (
     <div className="w-[760px] h-[480px] bg-white flex flex-col gap-8 p-[30px] border border-[#E0E0E0] rounded-[8px]">
