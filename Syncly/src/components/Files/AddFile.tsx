@@ -1,9 +1,13 @@
 import { useFileContext } from "../../context/FileContext";
 import Icon from "../../shared/ui/Icon";
 import { useState } from "react";
-import { PostFilePresignedUrl } from "../../shared/api/File";
+import {
+  PostFilePresignedUrl,
+  PostFileUploadConfirm,
+} from "../../shared/api/File";
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const AddFile = ({
   setAddFileModal,
@@ -43,6 +47,7 @@ const AddFile = ({
   ) => {
     if (e instanceof File) {
       console.log(e);
+
       const response = await PostFilePresignedUrl({
         workspaceId: spaceId,
         folderId: folderId,
@@ -50,6 +55,21 @@ const AddFile = ({
         fileSize: e.size,
       });
       console.log("response", response);
+      //s3 업로드 코드 작성
+      const s3Response = await axios.put(response.result.presignedUrl, e, {
+        headers: {
+          "Content-Type": e.type,
+        },
+      });
+      console.log("s3Response", s3Response);
+      //파일 업로드 확인
+      const uploadConfirmResponse = await PostFileUploadConfirm({
+        workspaceId: spaceId,
+        fileName: e.name,
+        objectKey: response.result.objectKey,
+      });
+      console.log("uploadConfirmResponse", uploadConfirmResponse);
+
       return;
     }
     const files = e.target?.files;
