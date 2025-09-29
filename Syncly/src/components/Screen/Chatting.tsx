@@ -33,7 +33,16 @@ const Chatting = () => {
   const items = useMemo(() => {
     const older = beforePages ? beforePages.pages.flatMap((p) => p.items) : [];
     const latest = chatList?.result?.items ?? [];
-    return [...older, ...latest];
+
+    // 모든 메시지를 합치고 중복 제거 (id 기준)
+    const allMessages = [...older, ...latest];
+    const uniqueMessages = allMessages.filter(
+      (message, index, array) =>
+        array.findIndex((m) => m.id === message.id) === index
+    );
+
+    // seq 기준으로 정렬 (오래된 순서대로)
+    return uniqueMessages.sort((a, b) => a.seq - b.seq);
   }, [beforePages, chatList]);
 
   // 무한 스크롤을 위한 Intersection Observer
