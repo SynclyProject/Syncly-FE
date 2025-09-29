@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import * as Stomp from "stompjs";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
 import { UseWebSocketReturn, WebSocketMessage } from "../shared/type/webSocket";
+import { TChatList } from "../shared/type/chat";
 
 export const useWebSocket = (): UseWebSocketReturn => {
   const [isConnected, setIsConnected] = useState(false);
@@ -234,7 +235,7 @@ export const useWebSocket = (): UseWebSocketReturn => {
   }, []);
 
   const subscribeToChat = useCallback(
-    (workspaceId: number, callback: (message: TMySpaceURLs) => void) => {
+    (workspaceId: number, callback: (message: TChatList) => void) => {
       if (!stompClientRef.current?.connected) {
         throw new Error("WebSocket이 연결되지 않았습니다.");
       }

@@ -17,7 +17,7 @@ export const PostFolder = async (data: {
     );
     return response.data;
   } catch (error) {
-    console.error("폴더 생성 실패", error);
+    return error;
   }
 };
 

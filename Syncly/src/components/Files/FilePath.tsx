@@ -5,8 +5,10 @@ import { useFileContext } from "../../context/FileContext";
 
 const FilePath = ({
   setShowInput,
+  type,
 }: {
   setShowInput: (boolean: boolean) => void;
+  type: "my" | "team";
 }) => {
   const [filePlusModal, setFilePlusModal] = useState(false);
   const [addFileModal, setAddFileModal] = useState(false);
@@ -90,7 +92,7 @@ const FilePath = ({
         )}
         {addFileModal && (
           <div className="fixed inset-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50">
-            <AddFile setAddFileModal={setAddFileModal} />
+            <AddFile setAddFileModal={setAddFileModal} type={type} />
           </div>
         )}
       </div>
