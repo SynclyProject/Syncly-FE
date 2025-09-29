@@ -37,7 +37,7 @@ const FileList = ({
   });
 
   const rootFolderId = rootFolder?.result?.rootFolderId as number;
-  const { folderId, setFolderPath } = useFileContext();
+  const { folderId, setFolderId, setFolderPath } = useFileContext();
 
   // rootFolderId가 변경될 때만 folderPath를 업데이트
   useEffect(() => {
@@ -48,6 +48,8 @@ const FileList = ({
 
   const selectedFolderId =
     typeof folderId === "number" && folderId > 0 ? folderId : rootFolderId;
+
+  setFolderId(selectedFolderId);
 
   const { data: folderList, refetch: folderListRefetch } = useQuery({
     queryKey: ["folderList", spaceId, selectedFolderId],

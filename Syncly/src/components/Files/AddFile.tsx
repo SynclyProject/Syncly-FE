@@ -1,12 +1,23 @@
+import { useFileContext } from "../../context/FileContext";
 import Icon from "../../shared/ui/Icon";
 import { useState } from "react";
+import { PostFilePresignedUrl } from "../../shared/api/File";
+import { useWorkSpaceContext } from "../../context/workSpaceContext";
+import { useParams } from "react-router-dom";
 
 const AddFile = ({
   setAddFileModal,
+  type,
 }: {
   setAddFileModal: (boolean: boolean) => void;
+  type: "my" | "team";
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const { folderId } = useFileContext();
+
+  const { personalSpaceId } = useWorkSpaceContext();
+  const { id } = useParams();
+  const spaceId = type === "my" ? personalSpaceId : Number(id);
 
   const handleDragStart = () => {
     setIsDragging(true);
@@ -27,9 +38,18 @@ const AddFile = ({
     e.preventDefault();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | File) => {
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement> | File
+  ) => {
     if (e instanceof File) {
       console.log(e);
+      const response = await PostFilePresignedUrl({
+        workspaceId: spaceId,
+        folderId: folderId,
+        fileName: e.name,
+        fileSize: e.size,
+      });
+      console.log("response", response);
       return;
     }
     const files = e.target?.files;

@@ -20,7 +20,7 @@ const MyFilesPage = () => {
           <Navigate state="files" />
         </div>
         <div className="w-full flex flex-col gap-5">
-          <FilePath setShowInput={setShowInput} />
+          <FilePath setShowInput={setShowInput} type="my" />
           <FileSearch
             setSearchValue={setMq}
             setSort={setSort}
