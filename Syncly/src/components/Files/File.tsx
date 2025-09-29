@@ -9,8 +9,13 @@ import {
 } from "../../shared/api/Folder/delete_patch";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { PatchFileName, DeleteFile } from "../../shared/api/File";
+import {
+  PatchFileName,
+  DeleteFile,
+  PostFileRestore,
+} from "../../shared/api/File";
 import { useShowImage } from "../../hooks/useShowImage";
+import { PostFolderRestore } from "../../shared/api/Folder/post";
 
 type TTypeProps = {
   type: TFilesType;
@@ -144,6 +149,20 @@ const File = ({
     }
   };
 
+  const handleRestoreFolder = () => {
+    if (type === "folder") {
+      PostFolderRestore({
+        workspaceId: workspaceId,
+        folderId: fileId as number,
+      });
+    } else {
+      PostFileRestore({
+        workspaceId: workspaceId,
+        fileId: fileId as number,
+      });
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -214,7 +233,12 @@ const File = ({
                   className="z-10 w-[160px] absolute top-0 right-[30px] flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
                   ref={modalRef}
                 >
-                  <p className="text-[#828282] cursor-pointer flex-nowrap">
+                  <p
+                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    onClick={() => {
+                      handleRestoreFolder();
+                    }}
+                  >
                     복원하기
                   </p>
                   <p
