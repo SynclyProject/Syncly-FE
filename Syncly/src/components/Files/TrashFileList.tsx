@@ -67,6 +67,7 @@ const TrashFileList = ({
                 date={file.date}
                 user={file.user}
                 folderListRefetch={() => {}}
+                trash={true}
               />
             ))}
         </div>
@@ -79,6 +80,7 @@ const TrashFileList = ({
             date={file.date}
             user={file.user}
             folderListRefetch={() => {}}
+            trash={true}
           />
         ))
       ) : (

@@ -115,6 +115,7 @@ const FileList = ({
                 user={file.user}
                 fileId={file.id}
                 folderListRefetch={folderListRefetch}
+                trash={false}
               />
             ))}
         </div>
@@ -128,6 +129,7 @@ const FileList = ({
             user={file.user}
             fileId={file.id}
             folderListRefetch={folderListRefetch}
+            trash={false}
           />
         ))
       ) : (
