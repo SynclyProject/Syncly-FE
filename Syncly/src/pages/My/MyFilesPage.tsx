@@ -32,6 +32,7 @@ const MyFilesPage = () => {
               setShowInput={setShowInput}
               showInput={showInput}
               sort={sort}
+              type="my"
             />
           ) : (
             <FileList
