@@ -3,10 +3,13 @@ import { useState, useRef, useEffect } from "react";
 import { TFilesType, TUser } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useFileContext } from "../../context/FileContext";
-import { PatchFolderName } from "../../shared/api/Folder/delete_patch";
+import {
+  DeleteFolder,
+  PatchFolderName,
+} from "../../shared/api/Folder/delete_patch";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { PatchFileName } from "../../shared/api/File";
+import { PatchFileName, DeleteFile } from "../../shared/api/File";
 import { useShowImage } from "../../hooks/useShowImage";
 
 type TTypeProps = {
@@ -127,6 +130,20 @@ const File = ({
     }
   };
 
+  const handleDeleteFolder = () => {
+    if (type === "folder") {
+      DeleteFolder({
+        workspaceId: workspaceId,
+        folderId: fileId as number,
+      });
+    } else {
+      DeleteFile({
+        workspaceId: workspaceId,
+        fileId: fileId as number,
+      });
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -221,7 +238,12 @@ const File = ({
                   >
                     이름 변경
                   </p>
-                  <p className="text-[#828282] cursor-pointer flex-nowrap">
+                  <p
+                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    onClick={() => {
+                      handleDeleteFolder();
+                    }}
+                  >
                     휴지통으로 이동
                   </p>
                 </div>
