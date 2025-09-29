@@ -14,9 +14,7 @@ const FileContext = createContext<TFileContext | null>(null);
 export const FileProvider = ({ children }: PropsWithChildren) => {
   const [folderId, setFolderId] = useState<number>(0);
   const [fileId, setFileId] = useState<number>(0);
-  const [folderPath, setFolderPath] = useState<Map<number, string>>(
-    new Map([[1, "Root"]])
-  );
+  const [folderPath, setFolderPath] = useState<Map<number, string>>(new Map());
 
   return (
     <FileContext.Provider
