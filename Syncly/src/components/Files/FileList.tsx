@@ -50,6 +50,7 @@ const FileList = ({
     typeof folderId === "number" && folderId > 0 ? folderId : rootFolderId;
 
   setFolderId(selectedFolderId);
+  console.log(selectedFolderId);
 
   const { data: folderList, refetch: folderListRefetch } = useQuery({
     queryKey: ["folderList", spaceId, selectedFolderId],
