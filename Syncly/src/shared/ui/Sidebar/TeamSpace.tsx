@@ -1,9 +1,9 @@
-import TeamSpaceData from "../../api/mock/teamSpace";
+//import TeamSpaceData from "../../api/mock/teamSpace";
 import Space from "./Space";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { TTeamSpace } from "../../type/teamSpaceType";
 import InputSpace from "./InputSpace";
-import { useState } from "react";
+import { useSpaceList } from "../../../hooks/useSpaceList";
 
 interface TeamSpaceProps {
   showInput: boolean;
@@ -12,32 +12,35 @@ interface TeamSpaceProps {
 
 const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
   const navigate = useNavigate();
-  const [teams, setTeams] = useState<TTeamSpace[]>(TeamSpaceData);
-  const handleAddTeam = (text: string) => {
-    if (!text.trim()) return;
-    const newTeam: TTeamSpace = {
-      id: teams.length + 1,
-      text,
-    };
-    setTeams((prev) => [...prev, newTeam]);
+  const location = useLocation();
+
+  const handleAddTeam = () => {
     setShowInput(false);
   };
+
+  const { teamSpaceList } = useSpaceList();
 
   return (
     <div className="flex flex-col gap-[8px]">
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
-      {teams.map((space: TTeamSpace) => (
-        <Space
-          key={space.id}
-          state="team"
-          iconName="attachment"
-          text={space.text}
-          onClick={() => navigate("/")}
-          setTeams={setTeams}
-          spaceId={space.id}
-        />
-      ))}
-      {showInput && (
+      {teamSpaceList?.map((space: TTeamSpace) => {
+        const pathname = ["/team-urls", "/team-files", "/team-screen"];
+        const isActive =
+          pathname.some((path) => location.pathname.startsWith(path)) &&
+          location.pathname.includes(`/${space.workspaceId}`);
+        return (
+          <Space
+            key={space.workspaceId}
+            state="team"
+            iconName="attachment"
+            text={space.workspaceName}
+            onClick={() => navigate(`/team-urls/${space.workspaceId}`)}
+            spaceId={space.workspaceId}
+            click={isActive}
+          />
+        );
+      })}
+      {(teamSpaceList?.length === 0 || showInput) && (
         <InputSpace
           onAdd={handleAddTeam}
           onCancel={() => setShowInput(false)}

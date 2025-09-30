@@ -7,22 +7,26 @@
  *
  * @param {string} name - 아이콘의 이름 (파일명)
  */
-
-interface IconProps {
+type TRoundedProps = {
+  rounded?: boolean;
+};
+interface IconProps extends TRoundedProps {
   name: string;
+  onClick?: () => void;
 }
 
-const Icon = ({ name }: IconProps) => {
+const Icon = ({ name, onClick, rounded }: IconProps) => {
   const iconPath = name.endsWith(".svg")
     ? `/icons/${name}`
     : `/icons/${name}.svg`;
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center justify-center">
       <img
-        className="w-auto h-auto rounded"
+        className={`w-auto h-auto ${rounded ? "rounded-full" : ""}`}
         src={iconPath}
         alt={`${name} icon`}
+        onClick={onClick}
       />
     </div>
   );

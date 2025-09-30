@@ -1,28 +1,103 @@
 import Icon from "../../shared/ui/Icon";
+import { useMutation } from "@tanstack/react-query";
+import { DeleteTabItems } from "../../shared/api/URL/personal";
+import { useURLsList } from "../../hooks/useURLsList";
 
 type TUrlStateProps = {
   state: "input" | "url";
 };
+
 interface IUrlProps extends TUrlStateProps {
   text?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  onAdd?: (url: string) => void;
+  onCancel?: () => void;
+  tabId: number;
+  urlItemId?: number;
+  communicationType?: "http" | "websocket";
+  onWebSocketAction?: (action: string, data: Record<string, unknown>) => void;
 }
 
-const Url = ({ state, text }: IUrlProps) => {
+const Url = ({
+  state,
+  text,
+  value,
+  onChange,
+  onAdd,
+  onCancel,
+  tabId,
+  urlItemId,
+  communicationType,
+  onWebSocketAction,
+}: IUrlProps) => {
+  const { refetch } = useURLsList();
+
+  const { mutate: deleteTabItemsMutation } = useMutation({
+    mutationFn: DeleteTabItems,
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && value?.trim()) {
+      onAdd?.(value);
+    }
+  };
+  const handleBlur = () => {
+    if (!value?.trim()) onCancel?.();
+  };
+
+  const handleDeleteUrl = () => {
+    if (communicationType === "http") {
+      deleteTabItemsMutation({ tabId: tabId, itemId: urlItemId as number });
+    } else if (communicationType === "websocket" && onWebSocketAction) {
+      onWebSocketAction("deleteUrl", {
+        tabId: tabId,
+        urlItemId: urlItemId,
+      });
+    }
+  };
+
   return (
     <div className="flex w-full h-[48px] px-[5px] items-center bg-white border-t border-t-[#E0E0E0] gap-2">
       <Icon name="url" />
-      {state == "input" ? (
+      {state === "input" ? (
         <>
           <input
             className="flex-1 font-medium focus:outline-none"
             placeholder="Enter a link..."
+            value={value}
+            onChange={(e) => onChange?.(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
           />
-          <Icon name="plus_blue" />
+          <Icon
+            name="plus_blue"
+            onClick={() => value?.trim() && onAdd?.(value)}
+          />
         </>
       ) : (
         <>
-          <p className="flex-1 text-[16px] font-semibold">{text}</p>
-          <Icon name="Trash_Full" />
+          <a
+            className="flex-1 text-[16px] font-semibold overflow-hidden text-ellipsis whitespace-nowrap"
+            href={text}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {text}
+          </a>
+          <button
+            className="cursor-pointer"
+            onClick={() => {
+              if (urlItemId) {
+                handleDeleteUrl();
+              }
+            }}
+          >
+            <Icon name="Trash_Full" />
+          </button>
         </>
       )}
     </div>

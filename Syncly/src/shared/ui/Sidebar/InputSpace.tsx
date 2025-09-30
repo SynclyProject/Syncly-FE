@@ -1,41 +1,88 @@
 import { useState } from "react";
 import Icon from "../Icon";
+import { useMutation } from "@tanstack/react-query";
+import { PostTeamSpace } from "../../api/WorkSpace/post";
+import { useSpaceList } from "../../../hooks/useSpaceList";
 
 interface IInputSpaceProps {
-  onAdd: (text: string) => void;
+  onAdd?: () => void;
+  onChangeName?: (text: string) => void;
   onCancel: () => void;
+  initialValue?: string;
 }
 
-const InputSpace = ({ onAdd, onCancel }: IInputSpaceProps) => {
-  const [inputValue, setInputValue] = useState("");
+const InputSpace = ({
+  onAdd,
+  onChangeName,
+  onCancel,
+  initialValue = "",
+}: IInputSpaceProps) => {
+  const [inputValue, setInputValue] = useState(initialValue);
+
+  const { refetch } = useSpaceList();
+
   const handleSubmit = () => {
     if (inputValue.trim()) {
-      onAdd(inputValue);
-      setInputValue("");
+      if (onAdd) {
+        // 새로 생성하는 경우
+        onAdd();
+        postTeamSpaceMutation({ name: inputValue });
+      } else if (onChangeName) {
+        // 이름을 변경하는 경우
+        onChangeName(inputValue);
+        onCancel(); // 편집 모드 종료
+      }
     }
   };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Enter") {
+      handleSubmit();
+    } else if (e.key === "Escape") {
+      onCancel();
+    }
   };
+
   const handleBlur = () => {
-    if (!inputValue.trim()) onCancel();
+    if (!inputValue.trim()) {
+      onCancel();
+    }
   };
+
+  const { mutate: postTeamSpaceMutation } = useMutation({
+    mutationFn: PostTeamSpace,
+    onSuccess: () => {
+      console.log("팀 워크스페이스 생성 성공");
+      refetch();
+      onCancel();
+    },
+  });
 
   return (
     <div className="h-[40px] flex items-center px-4 gap-4 rounded-[8px] bg-white">
-      <Icon name="supervised_user_circle_gray" />
+      <button className="bg-transparent border-none">
+        <Icon name="supervised_user_circle_gray" />
+      </button>
+
       <input
-        className="flex-1 text-[#828282] focus:outline-none"
+        className="flex-1 w-full text-[#828282] focus:outline-none"
         value={inputValue}
         placeholder="text..."
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
+        autoFocus
       />
-      <button className="bg-transparent border-none">
+
+      <button
+        className="bg-transparent border-none cursor-pointer"
+        onClick={handleSubmit}
+        title={onAdd ? "생성" : "저장"}
+      >
         <Icon name="Vector_gray" />
       </button>
     </div>
   );
 };
+
 export default InputSpace;
