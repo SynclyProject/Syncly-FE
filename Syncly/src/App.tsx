@@ -20,10 +20,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
 import { AuthProvider, useAuthContext } from "./context/AuthContext";
 import { WorkSpaceProvider } from "./context/workSpaceContext";
-import TestPage from "./pages/testPage";
 import OAuthSuccessPage from "./shared/api/common/OAuthSuccessPage";
 import { LiveKitProvider } from "./context/LiveKitContext";
-
 
 const queryClient = new QueryClient();
 
@@ -110,10 +108,6 @@ const router = createBrowserRouter([
         element: <AcceptWorkspacePage />,
       },
       {
-        path: "test",
-        element: <TestPage />,
-      },
-      {
         path: "/oauth2/success",
         element: <OAuthSuccessPage />,
       },
@@ -122,7 +116,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-
   return (
     <QueryClientProvider client={queryClient}>
       <WorkSpaceProvider>
