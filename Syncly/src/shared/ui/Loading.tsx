@@ -1,5 +1,3 @@
-
-import React from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 interface LoadingProps {
@@ -7,7 +5,10 @@ interface LoadingProps {
   size?: number;
 }
 
-export default function Loading({ fullScreen = true, size = 450 }: LoadingProps) {
+export default function Loading({
+  fullScreen = true,
+  size = 450,
+}: LoadingProps) {
   const wrapperClass = fullScreen
     ? "flex justify-center items-center h-screen"
     : "flex justify-center items-center";
