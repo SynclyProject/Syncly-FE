@@ -25,8 +25,8 @@ interface IFileProps extends TTypeProps {
   date: string;
   user?: TUser;
   fileId?: number;
-  folderListRefetch: () => void;
-  trash: boolean;
+  folderListRefetch?: () => void;
+  trash?: boolean;
 }
 
 const File = ({
@@ -35,8 +35,8 @@ const File = ({
   date,
   user,
   fileId,
-  folderListRefetch,
-  trash,
+  folderListRefetch = () => {},
+  trash = false,
 }: IFileProps) => {
   const [modalShow, setModalShow] = useState(false);
   const [editTitle, setEditTitle] = useState(false);
