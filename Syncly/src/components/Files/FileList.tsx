@@ -14,7 +14,7 @@ interface IFileListProps {
   setShowInput: (boolean: boolean) => void;
   showInput: boolean;
   sort: boolean;
-  type: "my" | "team";
+  type?: "my" | "team";
 }
 
 const FileList = ({
@@ -22,7 +22,7 @@ const FileList = ({
   setShowInput,
   showInput,
   sort,
-  type,
+  type = "my",
 }: IFileListProps) => {
   const { personalSpaceId } = useWorkSpaceContext();
   const { id } = useParams();
