@@ -201,12 +201,12 @@ const File = ({
           folderListRefetch={folderListRefetch}
         />
       ) : (
-        <div
-          className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer"
-          onClick={handleFolderClick}
-        >
+        <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer">
           <Icon name={finalType} />
-          <p className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold">
+          <p
+            className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold"
+            onClick={handleFolderClick}
+          >
             {title}
           </p>
           <p className="text-[#828282]">{date}</p>
@@ -255,17 +255,17 @@ const File = ({
                   className="z-10 w-[160px] absolute top-0 right-[30px] flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
                   ref={modalRef}
                 >
-                  <p className="text-[#828282] cursor-pointer flex-nowrap">
+                  <p className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]">
                     다운로드
                   </p>
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
                     onClick={() => setEditTitle(true)}
                   >
                     이름 변경
                   </p>
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"
                     onClick={() => {
                       handleDeleteFolder();
                     }}
