@@ -3,19 +3,22 @@ import { useState, useRef, useEffect } from "react";
 import { TFilesType, TUser } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useFileContext } from "../../context/FileContext";
+import { useMutation } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { PostFolderRestore } from "../../shared/api/Folder/post";
 import {
   DeleteFolder,
   PatchFolderName,
+  DeleteFolderPermanently,
 } from "../../shared/api/Folder/delete_patch";
-import { useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import {
   PatchFileName,
   DeleteFile,
   PostFileRestore,
+  DeleteFilePermanently,
 } from "../../shared/api/File";
 import { useShowImage } from "../../hooks/useShowImage";
-import { PostFolderRestore } from "../../shared/api/Folder/post";
+
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
 
 type TTypeProps = {
@@ -173,6 +176,25 @@ const File = ({
     }
   };
 
+  const handleDeleteFilePermanently = async () => {
+    try {
+      if (type === "folder") {
+        await DeleteFolderPermanently({
+          workspaceId: workspaceId,
+          folderId: fileId as number,
+        });
+      } else {
+        await DeleteFilePermanently({
+          workspaceId: workspaceId,
+          fileId: fileId as number,
+        });
+      }
+      folderListRefetch();
+    } catch (error) {
+      console.error("완전 삭제 실패:", error);
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -246,7 +268,7 @@ const File = ({
                   ref={modalRef}
                 >
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
                     onClick={() => {
                       handleRestoreFolder();
                     }}
@@ -254,8 +276,10 @@ const File = ({
                     복원하기
                   </p>
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
-                    onClick={() => {}}
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"
+                    onClick={() => {
+                      handleDeleteFilePermanently();
+                    }}
                   >
                     완전 삭제
                   </p>

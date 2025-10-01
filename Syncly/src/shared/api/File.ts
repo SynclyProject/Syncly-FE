@@ -105,3 +105,18 @@ export const GetFileDownload = async (data: {
     console.error("파일 다운로드 실패", error);
   }
 };
+
+//파일 완전 삭제
+export const DeleteFilePermanently = async (data: {
+  workspaceId: number;
+  fileId: number;
+}) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/api/workspaces/${data.workspaceId}/files/${data.fileId}/hard`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("파일 완전 삭제 실패", error);
+  }
+};

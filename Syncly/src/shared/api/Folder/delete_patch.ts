@@ -34,3 +34,18 @@ export const PatchFolderName = async (data: {
     return error;
   }
 };
+
+//폴더 완전 삭제
+export const DeleteFolderPermanently = async (data: {
+  workspaceId: number;
+  folderId: number;
+}) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/api/workspaces/${data.workspaceId}/folders/${data.folderId}/hard`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("폴더 완전 삭제 실패", error);
+  }
+};
