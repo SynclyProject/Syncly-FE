@@ -16,6 +16,7 @@ import {
 } from "../../shared/api/File";
 import { useShowImage } from "../../hooks/useShowImage";
 import { PostFolderRestore } from "../../shared/api/Folder/post";
+import { useWorkSpaceContext } from "../../context/workSpaceContext";
 
 type TTypeProps = {
   type: TFilesType;
@@ -44,8 +45,9 @@ const File = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { setFolderId, setFolderPath, folderPath } = useFileContext();
+  const { personalSpaceId } = useWorkSpaceContext();
   const { id } = useParams();
-  const workspaceId = Number(id);
+  const workspaceId = id ? Number(id) : personalSpaceId;
 
   setFolderId(fileId as number);
 
