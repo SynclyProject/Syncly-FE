@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import * as Stomp from "stompjs";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
 import { UseWebSocketReturn, WebSocketMessage } from "../shared/type/webSocket";
+import { TChatList } from "../shared/type/chat";
 
 export const useWebSocket = (): UseWebSocketReturn => {
   const [isConnected, setIsConnected] = useState(false);
@@ -11,7 +12,7 @@ export const useWebSocket = (): UseWebSocketReturn => {
   const connect = useCallback(
     async (token: string, workspaceId: number): Promise<void> => {
       return new Promise((resolve, reject) => {
-        const socket = new WebSocket(`wss://www.syncly-io.com/ws-stomp`);
+        const socket = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
         const stompClient = Stomp.over(socket);
         stompClient.debug = () => {};
 
@@ -233,6 +234,59 @@ export const useWebSocket = (): UseWebSocketReturn => {
     }
   }, []);
 
+  const subscribeToChat = useCallback(
+    (workspaceId: number, callback: (message: TChatList) => void) => {
+      if (!stompClientRef.current?.connected) {
+        throw new Error("WebSocket이 연결되지 않았습니다.");
+      }
+
+      const topic = `/topic/chat.${workspaceId}`;
+      if (subscriptionsRef.current.has(topic)) {
+        subscriptionsRef.current.get(topic)?.unsubscribe();
+      }
+
+      const subscription = stompClientRef.current.subscribe(
+        topic,
+        (message) => {
+          const body = JSON.parse(message.body);
+          callback(body);
+        }
+      );
+      subscriptionsRef.current.set(topic, subscription);
+      console.log(`📨 채팅 ${workspaceId} 구독 시작`);
+
+      /*
+      stompClientRef.current.subscribe("/user/queue/errors", (message) => {
+        const error = JSON.parse(message.body);
+        console.error("❗ [WebSocket 에러 수신] " + JSON.stringify(error));
+      });
+      */
+    },
+    []
+  );
+
+  const sendChat = useCallback((workspaceId: number, message: string) => {
+    if (!stompClientRef.current?.connected) {
+      throw new Error("WebSocket이 연결되지 않았습니다.");
+    }
+    console.log("🔍 sendChat 호출:", {
+      workspaceId,
+      message,
+      connected: stompClientRef.current?.connected,
+    });
+
+    const msgId = self.crypto.randomUUID();
+    const destination = `/app/chat.${workspaceId}.send`;
+    stompClientRef.current.send(
+      destination,
+      {},
+      JSON.stringify({
+        msgId,
+        content: message,
+      })
+    );
+  }, []);
+
   // 컴포넌트 언마운트 시 연결 해제
   useEffect(() => {
     return () => {
@@ -252,5 +306,7 @@ export const useWebSocket = (): UseWebSocketReturn => {
     subscribeToWorkspace,
     subscribeToTab,
     unsubscribeFromTab,
+    subscribeToChat,
+    sendChat,
   };
 };

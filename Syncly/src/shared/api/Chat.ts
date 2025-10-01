@@ -36,7 +36,8 @@ export const GetChatLisBefore = async (data: {
         },
       }
     );
-    return response.data;
+    // result 래핑을 해제하여 훅에서 TChatList로 바로 사용
+    return response.data.result;
   } catch (error) {
     console.error("과거 메세지 더 보기 실패", error);
   }
@@ -61,5 +62,16 @@ export const GetChatLisAfter = async (data: {
     return response.data;
   } catch (error) {
     console.error("끊김 보정 실패", error);
+  }
+};
+
+export const GetWorkspaceMemberId = async (workspaceId: number) => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/workspaces/${workspaceId}/me`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("워크스페이스 멤버 아이디 조회 실패", error);
   }
 };

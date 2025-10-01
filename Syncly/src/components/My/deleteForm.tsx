@@ -57,6 +57,8 @@ const DeleteForm = ({
     onSuccess: () => {
       alert("계정이 삭제되었습니다");
       setShowDeleteForm(false);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       navigate("/");
     },
   });

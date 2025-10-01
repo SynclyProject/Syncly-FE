@@ -36,7 +36,9 @@ const TeamScreenPage = () => {
                   <ParticipantsList isVoice={isVoice} setIsVoice={setIsVoice} />
                 )}
               </div>
-              <Chatting />
+              <div className="min-w-[350px] flex justify-end items-start">
+                <Chatting />
+              </div>
             </div>
             <BottomBar isVoice={isVoice} />
           </div>

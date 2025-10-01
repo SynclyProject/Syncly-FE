@@ -1,3 +1,4 @@
+import { TChatList } from "./chat";
 import { TMySpaceURLs } from "./mySpaceType";
 
 export interface WebSocketMessage {
@@ -32,4 +33,9 @@ export interface UseWebSocketReturn {
     callback: (message: TMySpaceURLs) => void
   ) => void;
   unsubscribeFromTab: (tabId: number) => void;
+  subscribeToChat: (
+    workspaceId: number,
+    callback: (message: TChatList) => void
+  ) => void;
+  sendChat: (workspaceId: number, message: string) => void;
 }

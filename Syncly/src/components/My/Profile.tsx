@@ -3,7 +3,7 @@ import {
   PatchNickname,
   PatchProfileImage,
 } from "../../shared/api/Member/patch";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import { PostProfile } from "../../shared/api/S3";
 import { useMutation } from "@tanstack/react-query";
@@ -19,12 +19,19 @@ const Profile = ({
   profile: string | null;
   refetch: () => void;
 }) => {
-  const [nickname, setNickname] = useState(name);
+  const [nickname, setNickname] = useState(name || ""); // name이 undefined일 때 빈 문자열로 초기화
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string>("");
   // const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const debouncedNickname = useDebounce(nickname, 200);
+
+  // name prop이 변경될 때 nickname 상태 업데이트
+  useEffect(() => {
+    if (name) {
+      setNickname(name);
+    }
+  }, [name]);
 
   const handleNicknameChange = async () => {
     try {

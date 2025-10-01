@@ -7,13 +7,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetFolderFileList, GetRootFolder } from "../../shared/api/Folder/get";
 import { useParams } from "react-router-dom";
 import { useFileContext } from "../../context/FileContext";
+import { useEffect } from "react";
 
 interface IFileListProps {
   searchValue: string;
   setShowInput: (boolean: boolean) => void;
   showInput: boolean;
   sort: boolean;
-  type: "my" | "team";
+  type?: "my" | "team";
 }
 
 const FileList = ({
@@ -21,7 +22,7 @@ const FileList = ({
   setShowInput,
   showInput,
   sort,
-  type,
+  type = "my",
 }: IFileListProps) => {
   const { personalSpaceId } = useWorkSpaceContext();
   const { id } = useParams();
@@ -36,10 +37,20 @@ const FileList = ({
   });
 
   const rootFolderId = rootFolder?.result?.rootFolderId as number;
-  const { folderId } = useFileContext();
+  const { folderId, setFolderId, setFolderPath } = useFileContext();
+
+  // rootFolderId가 변경될 때만 folderPath를 업데이트
+  useEffect(() => {
+    if (rootFolderId) {
+      setFolderPath(new Map([[rootFolderId, "Root"]]));
+    }
+  }, [rootFolderId, setFolderPath]);
 
   const selectedFolderId =
     typeof folderId === "number" && folderId > 0 ? folderId : rootFolderId;
+
+  setFolderId(selectedFolderId);
+  console.log(selectedFolderId);
 
   const { data: folderList, refetch: folderListRefetch } = useQuery({
     queryKey: ["folderList", spaceId, selectedFolderId],
@@ -107,6 +118,7 @@ const FileList = ({
                 user={file.user}
                 fileId={file.id}
                 folderListRefetch={folderListRefetch}
+                trash={false}
               />
             ))}
         </div>
@@ -120,6 +132,7 @@ const FileList = ({
             user={file.user}
             fileId={file.id}
             folderListRefetch={folderListRefetch}
+            trash={false}
           />
         ))
       ) : (

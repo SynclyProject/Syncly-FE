@@ -1,5 +1,29 @@
 import { axiosInstance } from "../common/axiosInstance";
 
+//휴지통 조회
+export const GetTrashFolder = async (data: {
+  workspaceId: number;
+  sort?: string;
+  cursor?: string;
+  limit?: number;
+}) => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/workspaces/${data.workspaceId}/trash`,
+      {
+        params: {
+          sort: data.sort,
+          cursor: data.cursor,
+          limit: data.limit,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("휴지통 조회 실패", error);
+  }
+};
+
 //워크스페이스 루트 폴더 정보
 export const GetRootFolder = async (data: { workspaceId: number }) => {
   try {
@@ -31,10 +55,20 @@ export const GetFolderPath = async (data: {
 export const GetFolderFileList = async (data: {
   workspaceId: number;
   folderId: number;
+  sort?: string;
+  cursor?: string;
+  limit?: number;
 }) => {
   try {
     const response = await axiosInstance.get(
-      `/api/workspaces/${data.workspaceId}/folders/${data.folderId}/items`
+      `/api/workspaces/${data.workspaceId}/folders/${data.folderId}/items`,
+      {
+        params: {
+          sort: data.sort,
+          cursor: data.cursor,
+          limit: data.limit,
+        },
+      }
     );
     return response.data;
   } catch (error) {
