@@ -26,7 +26,7 @@ interface IFileProps extends TTypeProps {
   date: string;
   user?: TUser;
   fileId?: number;
-  folderListRefetch?: () => void;
+  folderListRefetch: () => void;
   trash?: boolean;
 }
 
@@ -36,7 +36,7 @@ const File = ({
   date,
   user,
   fileId,
-  folderListRefetch = () => {},
+  folderListRefetch,
   trash = false,
 }: IFileProps) => {
   const [modalShow, setModalShow] = useState(false);
@@ -135,34 +135,42 @@ const File = ({
     }
   };
 
-  const handleDeleteFolder = () => {
-    if (type === "folder") {
-      DeleteFolder({
-        workspaceId: workspaceId,
-        folderId: fileId as number,
-      });
-    } else {
-      DeleteFile({
-        workspaceId: workspaceId,
-        fileId: fileId as number,
-      });
+  const handleDeleteFolder = async () => {
+    try {
+      if (type === "folder") {
+        await DeleteFolder({
+          workspaceId: workspaceId,
+          folderId: fileId as number,
+        });
+      } else {
+        await DeleteFile({
+          workspaceId: workspaceId,
+          fileId: fileId as number,
+        });
+      }
+      folderListRefetch();
+    } catch (error) {
+      console.error("삭제 실패:", error);
     }
-    folderListRefetch();
   };
 
-  const handleRestoreFolder = () => {
-    if (type === "folder") {
-      PostFolderRestore({
-        workspaceId: workspaceId,
-        folderId: fileId as number,
-      });
-    } else {
-      PostFileRestore({
-        workspaceId: workspaceId,
-        fileId: fileId as number,
-      });
+  const handleRestoreFolder = async () => {
+    try {
+      if (type === "folder") {
+        await PostFolderRestore({
+          workspaceId: workspaceId,
+          folderId: fileId as number,
+        });
+      } else {
+        await PostFileRestore({
+          workspaceId: workspaceId,
+          fileId: fileId as number,
+        });
+      }
+      folderListRefetch();
+    } catch (error) {
+      console.error("복원 실패:", error);
     }
-    folderListRefetch();
   };
 
   useEffect(() => {
