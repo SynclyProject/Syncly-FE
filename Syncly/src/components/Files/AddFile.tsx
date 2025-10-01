@@ -28,7 +28,7 @@ const AddFile = ({
     mutationFn: PostFileUploadConfirm,
     onSuccess: (response) => {
       console.log("파일 업로드 확인 성공", response);
-      //setAddFileModal(false);
+      setAddFileModal(false);
     },
   });
 

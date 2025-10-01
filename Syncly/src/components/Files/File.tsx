@@ -16,6 +16,7 @@ import {
   DeleteFile,
   PostFileRestore,
   DeleteFilePermanently,
+  GetFileDownload,
 } from "../../shared/api/File";
 import { useShowImage } from "../../hooks/useShowImage";
 
@@ -195,6 +196,14 @@ const File = ({
     }
   };
 
+  const { mutate: getFileDownloadMutation } = useMutation({
+    mutationFn: GetFileDownload,
+    onSuccess: (response) => {
+      const downloadUrl = response.result.downloadUrl;
+      window.open(downloadUrl, "_blank");
+    },
+  });
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -290,7 +299,15 @@ const File = ({
                   ref={modalRef}
                 >
                   {type !== "folder" && (
-                    <p className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]">
+                    <p
+                      className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
+                      onClick={() => {
+                        getFileDownloadMutation({
+                          workspaceId: workspaceId,
+                          fileId: fileId as number,
+                        });
+                      }}
+                    >
                       다운로드
                     </p>
                   )}
