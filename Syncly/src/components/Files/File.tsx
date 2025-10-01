@@ -49,8 +49,6 @@ const File = ({
   const { id } = useParams();
   const workspaceId = id ? Number(id) : personalSpaceId;
 
-  setFolderId(fileId as number);
-
   // 파일 확장자에 따른 타입 결정
   const getFileTypeFromExtension = (filename: string): TFilesType => {
     const extension = filename.split(".").pop()?.toLowerCase();
@@ -98,7 +96,7 @@ const File = ({
     onSuccess: () => {
       console.log("폴더 이름 변경 성공");
       setEditTitle(false);
-      folderListRefetch?.();
+      folderListRefetch();
     },
     onError: (e) => {
       console.log("폴더 이름 변경 실패", e);
@@ -110,7 +108,7 @@ const File = ({
     onSuccess: () => {
       console.log("파일 이름 변경 성공");
       setEditTitle(false);
-      folderListRefetch?.();
+      folderListRefetch();
     },
     onError: (e) => {
       console.log("파일 이름 변경 실패", e);
@@ -149,6 +147,7 @@ const File = ({
         fileId: fileId as number,
       });
     }
+    folderListRefetch();
   };
 
   const handleRestoreFolder = () => {
@@ -163,6 +162,7 @@ const File = ({
         fileId: fileId as number,
       });
     }
+    folderListRefetch();
   };
 
   useEffect(() => {
