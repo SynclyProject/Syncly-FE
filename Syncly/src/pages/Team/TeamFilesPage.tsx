@@ -20,11 +20,12 @@ const TeamFilesPage = () => {
           <TeamNavigate state="files" />
         </div>
         <div className="w-full flex flex-col gap-5">
-          <FilePath setShowInput={setShowInput} type="team" />
+          <FilePath setShowInput={setShowInput} type="team" trash={trash} />
           <FileSearch
             setSearchValue={setMq}
             setSort={setSort}
             setTrash={setTrash}
+            trash={trash}
           />
           {trash ? (
             <TrashFileList

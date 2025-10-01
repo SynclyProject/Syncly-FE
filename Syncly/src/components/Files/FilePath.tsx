@@ -6,9 +6,11 @@ import { useFileContext } from "../../context/FileContext";
 const FilePath = ({
   setShowInput,
   type,
+  trash,
 }: {
   setShowInput: (boolean: boolean) => void;
   type: "my" | "team";
+  trash: boolean;
 }) => {
   const [filePlusModal, setFilePlusModal] = useState(false);
   const [addFileModal, setAddFileModal] = useState(false);
@@ -49,6 +51,11 @@ const FilePath = ({
     <div className="w-full flex justify-between items-center mt-5">
       <div className="flex items-center gap-[50px]">
         <div className="flex items-center gap-3">
+          {trash && (
+            <p className="font-medium text-[32px] overflow-hidden overflow-ellipsis">
+              (휴지통)
+            </p>
+          )}
           {Array.from(folderPath.entries()).map(([key, value], idx, arr) => (
             <p
               key={key}

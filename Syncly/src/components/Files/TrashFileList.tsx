@@ -62,7 +62,7 @@ const TrashFileList = ({
             .map((file) => (
               <File
                 key={file.id}
-                type={file.type as TFilesType}
+                type={file.type.toLowerCase() as TFilesType}
                 title={file.name}
                 date={file.date}
                 user={file.user}
@@ -75,7 +75,7 @@ const TrashFileList = ({
         filesToShow.map((file: TFiles) => (
           <File
             key={file.id}
-            type={file.type as TFilesType}
+            type={file.type.toLowerCase() as TFilesType}
             title={file.name}
             date={file.date}
             user={file.user}
