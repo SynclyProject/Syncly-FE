@@ -199,7 +199,7 @@ const File = ({
           onAdd={handleEditTitle}
           onCancel={() => setEditTitle(false)}
           initialValue={title}
-          user={"userProfile"}
+          user={profileImageUrl}
           folderListRefetch={folderListRefetch}
         />
       ) : (
