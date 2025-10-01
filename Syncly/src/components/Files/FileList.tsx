@@ -37,29 +37,24 @@ const FileList = ({
   });
 
   const rootFolderId = rootFolder?.result?.rootFolderId as number;
-  const { folderId, setFolderId, setFolderPath } = useFileContext();
+  const { folderPath, setFolderPath } = useFileContext();
 
-  // rootFolderId가 변경될 때만 folderPath를 업데이트
   useEffect(() => {
     if (rootFolderId) {
       setFolderPath(new Map([[rootFolderId, "Root"]]));
     }
   }, [rootFolderId, setFolderPath]);
 
-  const selectedFolderId =
-    typeof folderId === "number" && folderId > 0 ? folderId : rootFolderId;
-
-  setFolderId(selectedFolderId);
-  console.log(selectedFolderId);
+  const currentFolderId = Array.from(folderPath.keys()).pop();
 
   const { data: folderList, refetch: folderListRefetch } = useQuery({
-    queryKey: ["folderList", spaceId, selectedFolderId],
+    queryKey: ["folderList", spaceId, currentFolderId],
     queryFn: () =>
       GetFolderFileList({
         workspaceId: spaceId,
-        folderId: selectedFolderId as number,
+        folderId: currentFolderId as number,
       }),
-    enabled: isSpaceIdReady && typeof selectedFolderId === "number",
+    enabled: isSpaceIdReady && typeof currentFolderId === "number",
   });
 
   const filteredFiles = folderList?.result?.items.filter((folder: TFiles) =>
@@ -80,13 +75,16 @@ const FileList = ({
       console.log("폴더 생성 성공");
       folderListRefetch();
     },
+    onError: (error) => {
+      console.log("폴더 생성 실패", error);
+    },
   });
   const handleAddFolder = (text: string) => {
     if (!text.trim()) return;
 
     postFolderMutation({
       workspaceId: spaceId,
-      parentId: selectedFolderId,
+      parentId: folderPath.get(folderPath.size - 1) as unknown as number,
       name: text,
     });
   };
@@ -135,13 +133,7 @@ const FileList = ({
             trash={false}
           />
         ))
-      ) : (
-        <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
-          {noDataMessage}
-        </p>
-      )}
-
-      {showInput && (
+      ) : showInput ? (
         <FileInput
           type="folder"
           user={"userProfile"}
@@ -149,6 +141,10 @@ const FileList = ({
           onCancel={() => setShowInput(false)}
           folderListRefetch={folderListRefetch}
         />
+      ) : (
+        <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
+          {noDataMessage}
+        </p>
       )}
     </div>
   );

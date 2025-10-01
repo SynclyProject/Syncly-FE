@@ -24,6 +24,7 @@ const FileInput = ({
     if (inputValue.trim()) {
       onAdd(inputValue);
       setInputValue("");
+      onCancel(); // 폴더 생성 후 input 숨기기
     }
   };
   const handleKeyDown = (e: React.KeyboardEvent) => {

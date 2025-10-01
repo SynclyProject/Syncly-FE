@@ -211,7 +211,9 @@ const File = ({
           </p>
           <p className="text-[#828282]">{date}</p>
           {!profileImageUrl ? (
-            <Icon name="User_Default" />
+            <div className="w-[24px] h-[24px] rounded-full">
+              <Icon name="User_Default" />
+            </div>
           ) : (
             <img
               src={profileImageUrl ?? undefined}
