@@ -257,9 +257,11 @@ const File = ({
                   className="z-10 w-[160px] absolute top-0 right-[30px] flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
                   ref={modalRef}
                 >
-                  <p className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]">
-                    다운로드
-                  </p>
+                  {type !== "folder" && (
+                    <p className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]">
+                      다운로드
+                    </p>
+                  )}
                   <p
                     className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
                     onClick={() => setEditTitle(true)}
