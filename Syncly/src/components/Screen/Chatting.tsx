@@ -86,7 +86,7 @@ const Chatting = () => {
   return (
     <div
       ref={chatContainerRef}
-      className="max-w-[350px] min-w-[140px] w-full flex flex-col gap-3 overflow-y-auto 
+      className="max-w-[350px] min-w-[140px] w-full flex flex-col gap-3 overflow-y-auto pl-[20px] border-l-[1px] border-[#E0E0E0]
                  h-[50vh] sm:h-[60vh] md:h-[65vh] lg:h-[70vh] xl:h-[75vh]
                  max-h-[400px] sm:max-h-[500px] md:max-h-[600px] lg:max-h-[700px] xl:max-h-full
                  min-h-[300px] sm:min-h-[350px] md:min-h-[400px]"
@@ -134,6 +134,7 @@ const Chatting = () => {
               time={sendTime}
               hideTime={true}
               hideDate={true}
+              hideProfile={true}
             />
           );
         }
@@ -150,6 +151,7 @@ const Chatting = () => {
               time={sendTime}
               hideTime={true}
               hideDate={!showDate}
+              hideProfile={true}
             />
           );
         }
