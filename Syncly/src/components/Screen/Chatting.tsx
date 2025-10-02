@@ -134,6 +134,7 @@ const Chatting = () => {
               time={sendTime}
               hideTime={true}
               hideDate={true}
+              hideProfile={true}
             />
           );
         }
@@ -150,6 +151,7 @@ const Chatting = () => {
               time={sendTime}
               hideTime={true}
               hideDate={!showDate}
+              hideProfile={true}
             />
           );
         }

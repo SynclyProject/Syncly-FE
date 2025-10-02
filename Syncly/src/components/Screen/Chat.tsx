@@ -10,6 +10,7 @@ interface IChatProps {
   time: string;
   hideTime?: boolean;
   hideDate?: boolean;
+  hideProfile?: boolean;
 }
 
 const Chat = ({
@@ -21,6 +22,7 @@ const Chat = ({
   time,
   hideTime,
   hideDate,
+  hideProfile,
 }: IChatProps) => {
   const profileImageUrl = useShowImage(profile);
 
@@ -46,20 +48,22 @@ const Chat = ({
         </div>
       ) : (
         <div className="flex flex-col gap-2 items-start">
-          <div className="flex gap-2 items-center">
-            <div className="w-[32px] h-[32px]">
-              {profileImageUrl ? (
-                <img
-                  src={profileImageUrl}
-                  alt="profile"
-                  className="w-[32px] h-[32px] rounded-full"
-                />
-              ) : (
-                <Icon name="User_Default" rounded={true} />
-              )}
+          {!hideProfile && (
+            <div className="flex gap-2 items-center">
+              <div className="w-[32px] h-[32px]">
+                {profileImageUrl ? (
+                  <img
+                    src={profileImageUrl}
+                    alt="profile"
+                    className="w-[32px] h-[32px] rounded-full"
+                  />
+                ) : (
+                  <Icon name="User_Default" rounded={true} />
+                )}
+              </div>
+              <p className="text-sm text-[#828282]">{name}</p>
             </div>
-            <p className="text-sm text-[#828282]">{name}</p>
-          </div>
+          )}
           <div className="flex gap-2 items-end">
             <p className="max-w-[200px] text-sm rounded-tl-[16px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[4px] bg-[#E0E0E0] px-4 py-3">
               {message}
