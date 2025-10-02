@@ -72,37 +72,39 @@ const FilePath = ({
           ))}
         </div>
       </div>
-      <div className="relative">
-        <Button
-          colorType="main"
-          iconName="add_circle"
-          onClick={() => setFilePlusModal(true)}
-        />
-        {filePlusModal && (
-          <div
-            className="absolute bottom-[-105px] right-0 flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
-            ref={modalRef}
-          >
-            <p
-              className="text-[#828282] cursor-pointer flex-nowrap"
-              onClick={() => setShowInput(true)}
+      {!trash && (
+        <div className="relative">
+          <Button
+            colorType="main"
+            iconName="add_circle"
+            onClick={() => setFilePlusModal(true)}
+          />
+          {filePlusModal && (
+            <div
+              className="absolute bottom-[-105px] right-0 flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
+              ref={modalRef}
             >
-              폴더 생성
-            </p>
-            <p
-              className="text-[#828282] cursor-pointer flex-nowrap"
-              onClick={() => setAddFileModal(true)}
-            >
-              파일 추가
-            </p>
-          </div>
-        )}
-        {addFileModal && (
-          <div className="fixed inset-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50">
-            <AddFile setAddFileModal={setAddFileModal} type={type} />
-          </div>
-        )}
-      </div>
+              <p
+                className="text-[#828282] cursor-pointer flex-nowrap"
+                onClick={() => setShowInput(true)}
+              >
+                폴더 생성
+              </p>
+              <p
+                className="text-[#828282] cursor-pointer flex-nowrap"
+                onClick={() => setAddFileModal(true)}
+              >
+                파일 추가
+              </p>
+            </div>
+          )}
+          {addFileModal && (
+            <div className="fixed inset-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50">
+              <AddFile setAddFileModal={setAddFileModal} type={type} />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
