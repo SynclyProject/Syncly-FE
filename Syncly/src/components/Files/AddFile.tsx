@@ -8,7 +8,8 @@ import {
 import { useWorkSpaceContext } from "../../context/workSpaceContext";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { GetFolderFileList } from "../../shared/api/Folder/get";
 
 const AddFile = ({
   setAddFileModal,
@@ -18,17 +19,29 @@ const AddFile = ({
   type: "my" | "team";
 }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const { folderId } = useFileContext();
+  const { folderPath } = useFileContext();
 
   const { personalSpaceId } = useWorkSpaceContext();
   const { id } = useParams();
   const spaceId = type === "my" ? personalSpaceId : Number(id);
+  const currentFolderId = Array.from(folderPath.keys()).pop();
+
+  const { refetch: folderListRefetch } = useQuery({
+    queryKey: ["folderList", spaceId, currentFolderId],
+    queryFn: () =>
+      GetFolderFileList({
+        workspaceId: spaceId,
+        folderId: currentFolderId as number,
+      }),
+    enabled: typeof currentFolderId === "number",
+  });
 
   const { mutate: PostFileUploadConfirmMutation } = useMutation({
     mutationFn: PostFileUploadConfirm,
     onSuccess: (response) => {
       console.log("파일 업로드 확인 성공", response);
       setAddFileModal(false);
+      folderListRefetch();
     },
   });
 
@@ -74,7 +87,7 @@ const AddFile = ({
     try {
       const response = await PostFilePresignedUrl({
         workspaceId: spaceId,
-        folderId: folderId,
+        folderId: currentFolderId as number,
         fileName: e.name,
         fileSize: e.size,
       });
