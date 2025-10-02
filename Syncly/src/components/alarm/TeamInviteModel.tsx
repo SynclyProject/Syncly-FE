@@ -77,10 +77,11 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
           </div>
 
           {/* 팀원 목록 */}
-          <p className="pb-4">팀원 목록</p>
+
 
           
           <div className="flex flex-col gap-1 overflow-y-auto pb-10">
+
             {data?.result.map((member: TTeamMember) => (
               <TeamMemberCard
                 key={member.workspaceMemberId}

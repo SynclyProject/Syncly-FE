@@ -30,9 +30,10 @@ const TopBar = () => {
   return (
     <div className="w-full h-[70px] bg-white px-7 flex justify-between items-center border border-[#E0E0E0]">
       <p
-        className="text-[20px] font-[600] cursor-pointer"
+        className="flex items-center gap-[8px] text-[20px] font-[600] cursor-pointer"
         onClick={() => navigate("/")}
       >
+        <img src="/logo.png" alt="logo" className="w-[40px]" />
         Syncly
       </p>
       {!hideIcon && (
