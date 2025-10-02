@@ -3,19 +3,24 @@ import { useState, useRef, useEffect } from "react";
 import { TFilesType, TUser } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
 import { useFileContext } from "../../context/FileContext";
+import { useMutation } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { PostFolderRestore } from "../../shared/api/Folder/post";
 import {
   DeleteFolder,
   PatchFolderName,
+  DeleteFolderPermanently,
 } from "../../shared/api/Folder/delete_patch";
-import { useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import {
   PatchFileName,
   DeleteFile,
   PostFileRestore,
+  DeleteFilePermanently,
+  GetFileDownload,
 } from "../../shared/api/File";
 import { useShowImage } from "../../hooks/useShowImage";
-import { PostFolderRestore } from "../../shared/api/Folder/post";
+
+import { useWorkSpaceContext } from "../../context/workSpaceContext";
 
 type TTypeProps = {
   type: TFilesType;
@@ -25,7 +30,7 @@ interface IFileProps extends TTypeProps {
   date: string;
   user?: TUser;
   fileId?: number;
-  folderListRefetch?: () => void;
+  folderListRefetch: () => void;
   trash?: boolean;
 }
 
@@ -35,7 +40,7 @@ const File = ({
   date,
   user,
   fileId,
-  folderListRefetch = () => {},
+  folderListRefetch,
   trash = false,
 }: IFileProps) => {
   const [modalShow, setModalShow] = useState(false);
@@ -44,10 +49,9 @@ const File = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { setFolderId, setFolderPath, folderPath } = useFileContext();
+  const { personalSpaceId } = useWorkSpaceContext();
   const { id } = useParams();
-  const workspaceId = Number(id);
-
-  setFolderId(fileId as number);
+  const workspaceId = id ? Number(id) : personalSpaceId;
 
   // 파일 확장자에 따른 타입 결정
   const getFileTypeFromExtension = (filename: string): TFilesType => {
@@ -96,7 +100,7 @@ const File = ({
     onSuccess: () => {
       console.log("폴더 이름 변경 성공");
       setEditTitle(false);
-      folderListRefetch?.();
+      folderListRefetch();
     },
     onError: (e) => {
       console.log("폴더 이름 변경 실패", e);
@@ -108,7 +112,7 @@ const File = ({
     onSuccess: () => {
       console.log("파일 이름 변경 성공");
       setEditTitle(false);
-      folderListRefetch?.();
+      folderListRefetch();
     },
     onError: (e) => {
       console.log("파일 이름 변경 실패", e);
@@ -135,33 +139,70 @@ const File = ({
     }
   };
 
-  const handleDeleteFolder = () => {
-    if (type === "folder") {
-      DeleteFolder({
-        workspaceId: workspaceId,
-        folderId: fileId as number,
-      });
-    } else {
-      DeleteFile({
-        workspaceId: workspaceId,
-        fileId: fileId as number,
-      });
+  const handleDeleteFolder = async () => {
+    try {
+      if (type === "folder") {
+        await DeleteFolder({
+          workspaceId: workspaceId,
+          folderId: fileId as number,
+        });
+      } else {
+        await DeleteFile({
+          workspaceId: workspaceId,
+          fileId: fileId as number,
+        });
+      }
+      folderListRefetch();
+    } catch (error) {
+      console.error("삭제 실패:", error);
     }
   };
 
-  const handleRestoreFolder = () => {
-    if (type === "folder") {
-      PostFolderRestore({
-        workspaceId: workspaceId,
-        folderId: fileId as number,
-      });
-    } else {
-      PostFileRestore({
-        workspaceId: workspaceId,
-        fileId: fileId as number,
-      });
+  const handleRestoreFolder = async () => {
+    try {
+      if (type === "folder") {
+        await PostFolderRestore({
+          workspaceId: workspaceId,
+          folderId: fileId as number,
+        });
+      } else {
+        await PostFileRestore({
+          workspaceId: workspaceId,
+          fileId: fileId as number,
+        });
+      }
+      folderListRefetch();
+    } catch (error) {
+      console.error("복원 실패:", error);
     }
   };
+
+  const handleDeleteFilePermanently = async () => {
+    try {
+      if (type === "folder") {
+        await DeleteFolderPermanently({
+          workspaceId: workspaceId,
+          folderId: fileId as number,
+        });
+      } else {
+        await DeleteFilePermanently({
+          workspaceId: workspaceId,
+          fileId: fileId as number,
+        });
+      }
+      folderListRefetch();
+    } catch (error) {
+      console.error("완전 삭제 실패:", error);
+    }
+  };
+
+  const { mutate: getFileDownloadMutation } = useMutation({
+    mutationFn: GetFileDownload,
+    onSuccess: (response) => {
+      const downloadUrl = response.result.downloadUrl;
+      window.open(downloadUrl, "_blank");
+    },
+  });
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -197,21 +238,23 @@ const File = ({
           onAdd={handleEditTitle}
           onCancel={() => setEditTitle(false)}
           initialValue={title}
-          user={"userProfile"}
+          user={profileImageUrl}
           folderListRefetch={folderListRefetch}
         />
       ) : (
-        <div
-          className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer"
-          onClick={handleFolderClick}
-        >
+        <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer">
           <Icon name={finalType} />
-          <p className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold">
+          <p
+            className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold"
+            onClick={handleFolderClick}
+          >
             {title}
           </p>
           <p className="text-[#828282]">{date}</p>
           {!profileImageUrl ? (
-            <Icon name="User_Default" />
+            <div className="w-[24px] h-[24px] rounded-full">
+              <Icon name="User_Default" />
+            </div>
           ) : (
             <img
               src={profileImageUrl ?? undefined}
@@ -234,7 +277,7 @@ const File = ({
                   ref={modalRef}
                 >
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
                     onClick={() => {
                       handleRestoreFolder();
                     }}
@@ -242,8 +285,10 @@ const File = ({
                     복원하기
                   </p>
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
-                    onClick={() => {}}
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"
+                    onClick={() => {
+                      handleDeleteFilePermanently();
+                    }}
                   >
                     완전 삭제
                   </p>
@@ -253,17 +298,27 @@ const File = ({
                   className="z-10 w-[160px] absolute top-0 right-[30px] flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
                   ref={modalRef}
                 >
-                  <p className="text-[#828282] cursor-pointer flex-nowrap">
-                    다운로드
-                  </p>
+                  {type !== "folder" && (
+                    <p
+                      className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
+                      onClick={() => {
+                        getFileDownloadMutation({
+                          workspaceId: workspaceId,
+                          fileId: fileId as number,
+                        });
+                      }}
+                    >
+                      다운로드
+                    </p>
+                  )}
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
                     onClick={() => setEditTitle(true)}
                   >
                     이름 변경
                   </p>
                   <p
-                    className="text-[#828282] cursor-pointer flex-nowrap"
+                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"
                     onClick={() => {
                       handleDeleteFolder();
                     }}

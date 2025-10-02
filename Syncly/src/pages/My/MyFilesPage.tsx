@@ -20,11 +20,12 @@ const MyFilesPage = () => {
           <Navigate state="files" />
         </div>
         <div className="w-full flex flex-col gap-5">
-          <FilePath setShowInput={setShowInput} type="my" />
+          <FilePath setShowInput={setShowInput} type="my" trash={trash} />
           <FileSearch
             setSearchValue={setMq}
             setSort={setSort}
             setTrash={setTrash}
+            trash={trash}
           />
           {trash ? (
             <TrashFileList

@@ -25,7 +25,7 @@ const TrashFileList = ({
   const { id } = useParams();
   const spaceId = type === "my" ? personalSpaceId : Number(id);
 
-  const { data: trashFolderList } = useQuery({
+  const { data: trashFolderList, refetch: trashFolderListRefetch } = useQuery({
     queryKey: ["trashFolderList", spaceId],
     queryFn: () => GetTrashFolder({ workspaceId: spaceId }),
   });
@@ -62,11 +62,12 @@ const TrashFileList = ({
             .map((file) => (
               <File
                 key={file.id}
-                type={file.type as TFilesType}
+                fileId={file.id}
+                type={file.type.toLowerCase() as TFilesType}
                 title={file.name}
                 date={file.date}
                 user={file.user}
-                folderListRefetch={() => {}}
+                folderListRefetch={trashFolderListRefetch}
                 trash={true}
               />
             ))}
@@ -75,11 +76,12 @@ const TrashFileList = ({
         filesToShow.map((file: TFiles) => (
           <File
             key={file.id}
-            type={file.type as TFilesType}
+            fileId={file.id}
+            type={file.type.toLowerCase() as TFilesType}
             title={file.name}
             date={file.date}
             user={file.user}
-            folderListRefetch={() => {}}
+            folderListRefetch={trashFolderListRefetch}
             trash={true}
           />
         ))
