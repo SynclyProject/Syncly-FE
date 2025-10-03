@@ -146,6 +146,15 @@ const FileList = ({
           {noDataMessage}
         </p>
       )}
+      {showInput && (
+        <FileInput
+          type="folder"
+          user={"userProfile"}
+          onAdd={handleAddFolder}
+          onCancel={() => setShowInput(false)}
+          folderListRefetch={folderListRefetch}
+        />
+      )}
     </div>
   );
 };
