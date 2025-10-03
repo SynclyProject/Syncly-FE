@@ -76,6 +76,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
                 email={member.memberEmail}
                 spaceId={spaceId}
                 memberId={member.workspaceMemberId}
+                memberObjectKey={member.memberObjectKey}
               />
             ))}
           </div>
