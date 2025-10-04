@@ -24,6 +24,10 @@ jobs:
         working-directory: ./Syncly
         run: yarn install --frozen-lockfile
 
+      - name: Clean old build
+        working-directory: ./Syncly
+        run: rm -rf dist
+
       - name: Build
         working-directory: ./Syncly
         env:
