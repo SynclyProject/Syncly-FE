@@ -12,6 +12,7 @@ export type TTeamMember = {
   memberName: string;
   role: string;
   workspaceMemberId: number;
+  memberObjectKey: string;
 };
 
 export type TInvite = {

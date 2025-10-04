@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetSpaceRole } from "../../shared/api/WorkSpace/get";
 import { DeleteSpaceKick } from "../../shared/api/WorkSpace/delete";
+import Icon from "../../shared/ui/Icon";
+import { useShowImage } from "../../hooks/useShowImage";
 
 interface TeamMemberCardProps {
   name: string;
@@ -10,6 +12,7 @@ interface TeamMemberCardProps {
   spaceId: number;
   memberId: number;
   showMenu?: boolean;
+  memberObjectKey: string;
 }
 
 const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
@@ -19,6 +22,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
   showMenu = true,
   spaceId,
   memberId,
+  memberObjectKey,
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -36,17 +40,24 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
       window.location.reload();
     },
   });
+  const profileImageUrl = useShowImage(memberObjectKey);
 
   return (
     <div className="w-full flex items-center border-t border-zinc-200 bg-white px-4 py-2">
       {/* 프로필 + 이름/역할 */}
-      <div className="flex w-1/2 items-center gap-2">
+      <div className="flex w-1/2 items-center gap-3">
         {/* 프로필 이미지 */}
-        <div className="w-10 h-10 bg-slate-100 rounded-full flex justify-center items-center">
-          <div className="w-6 h-6 relative overflow-hidden">
-            <div className="w-3.5 h-5 left-[5px] top-[2px] absolute bg-neutral-300" />
+        {profileImageUrl ? (
+          <img
+            src={profileImageUrl}
+            alt="profile"
+            className="w-[32px] h-[32px] rounded-full"
+          />
+        ) : (
+          <div className="w-[32px] h-[32px] rounded-full flex justify-center items-center">
+            <Icon name="User_Default" rounded={true} />
           </div>
-        </div>
+        )}
 
         {/* 이름 + 역할 */}
         <div className="flex flex-col justify-center">

@@ -96,7 +96,7 @@ const AddFile = ({
       //s3 업로드 코드 작성
       const s3Response = await axios.put(response.result.presignedUrl, e, {
         headers: {
-          "Content-Type": e.type,
+          "Content-Type": response.result.contentType,
         },
       });
       console.log("s3Response", s3Response);

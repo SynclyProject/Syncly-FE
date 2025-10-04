@@ -25,7 +25,9 @@ const Chat = ({
   hideProfile,
 }: IChatProps) => {
   const profileImageUrl = useShowImage(profile);
-
+  const hour = Number(time.split(":")[0]) + 9;
+  const minute = Number(time.split(":")[1]).toString().padStart(2, "0");
+  const convertedTime = `${hour}:${minute}`;
   return (
     <div className="flex flex-col gap-2">
       {!hideDate && (
@@ -39,7 +41,7 @@ const Chat = ({
         <div className="flex flex-col gap-2 items-end">
           <div className="flex gap-2 items-end">
             {!hideTime && (
-              <span className="text-sm text-[#828282]">{time}</span>
+              <span className="text-sm text-[#828282]">{convertedTime}</span>
             )}
             <p className="text-xs text-white max-w-[200px] flex gap-2 justify-center items-center px-4 py-3 bg-[#456990] rounded-tl-[16px] rounded-tr-[16px] rounded-br-[4px] rounded-bl-[16px]">
               {message}
@@ -69,7 +71,7 @@ const Chat = ({
               {message}
             </p>
             {!hideTime && (
-              <span className="text-sm text-[#828282]">{time}</span>
+              <span className="text-sm text-[#828282]">{convertedTime}</span>
             )}
           </div>
         </div>
