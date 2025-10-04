@@ -36,6 +36,7 @@ jobs:
           VITE_LIVEKIT_URL: ${{ secrets.VITE_LIVEKIT_URL }}
           VITE_VIEW_IMAGE_URL: ${{ secrets.VITE_VIEW_IMAGE_URL }}
           VITE_OAUTH_REDIRECT_PATH: ${{ secrets.VITE_OAUTH_REDIRECT_PATH }}
+          VITE_WEBSOCKET_URL: ${{ secrets.VITE_WEBSOCKET_URL }}
         run: yarn build
 
       - name: Configure AWS credentials
