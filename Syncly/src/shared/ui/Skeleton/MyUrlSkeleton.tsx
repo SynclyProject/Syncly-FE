@@ -14,7 +14,7 @@ export default function MyUrlSkeleton() {
         {/* 맨 위 + 버튼 */}
         <Skeleton width="w-12" height="h-10" rounded="rounded-lg" />
       </div>
-
+      
       {/* URL 그룹 카드 3개 정도 */}
       <div className="flex flex-col gap-5 w-full">
         {Array.from({ length: 3 }).map((_, i) => (

@@ -7,6 +7,7 @@ import useDebounce from "../../hooks/useDebounce";
 import TrashFileList from "../../components/Files/TrashFileList";
 import { FileProvider } from "../../context/FileContext";
 import { useEffect } from "react";
+import MyFileSkeleton from "../../shared/ui/Skeleton/MyFileSkeleton";
 
 
 
@@ -16,6 +17,17 @@ const MyFilesPage = () => {
   const [trash, setTrash] = useState(false);
   const [mq, setMq] = useState("");
   const useDebouncedValue = useDebounce(mq, 500);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <MyFileSkeleton />;
+  }
+
   return (
     <FileProvider>
       <div className="w-full mx-[74px] flex flex-col items-center gap-5">
