@@ -2,7 +2,7 @@ import Navigate from "../../components/Navigate";
 import URLsList from "../../components/URLs/URLsList";
 import Button from "../../shared/ui/Button";
 import { useState } from "react";
-import MyUrlSkeleton  from "../../shared/ui/Skeleton/MyUrlSkeleton";
+import UrlSkeleton  from "../../shared/ui/Skeleton/UrlSkeleton";
 import { useEffect } from "react";
 
 const MyURLsPage = () => {
@@ -16,7 +16,7 @@ const MyURLsPage = () => {
 
 
   if (isLoading) {
-    return <MyUrlSkeleton />;
+    return <UrlSkeleton />;
   }
 
   return (
