@@ -14,7 +14,7 @@ export default function Skeleton({
 }: SkeletonProps) {
   return (
     <div
-      className={`bg-#DEE4ED dark:bg-[#abb9ce] ${width} ${height} ${rounded} animate-pulse ${className}`}
+      className={`bg-gray-200 dark:bg-[#DEE4ED] ${width} ${height} ${rounded} animate-pulse ${className}`}
     />
   );
 }

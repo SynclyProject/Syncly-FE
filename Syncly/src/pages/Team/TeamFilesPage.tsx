@@ -6,8 +6,6 @@ import useDebounce from "../../hooks/useDebounce";
 import TrashFileList from "../../components/Files/TrashFileList";
 import TeamNavigate from "../../components/TeamNavigate";
 import { FileProvider } from "../../context/FileContext";
-import { useEffect } from "react";
-import TeamFileSkeleton from "../../shared/ui/Skeleton/TeamFileSkeleton";
 
 const TeamFilesPage = () => {
   const [showInput, setShowInput] = useState(false);
@@ -15,16 +13,9 @@ const TeamFilesPage = () => {
   const [trash, setTrash] = useState(false);
   const [mq, setMq] = useState("");
   const useDebouncedValue = useDebounce(mq, 500);
-  const [isLoading, setIsLoading] = useState(true);
+  
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
-  if (isLoading) {
-    return <TeamFileSkeleton />;
-  }
 
 
   return (
