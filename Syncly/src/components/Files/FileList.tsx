@@ -8,6 +8,7 @@ import { GetFolderFileList, GetRootFolder } from "../../shared/api/Folder/get";
 import { useParams } from "react-router-dom";
 import { useFileContext } from "../../context/FileContext";
 import { useEffect } from "react";
+import TeamFileSkeleton from "../../shared/ui/Skeleton/TeamFileSkeleton";
 
 interface IFileListProps {
   searchValue: string;
@@ -30,7 +31,7 @@ const FileList = ({
 
   const isSpaceIdReady = typeof spaceId === "number" && !Number.isNaN(spaceId);
 
-  const { data: rootFolder, isPending } = useQuery({
+  const { data: rootFolder, isPending:rootFolderIsPending} = useQuery({
     queryKey: ["rootFolder", spaceId],
     queryFn: () => GetRootFolder({ workspaceId: spaceId }),
     enabled: isSpaceIdReady,
@@ -47,7 +48,7 @@ const FileList = ({
 
   const currentFolderId = Array.from(folderPath.keys()).pop();
 
-  const { data: folderList, refetch: folderListRefetch } = useQuery({
+  const { data: folderList, refetch: folderListRefetch, isPending: folderListIsPending} = useQuery({
     queryKey: ["folderList", spaceId, currentFolderId],
     queryFn: () =>
       GetFolderFileList({
@@ -97,9 +98,10 @@ const FileList = ({
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
       </div>
-      {isPending && (
-        //나중에 스켈레톤 UI (컴포넌트 제작) 삽입
-        <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
+      {folderListIsPending && (
+        <div>
+          <TeamFileSkeleton />
+        </div>
       )}
       {sort ? (
         <div>
