@@ -6,6 +6,9 @@ import { useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import TrashFileList from "../../components/Files/TrashFileList";
 import { FileProvider } from "../../context/FileContext";
+import { useEffect } from "react";
+
+
 
 const MyFilesPage = () => {
   const [showInput, setShowInput] = useState(false);
