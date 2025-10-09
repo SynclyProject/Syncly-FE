@@ -23,6 +23,7 @@ import { WorkSpaceProvider } from "./context/workSpaceContext";
 import OAuthSuccessPage from "./shared/api/common/OAuthSuccessPage";
 import { LiveKitProvider } from "./context/LiveKitContext";
 
+
 const queryClient = new QueryClient();
 
 const AuthRoute = ({ children }: PropsWithChildren) => {
