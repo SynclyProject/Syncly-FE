@@ -7,6 +7,9 @@ import { useState, useRef, useEffect } from "react";
 import { PatchTaps, PostTabItems } from "../../shared/api/URL/personal";
 import { useMutation } from "@tanstack/react-query";
 import { useURLsList } from "../../hooks/useURLsList";
+import { useParams } from "react-router-dom";
+import { useWorkSpaceContext } from "../../context/workSpaceContext";
+import { useExtension } from "../../hooks/useExtension";
 
 interface IURLsProps {
   title: string;
@@ -24,6 +27,7 @@ interface IURLsProps {
     callback: (message: TMySpaceURLs) => void
   ) => void;
   unsubscribeFromTab: (tabId: number) => void;
+  type?: "my" | "team";
 }
 
 const URLs = ({
@@ -39,6 +43,7 @@ const URLs = ({
   isConnected,
   subscribeToTab,
   unsubscribeFromTab,
+  type = "my",
 }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -47,10 +52,21 @@ const URLs = ({
   const [editTitle, setEditTitle] = useState(false);
   const [editTitleValue, setEditTitleValue] = useState(title);
 
+  const { personalSpaceId } = useWorkSpaceContext();
+  const { id } = useParams();
+  const spaceId = type === "my" ? personalSpaceId : Number(id);
+
+  const { loading, handleSaveTabs, handleOpenTabsById } = useExtension(
+    tabId,
+    spaceId
+  );
+
+  // FileList.tsx 패턴으로 spaceId 설정
+
   const modalRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLButtonElement>(null);
 
-  const { refetch, spaceId } = useURLsList();
+  const { refetch } = useURLsList();
 
   // 탭 구독
   useEffect(() => {
@@ -158,6 +174,9 @@ const URLs = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [modalShow]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div
       className="flex flex-col gap-5 w-full min-h-[225px] p-[24px] bg-white border border-[#E0E0E0] rounded-[8px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.04)]"
@@ -216,8 +235,12 @@ const URLs = ({
             iconName="add_circle"
             onClick={() => setShowInput(true)}
           />
-          <Button colorType="sub">Save Tabs</Button>
-          <Button colorType="sub">Open Links</Button>
+          <Button colorType="sub" onClick={() => handleSaveTabs()}>
+            Save Tabs
+          </Button>
+          <Button colorType="sub" onClick={() => handleOpenTabsById()}>
+            Open Links
+          </Button>
         </div>
       </div>
       <p className="text-[#828282] text-[16px] font-semibold">Source</p>
