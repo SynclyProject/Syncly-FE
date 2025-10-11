@@ -263,7 +263,6 @@ const URLs = ({
         }
 
         console.log(`✅ 총 ${savedCount}개의 URL이 저장됨`);
-        alert(`✅ ${savedCount}개의 URL이 팀스페이스에 저장되었습니다!`);
       } catch (error) {
         console.error("탭 저장 실패:", error);
         alert(
