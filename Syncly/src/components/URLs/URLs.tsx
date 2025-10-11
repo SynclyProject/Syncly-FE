@@ -27,7 +27,6 @@ interface IURLsProps {
     callback: (message: TMySpaceURLs) => void
   ) => void;
   unsubscribeFromTab: (tabId: number) => void;
-  type?: "my" | "team";
 }
 
 const URLs = ({
@@ -43,7 +42,6 @@ const URLs = ({
   isConnected,
   subscribeToTab,
   unsubscribeFromTab,
-  type = "my",
 }: IURLsProps) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -54,12 +52,15 @@ const URLs = ({
 
   const { personalSpaceId } = useWorkSpaceContext();
   const { id } = useParams();
-  const spaceId = type === "my" ? personalSpaceId : Number(id);
+  const spaceId = communicationType === "http" ? personalSpaceId : Number(id);
 
-  const { loading, handleSaveTabs, handleOpenTabsById } = useExtension(
-    tabId,
-    spaceId
-  );
+  const {
+    loading,
+    handleSaveTabs,
+    handleOpenTabsById,
+    extensionId,
+    sendMessageToExtension,
+  } = useExtension(tabId, spaceId);
 
   // FileList.tsx 패턴으로 spaceId 설정
 
@@ -174,6 +175,106 @@ const URLs = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [modalShow]);
 
+  const clickSaveTabs = async () => {
+    console.log("🔍 clickSaveTabs 함수 호출됨", {
+      communicationType,
+      spaceId,
+      extensionId,
+    });
+
+    if (communicationType === "http") {
+      console.log("📝 개인스페이스 - handleSaveTabs 호출");
+      handleSaveTabs();
+    } else {
+      console.log("👥 팀스페이스 - Extension을 통한 탭 가져오기");
+      // 팀스페이스에서는 확장프로그램을 통해 탭을 가져와서 웹소켓으로 저장
+      try {
+        const jwtToken = localStorage.getItem("accessToken");
+        console.log("🔑 JWT 토큰 확인:", jwtToken ? "존재함" : "없음");
+
+        if (!jwtToken) {
+          alert("로그인이 필요합니다.");
+          return;
+        }
+
+        console.log("🔍 Chrome Extension 체크:", {
+          chrome: !!window.chrome,
+          runtime: !!window.chrome?.runtime,
+          extensionId: extensionId,
+        });
+
+        if (!window.chrome?.runtime) {
+          throw new Error("Chrome Extension이 설치되지 않았습니다.");
+        }
+
+        if (!extensionId) {
+          throw new Error("Extension ID를 찾을 수 없습니다.");
+        }
+
+        console.log("📤 Extension에 SAVE_TABS 요청 전송");
+
+        // useExtension의 sendMessageToExtension 함수 사용
+        const response = await sendMessageToExtension({
+          action: "SAVE_TABS",
+          token: jwtToken,
+        });
+
+        console.log("📥 Extension 응답:", response);
+
+        // 응답에서 URL들 추출
+        const urls = response?.data?.result?.urls;
+        console.log("📋 가져온 URL들:", urls);
+
+        if (urls && urls.length === 0) {
+          alert("저장할 탭이 없습니다.");
+          return;
+        }
+
+        console.log("🔗 웹소켓 설정:", {
+          communicationType,
+          hasOnWebSocketAction: !!onWebSocketAction,
+          tabId,
+        });
+
+        let savedCount = 0;
+
+        for (const url of urls) {
+          console.log("🔄 URL 처리 중:", url);
+
+          if (communicationType === "websocket" && onWebSocketAction && url) {
+            console.log("📤 웹소켓으로 URL 저장:", {
+              action: "addUrl",
+              tabId,
+              url: url,
+            });
+
+            onWebSocketAction("addUrl", {
+              tabId: tabId,
+              url: url,
+            });
+            savedCount++;
+          } else {
+            console.log("⏭️ URL 건너뜀:", {
+              communicationType,
+              hasOnWebSocketAction: !!onWebSocketAction,
+              hasUrl: !!url,
+            });
+          }
+        }
+
+        console.log(`✅ 총 ${savedCount}개의 URL이 저장됨`);
+        alert(`✅ ${savedCount}개의 URL이 팀스페이스에 저장되었습니다!`);
+      } catch (error) {
+        console.error("탭 저장 실패:", error);
+        alert(
+          `❌ 저장 실패: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -235,7 +336,7 @@ const URLs = ({
             iconName="add_circle"
             onClick={() => setShowInput(true)}
           />
-          <Button colorType="sub" onClick={() => handleSaveTabs()}>
+          <Button colorType="sub" onClick={clickSaveTabs}>
             Save Tabs
           </Button>
           <Button colorType="sub" onClick={() => handleOpenTabsById()}>

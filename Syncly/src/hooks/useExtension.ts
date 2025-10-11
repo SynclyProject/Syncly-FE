@@ -217,5 +217,6 @@ export const useExtension = (tabId: number, spaceId: number) => {
     savedSessionId,
     handleSaveTabs,
     handleOpenTabsById,
+    sendMessageToExtension,
   };
 };
