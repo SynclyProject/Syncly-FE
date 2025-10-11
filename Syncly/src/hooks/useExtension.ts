@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ExtensionResponse } from "../shared/type/extension";
+import { ExtensionResponse2 } from "../shared/type/extension";
 import { GetAllTaps } from "../shared/api/URL/getList";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
 import { TUrl } from "../shared/type/mySpaceType";
@@ -65,7 +65,7 @@ export const useExtension = (tabId: number, spaceId: number) => {
   /** ── Extension 메시지 전송 헬퍼 ───────────────────────────────── */
   const sendMessageToExtension = (
     message: unknown
-  ): Promise<ExtensionResponse> =>
+  ): Promise<ExtensionResponse2> =>
     new Promise((resolve, reject) => {
       if (!isExtensionInstalled()) {
         reject(new Error("Chrome Extension이 설치되지 않았습니다."));
@@ -86,7 +86,7 @@ export const useExtension = (tabId: number, spaceId: number) => {
               reject(new Error(lastError));
               return;
             }
-            const extResponse = response as ExtensionResponse;
+            const extResponse = response as ExtensionResponse2;
             if (extResponse?.success) resolve(extResponse);
             else reject(new Error(extResponse?.error || "알 수 없는 에러"));
           }
@@ -118,7 +118,7 @@ export const useExtension = (tabId: number, spaceId: number) => {
       addLog("✅ 탭 저장 성공!");
       addLog(`📊 응답 데이터: ${JSON.stringify(response.data)}`);
 
-      const sessionId = response.data?.id;
+      const sessionId = response.data?.result?.id;
       if (sessionId !== undefined) {
         addLog(`📊 세션 ID: ${sessionId}`);
         setSavedSessionId(sessionId);

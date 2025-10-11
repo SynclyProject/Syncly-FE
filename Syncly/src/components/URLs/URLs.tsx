@@ -238,7 +238,7 @@ const URLs = ({
 
         let savedCount = 0;
 
-        for (const url of urls) {
+        for (const url of urls || []) {
           console.log("🔄 URL 처리 중:", url);
 
           if (communicationType === "websocket" && onWebSocketAction && url) {
