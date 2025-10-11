@@ -7,6 +7,26 @@
     <title>Syncly</title>
   </head>
   <body>
+    <script>
+      (function () {
+        function onReady(e) {
+          try {
+            var id = e && e.detail && e.detail.extensionId;
+            if (id) {
+              // 전역/스토리지에 캐시
+              window.SYNCLY_EXTENSION_ID = id;
+              try {
+                sessionStorage.setItem("SYNCLY_EXTENSION_ID", id);
+              } catch (e) {}
+            }
+          } catch (err) {}
+        }
+        // 이벤트를 "아주 일찍" 한 번만 잡아서 캐시
+        window.addEventListener("SYNCLY_EXTENSION_READY", onReady, {
+          once: true,
+        });
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
