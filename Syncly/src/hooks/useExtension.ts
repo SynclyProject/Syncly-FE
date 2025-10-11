@@ -3,6 +3,7 @@ import { ExtensionResponse2 } from "../shared/type/extension";
 import { GetAllTaps } from "../shared/api/URL/getList";
 import { TMySpaceURLs } from "../shared/type/mySpaceType";
 import { TUrl } from "../shared/type/mySpaceType";
+import { PostTabItems } from "../shared/api/URL/personal";
 
 export const useExtension = (tabId: number, spaceId: number) => {
   // Chrome Extension 관련 상태
@@ -11,6 +12,8 @@ export const useExtension = (tabId: number, spaceId: number) => {
   const [savedSessionId, setSavedSessionId] = useState<number | string | null>(
     null
   );
+
+  console.log("tabId", tabId);
   /** ── Extension ID 동적 획득 ───────────────────────────────────── */
   useEffect(() => {
     const handleExtensionReady = (
@@ -96,51 +99,53 @@ export const useExtension = (tabId: number, spaceId: number) => {
       }
     });
 
-  /** ── 1) SAVE_TABS ─────────────────────────────────────────────── */
+  /** ── 1) SAVE_TABS (새 탭 생성 방지: CHECK_TABS → PostTabItems) ── */
   const handleSaveTabs = async () => {
     setLoading(true);
-    addLog("🔄 탭 저장 시작...");
+    addLog("🔄 (기존 탭에만) URL 수집 → 저장 시작...");
 
     try {
+      // (선택) 토큰 확인 — axiosInstance에서 처리된다면 생략 가능
       const jwtToken = localStorage.getItem("accessToken");
-      addLog(
-        `📤 Extension에 SAVE_TABS 요청 전송 (토큰: ${jwtToken?.substring(
-          0,
-          20
-        )}...)`
-      );
-
-      const response = await sendMessageToExtension({
-        action: "SAVE_TABS",
-        token: jwtToken,
-      });
-
-      addLog("✅ 탭 저장 성공!");
-      addLog(`📊 응답 데이터: ${JSON.stringify(response.data)}`);
-
-      const sessionId = response.data?.result?.id;
-      if (sessionId !== undefined) {
-        addLog(`📊 세션 ID: ${sessionId}`);
-        setSavedSessionId(sessionId);
-      }
-
-      const count = response.count ?? response.data?.count ?? 0;
-      addLog(`📊 저장된 URL 개수: ${count}`);
-
-      if (Array.isArray(response.data?.urls)) {
-        const urls = response.data!.urls!;
+      if (!jwtToken)
         addLog(
-          `📋 URLs: ${JSON.stringify(urls.slice(0, 3))}${
-            urls.length > 3 ? "..." : ""
-          }`
+          "⚠️ accessToken 없음 (axiosInstance에서 주입되는 경우 무시 가능)"
         );
+
+      // 1) 🔄 확장에 “저장(SAVE_TABS)” 말고 “수집(CHECK_TABS)”만 요청
+      addLog("🧪 Extension에 CHECK_TABS 요청");
+      const res = await sendMessageToExtension({ action: "CHECK_TABS" });
+
+      // CHECK_TABS 응답은 { urls, totalTabs, validUrls, ... } 형태
+      const raw = res?.urls as unknown;
+      const urls = Array.isArray(raw)
+        ? raw
+            .map((u) => (typeof u === "string" ? u.trim() : ""))
+            .filter((u) => /^https?:\/\//i.test(u)) // http(s)만
+            .filter(
+              (u) =>
+                !u.startsWith("chrome://") &&
+                !u.startsWith("chrome-extension://")
+            )
+        : [];
+
+      if (urls.length === 0) {
+        addLog("ℹ️ 저장할 URL이 없습니다.");
+        alert("저장할 URL이 없습니다.");
+        return;
       }
 
-      alert(
-        `✅ ${count}개의 탭이 저장되었습니다!${
-          sessionId ? ` (ID: ${sessionId})` : ""
-        }`
-      );
+      // 2) ✅ 프론트에서 기존 tabId로만 저장 (새 탭 생성 API 호출 안 함)
+
+      for (const url of urls) {
+        try {
+          await PostTabItems({ tabId, url });
+        } catch (e) {
+          console.error("URL 아이템 생성 실패:", url, e);
+        }
+      }
+
+      setSavedSessionId(tabId);
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       addLog(`❌ 탭 저장 실패: ${msg}`);
