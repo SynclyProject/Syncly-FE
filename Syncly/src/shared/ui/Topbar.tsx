@@ -26,12 +26,19 @@ const TopBar = () => {
       console.error("로그아웃 실패:", error);
     }
   };
+  const handleClickLogo = () => {
+    if (isLogin) {
+      navigate("/my-urls");
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="w-full h-[70px] bg-white px-7 flex justify-between items-center border border-[#E0E0E0]">
       <p
         className="flex items-center gap-[8px] text-[20px] font-[600] cursor-pointer"
-        onClick={() => navigate("/")}
+        onClick={handleClickLogo}
       >
         <img src="/logo.png" alt="logo" className="w-[40px]" />
         Syncly
