@@ -136,21 +136,33 @@ const FileList = ({
               />
             ))}
         </div>
-      ) : filesToShow.length > 0 ? (
+      ) : (
         <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
-          {filesToShow.map((file: TFiles) => (
-            <File
-              key={file.id}
-              type={file.type.toLowerCase() as TFilesType}
-              title={file.name}
-              date={file.date}
-              user={file.user}
-              fileId={file.id}
-              folderListRefetch={folderListRefetch}
-              trash={false}
-            />
-          ))}
-          {showInput && (
+          {filesToShow.length > 0 ? (
+            <>
+              {filesToShow.map((file: TFiles) => (
+                <File
+                  key={file.id}
+                  type={file.type.toLowerCase() as TFilesType}
+                  title={file.name}
+                  date={file.date}
+                  user={file.user}
+                  fileId={file.id}
+                  folderListRefetch={folderListRefetch}
+                  trash={false}
+                />
+              ))}
+              {showInput && (
+                <FileInput
+                  type="folder"
+                  user={profileImageUrl}
+                  onAdd={handleAddFolder}
+                  onCancel={() => setShowInput(false)}
+                  folderListRefetch={folderListRefetch}
+                />
+              )}
+            </>
+          ) : showInput ? (
             <FileInput
               type="folder"
               user={profileImageUrl}
@@ -158,20 +170,12 @@ const FileList = ({
               onCancel={() => setShowInput(false)}
               folderListRefetch={folderListRefetch}
             />
+          ) : (
+            <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
+              {noDataMessage}
+            </p>
           )}
         </div>
-      ) : showInput ? (
-        <FileInput
-          type="folder"
-          user={profileImageUrl}
-          onAdd={handleAddFolder}
-          onCancel={() => setShowInput(false)}
-          folderListRefetch={folderListRefetch}
-        />
-      ) : (
-        <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
-          {noDataMessage}
-        </p>
       )}
     </div>
   );
