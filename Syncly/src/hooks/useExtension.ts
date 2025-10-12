@@ -13,7 +13,6 @@ export const useExtension = (tabId: number, spaceId: number) => {
     null
   );
 
-  console.log("tabId", tabId);
   /** ── Extension ID 동적 획득 ───────────────────────────────────── */
   useEffect(() => {
     const handleExtensionReady = (
