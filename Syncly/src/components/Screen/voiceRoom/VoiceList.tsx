@@ -76,7 +76,10 @@ const VoiceListContent = ({
   );
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 relative">
+    <div
+      className="w-full flex flex-col gap-3 relative"
+      style={{ height: "calc(100vh - 250px)" }}
+    >
       <div className="w-full flex justify-between items-center">
         <p className="text-[20px] font-bold">Title</p>
         <Button
@@ -104,7 +107,7 @@ const VoiceListContent = ({
               />
             </TrackRefContextIfNeeded>
           </div>
-          <div className="w-full flex gap-3">
+          <div className="w-full flex gap-3 overflow-x-auto max-h-[120px]">
             <TrackLoop
               tracks={tracks.filter((t) => t.participant.sid !== selectedId)}
             >
@@ -113,7 +116,7 @@ const VoiceListContent = ({
           </div>
         </div>
       ) : (
-        <div className="w-full h-full grid grid-cols-2 gap-3 justify-center md:grid-cols-1 lg:grid-cols-2">
+        <div className="w-full h-full grid grid-cols-2 gap-3 justify-center md:grid-cols-1 lg:grid-cols-2 overflow-y-auto">
           <TrackLoop tracks={tracks}>
             <VoicePeopleWrapper onSelect={setSelectedId} size="default" />
           </TrackLoop>

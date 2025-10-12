@@ -8,6 +8,8 @@ import { GetFolderFileList, GetRootFolder } from "../../shared/api/Folder/get";
 import { useParams } from "react-router-dom";
 import { useFileContext } from "../../context/FileContext";
 import { useEffect } from "react";
+import { GetMemberInfo } from "../../shared/api/Member/get_delete";
+import { useShowImage } from "../../hooks/useShowImage";
 
 interface IFileListProps {
   searchValue: string;
@@ -30,7 +32,7 @@ const FileList = ({
 
   const isSpaceIdReady = typeof spaceId === "number" && !Number.isNaN(spaceId);
 
-  const { data: rootFolder, isPending } = useQuery({
+  const { data: rootFolder } = useQuery({
     queryKey: ["rootFolder", spaceId],
     queryFn: () => GetRootFolder({ workspaceId: spaceId }),
     enabled: isSpaceIdReady,
@@ -81,13 +83,25 @@ const FileList = ({
   });
   const handleAddFolder = (text: string) => {
     if (!text.trim()) return;
+    const currentFolderId = Array.from(folderPath.keys()).pop();
+    console.log("folderPath:", currentFolderId);
 
     postFolderMutation({
       workspaceId: spaceId,
-      parentId: folderPath.get(folderPath.size - 1) as unknown as number,
+      parentId: currentFolderId as number,
       name: text,
     });
   };
+
+  const { data: memberInfo } = useQuery({
+    queryKey: ["memberInfo"],
+    queryFn: GetMemberInfo,
+  });
+
+  console.log("memberInfo:", memberInfo);
+  const profileImageUrl = useShowImage(
+    memberInfo?.result.profileImageObjectKey
+  );
 
   return (
     <div className="flex flex-col w-full bg-white rounded-[8px] px-5">
@@ -97,10 +111,10 @@ const FileList = ({
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
       </div>
-      {isPending && (
+      {/* {isPending && (
         //나중에 스켈레톤 UI (컴포넌트 제작) 삽입
         <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
-      )}
+      )} */}
       {sort ? (
         <div>
           {[...filesToShow]
@@ -121,22 +135,33 @@ const FileList = ({
             ))}
         </div>
       ) : filesToShow.length > 0 ? (
-        filesToShow.map((file: TFiles) => (
-          <File
-            key={file.id}
-            type={file.type.toLowerCase() as TFilesType}
-            title={file.name}
-            date={file.date}
-            user={file.user}
-            fileId={file.id}
-            folderListRefetch={folderListRefetch}
-            trash={false}
-          />
-        ))
+        <>
+          {filesToShow.map((file: TFiles) => (
+            <File
+              key={file.id}
+              type={file.type.toLowerCase() as TFilesType}
+              title={file.name}
+              date={file.date}
+              user={file.user}
+              fileId={file.id}
+              folderListRefetch={folderListRefetch}
+              trash={false}
+            />
+          ))}
+          {showInput && (
+            <FileInput
+              type="folder"
+              user={profileImageUrl}
+              onAdd={handleAddFolder}
+              onCancel={() => setShowInput(false)}
+              folderListRefetch={folderListRefetch}
+            />
+          )}
+        </>
       ) : showInput ? (
         <FileInput
           type="folder"
-          user={"userProfile"}
+          user={profileImageUrl}
           onAdd={handleAddFolder}
           onCancel={() => setShowInput(false)}
           folderListRefetch={folderListRefetch}
@@ -145,15 +170,6 @@ const FileList = ({
         <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
           {noDataMessage}
         </p>
-      )}
-      {showInput && (
-        <FileInput
-          type="folder"
-          user={"userProfile"}
-          onAdd={handleAddFolder}
-          onCancel={() => setShowInput(false)}
-          folderListRefetch={folderListRefetch}
-        />
       )}
     </div>
   );
