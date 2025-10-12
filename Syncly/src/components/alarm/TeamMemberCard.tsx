@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetSpaceRole } from "../../shared/api/WorkSpace/get";
 import { DeleteSpaceKick } from "../../shared/api/WorkSpace/delete";
+import { GetMemberInfo } from "../../shared/api/Member/get_delete";
 import Icon from "../../shared/ui/Icon";
 import { useShowImage } from "../../hooks/useShowImage";
 
@@ -31,7 +32,13 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
     queryFn: () => GetSpaceRole({ workspaceId: spaceId }),
   });
 
+  const { data: memberInfo } = useQuery({
+    queryKey: ["memberInfo"],
+    queryFn: GetMemberInfo,
+  });
+
   const MyRole = data?.result?.role === "MANAGER" ? true : false;
+  const isMyCard = memberInfo?.result?.email === email;
 
   const { mutate: deleteSpaceKickMemberMutation } = useMutation({
     mutationFn: DeleteSpaceKick,
@@ -78,7 +85,7 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
       </div>
 
       {/* 메뉴 버튼 */}
-      {MyRole && showMenu && (
+      {MyRole && showMenu && !isMyCard && (
         <div className="w-10 flex items-center justify-end">
           <div
             className="flex flex-col items-center gap-[3px] cursor-pointer"
