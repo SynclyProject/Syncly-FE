@@ -2,7 +2,7 @@ import Icon from "../../shared/ui/Icon";
 import { useState } from "react";
 
 type TTypeProps = {
-  type: "folder" | "image" | "file" | "video";
+  type: "folder";
 };
 interface IFileInputProps extends TTypeProps {
   user: string | null;

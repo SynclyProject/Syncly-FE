@@ -30,7 +30,7 @@ const FileList = ({
 
   const isSpaceIdReady = typeof spaceId === "number" && !Number.isNaN(spaceId);
 
-  const { data: rootFolder, isPending } = useQuery({
+  const { data: rootFolder } = useQuery({
     queryKey: ["rootFolder", spaceId],
     queryFn: () => GetRootFolder({ workspaceId: spaceId }),
     enabled: isSpaceIdReady,
@@ -81,10 +81,12 @@ const FileList = ({
   });
   const handleAddFolder = (text: string) => {
     if (!text.trim()) return;
+    const currentFolderId = Array.from(folderPath.keys()).pop();
+    console.log("folderPath:", currentFolderId);
 
     postFolderMutation({
       workspaceId: spaceId,
-      parentId: folderPath.get(folderPath.size - 1) as unknown as number,
+      parentId: currentFolderId as number,
       name: text,
     });
   };
@@ -97,10 +99,10 @@ const FileList = ({
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
       </div>
-      {isPending && (
+      {/* {isPending && (
         //나중에 스켈레톤 UI (컴포넌트 제작) 삽입
         <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
-      )}
+      )} */}
       {sort ? (
         <div>
           {[...filesToShow]
