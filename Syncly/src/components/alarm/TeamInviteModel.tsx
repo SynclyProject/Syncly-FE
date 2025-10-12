@@ -7,7 +7,7 @@ import { GetSpaceMember } from "../../shared/api/WorkSpace/get";
 import { TTeamMember } from "../../shared/type/teamSpaceType";
 import { PostSpaceInvite } from "../../shared/api/WorkSpace/post";
 import { AxiosError } from "axios";
-import  Loading  from "../../shared/ui/Loading";
+import Loading from "../../shared/ui/Loading";
 
 interface TeamInviteModelProps {
   onClose: () => void;
@@ -58,30 +58,27 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
               onChange={(e) => setEmail(e.target.value)}
             />
             {/* 추가 버튼 */}
-            <Button             
+            <Button
               colorType="main"
               iconName="add_circle"
-              onClick={() =>{postSpaceInviteMutation({ spaceId, email });}}
+              onClick={() => {
+                postSpaceInviteMutation({ spaceId, email });
+              }}
               disabled={isPending}
             >
               {isPending ? "Sending..." : "Send"}
             </Button>
 
             {isPending && (
-                <div className="absolute inset-0 flex justify-center items-center bg-white/70 rounded-[8px] z-70">
-                  <Loading fullScreen={false} size={80} />
-                </div>
-              )}    
-            
-            
+              <div className="absolute inset-0 flex justify-center items-center bg-white/70 rounded-[8px] z-70">
+                <Loading fullScreen={false} size={80} />
+              </div>
+            )}
           </div>
 
           {/* 팀원 목록 */}
 
-
-          
-          <div className="flex flex-col gap-1 overflow-y-auto pb-10">
-
+          <div className="flex flex-col gap-1 overflow-y-auto pb-10 max-h-[160px]">
             {data?.result.map((member: TTeamMember) => (
               <TeamMemberCard
                 key={member.workspaceMemberId}
