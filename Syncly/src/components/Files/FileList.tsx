@@ -98,13 +98,15 @@ const FileList = ({
     queryFn: GetMemberInfo,
   });
 
-  console.log("memberInfo:", memberInfo);
   const profileImageUrl = useShowImage(
     memberInfo?.result.profileImageObjectKey
   );
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-[8px] px-5">
+    <div
+      className="flex flex-col w-full bg-white rounded-[8px] px-5 "
+      style={{ maxHeight: "calc(70vh - 56px)" }}
+    >
       <div className="w-full h-[56px] bg-white flex items-center gap-[63px]">
         <p className="text-[16px] font-semibold text-[#828282]">Type</p>
         <p className="flex-1 text-[16px] font-semibold">Title</p>
@@ -116,7 +118,7 @@ const FileList = ({
         <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
       )} */}
       {sort ? (
-        <div>
+        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
           {[...filesToShow]
             .sort((a, b) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -134,21 +136,33 @@ const FileList = ({
               />
             ))}
         </div>
-      ) : filesToShow.length > 0 ? (
-        <>
-          {filesToShow.map((file: TFiles) => (
-            <File
-              key={file.id}
-              type={file.type.toLowerCase() as TFilesType}
-              title={file.name}
-              date={file.date}
-              user={file.user}
-              fileId={file.id}
-              folderListRefetch={folderListRefetch}
-              trash={false}
-            />
-          ))}
-          {showInput && (
+      ) : (
+        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
+          {filesToShow.length > 0 ? (
+            <>
+              {filesToShow.map((file: TFiles) => (
+                <File
+                  key={file.id}
+                  type={file.type.toLowerCase() as TFilesType}
+                  title={file.name}
+                  date={file.date}
+                  user={file.user}
+                  fileId={file.id}
+                  folderListRefetch={folderListRefetch}
+                  trash={false}
+                />
+              ))}
+              {showInput && (
+                <FileInput
+                  type="folder"
+                  user={profileImageUrl}
+                  onAdd={handleAddFolder}
+                  onCancel={() => setShowInput(false)}
+                  folderListRefetch={folderListRefetch}
+                />
+              )}
+            </>
+          ) : showInput ? (
             <FileInput
               type="folder"
               user={profileImageUrl}
@@ -156,20 +170,12 @@ const FileList = ({
               onCancel={() => setShowInput(false)}
               folderListRefetch={folderListRefetch}
             />
+          ) : (
+            <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
+              {noDataMessage}
+            </p>
           )}
-        </>
-      ) : showInput ? (
-        <FileInput
-          type="folder"
-          user={profileImageUrl}
-          onAdd={handleAddFolder}
-          onCancel={() => setShowInput(false)}
-          folderListRefetch={folderListRefetch}
-        />
-      ) : (
-        <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
-          {noDataMessage}
-        </p>
+        </div>
       )}
     </div>
   );
