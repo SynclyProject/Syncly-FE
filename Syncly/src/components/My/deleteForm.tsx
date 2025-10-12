@@ -137,7 +137,7 @@ const DeleteForm = ({
 
           <button
             type="submit"
-            className="mt-4 w-full py-2 border border-rose-500 text-rose-500 text-sm font-medium rounded"
+            className="mt-4 w-full py-2 border border-rose-500 text-rose-500 text-sm font-medium rounded cursor-pointer"
           >
             계정 삭제
           </button>
