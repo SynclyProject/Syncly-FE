@@ -51,8 +51,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
-  console.log("isLogin", isLogin);
-
   return (
     <AuthContext.Provider
       value={{

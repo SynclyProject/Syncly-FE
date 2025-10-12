@@ -98,7 +98,6 @@ const FileList = ({
     queryFn: GetMemberInfo,
   });
 
-  console.log("memberInfo:", memberInfo);
   const profileImageUrl = useShowImage(
     memberInfo?.result.profileImageObjectKey
   );
