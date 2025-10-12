@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { DeleteMember } from "../../shared/api/Member/get_delete";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 
 const REASONS = [
   { label: "서비스 이용이 불편해요", value: "INCONVENIENT_SERVICE" },
@@ -35,6 +36,7 @@ const DeleteForm = ({
   setShowDeleteForm: (show: boolean) => void;
 }) => {
   const navigate = useNavigate();
+  const { checkLoginStatus } = useAuthContext();
 
   const {
     register,
@@ -59,6 +61,7 @@ const DeleteForm = ({
       setShowDeleteForm(false);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
+      checkLoginStatus(); // AuthContext 상태 업데이트
       navigate("/");
     },
   });
