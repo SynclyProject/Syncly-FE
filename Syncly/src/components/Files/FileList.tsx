@@ -103,7 +103,10 @@ const FileList = ({
   );
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-[8px] px-5">
+    <div
+      className="flex flex-col w-full bg-white rounded-[8px] px-5 "
+      style={{ maxHeight: "calc(70vh - 56px)" }}
+    >
       <div className="w-full h-[56px] bg-white flex items-center gap-[63px]">
         <p className="text-[16px] font-semibold text-[#828282]">Type</p>
         <p className="flex-1 text-[16px] font-semibold">Title</p>
@@ -115,7 +118,7 @@ const FileList = ({
         <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
       )} */}
       {sort ? (
-        <div>
+        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
           {[...filesToShow]
             .sort((a, b) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -134,7 +137,7 @@ const FileList = ({
             ))}
         </div>
       ) : filesToShow.length > 0 ? (
-        <>
+        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
           {filesToShow.map((file: TFiles) => (
             <File
               key={file.id}
@@ -156,7 +159,7 @@ const FileList = ({
               folderListRefetch={folderListRefetch}
             />
           )}
-        </>
+        </div>
       ) : showInput ? (
         <FileInput
           type="folder"
