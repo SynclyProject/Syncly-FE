@@ -7,18 +7,27 @@ interface INoteInputProps {
 }
 
 const NoteInput = ({ onAdd, noteListRefetch }: INoteInputProps) => {
-  const [title, setTitle] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>("");
   const [isComposing, setIsComposing] = useState(false);
-  return (
-    <div className="container flex flex-col" data-color-mode="light">
-      <input
-        className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold outline-none bg-white pl-[10px] rounded-[8px]"
-        placeholder="제목을 입력해주세요..."
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
 
+  return (
+    <div className="flex flex-col w-full h-full" data-color-mode="light">
+      {/* <div className="flex items-center gap-5 bg-white rounded-[8px] p-3 border border-[#E0E0E0]">
+        {profileImageUrl ? (
+          <img
+            src={profileImageUrl}
+            alt="profile"
+            className="w-[24px] h-[24px] rounded-full"
+          />
+        ) : (
+          <div className="w-[24px] h-[24px] rounded-full">
+            <Icon name="User_Default" />
+          </div>
+        )}
+        <p>{data?.user?.name}</p>
+        <p className="text-[16px] font-semibold">{data?.name}</p>
+        <p>{data?.date}</p>
+      </div> */}
       <MDEditor
         onKeyDown={(e) => {
           if (e.key === "Enter" && !isComposing) {
@@ -31,16 +40,8 @@ const NoteInput = ({ onAdd, noteListRefetch }: INoteInputProps) => {
         onCompositionStart={() => setIsComposing(true)}
         onCompositionEnd={() => setIsComposing(false)}
         className="w-full flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold outline-none"
-        preview="edit"
+        preview="live"
       />
-
-      <div className="mt-3">
-        <p className="text-[14px] font-semibold mb-2">Preview</p>
-        <MDEditor.Markdown
-          source={inputValue}
-          style={{ background: "#fff", padding: 12, borderRadius: 8 }}
-        />
-      </div>
     </div>
   );
 };

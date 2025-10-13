@@ -6,9 +6,11 @@ import mockNotes from "./mock/data";
 const NoteList = ({
   searchValue,
   sort,
+  setSelectedId,
 }: {
   searchValue: string;
   sort: boolean;
+  setSelectedId: (id: number) => void;
 }) => {
   //   const { id } = useParams();
   //   const spaceId = Number(id);
@@ -30,7 +32,7 @@ const NoteList = ({
 
   return (
     <div
-      className="flex flex-col w-full bg-white rounded-[8px] px-5 "
+      className="flex flex-col w-full h-full bg-white rounded-[8px] px-5"
       style={{ maxHeight: "calc(70vh - 56px)" }}
     >
       <div className="w-full h-[56px] bg-white flex items-center gap-[63px]">
@@ -43,34 +45,34 @@ const NoteList = ({
         <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
       )} */}
       {sort ? (
-        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
+        <div className="overflow-y-auto h-full max-h-[calc(70vh-56px)]">
           {[...notesToShow]
             .sort((a, b) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             )
-            .map((file: TNotes) => (
+            .map((note: TNotes) => (
               <Note
-                key={file.id}
-                title={file.name}
-                date={file.date}
-                user={file.user}
-                noteId={file.id}
-                noteListRefetch={() => {}}
+                key={note.id}
+                title={note.name}
+                date={note.date}
+                user={note.user}
+                noteId={note.id}
+                setSelectedId={setSelectedId}
               />
             ))}
         </div>
       ) : (
-        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
+        <div className="overflow-y-auto h-full max-h-[calc(70vh-56px)]">
           {notesToShow.length > 0 ? (
             <>
-              {notesToShow.map((file: TNotes) => (
+              {notesToShow.map((note: TNotes) => (
                 <Note
-                  key={file.id}
-                  title={file.name}
-                  date={file.date}
-                  user={file.user}
-                  noteId={file.id}
-                  noteListRefetch={() => {}}
+                  key={note.id}
+                  title={note.name}
+                  date={note.date}
+                  user={note.user}
+                  noteId={note.id}
+                  setSelectedId={setSelectedId}
                 />
               ))}
             </>

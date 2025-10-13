@@ -8,11 +8,11 @@ interface INoteProps {
   title: string;
   date: string;
   user?: TUser;
-  noteId?: number;
-  noteListRefetch: () => void;
+  noteId: number;
+  setSelectedId: (id: number) => void;
 }
 
-const Note = ({ title, date, user, noteId, noteListRefetch }: INoteProps) => {
+const Note = ({ title, date, user, noteId, setSelectedId }: INoteProps) => {
   const [modalShow, setModalShow] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -20,7 +20,9 @@ const Note = ({ title, date, user, noteId, noteListRefetch }: INoteProps) => {
   const { id } = useParams();
   const workspaceId = Number(id);
 
-  const handleNoteClick = () => {};
+  const handleNoteClick = () => {
+    setSelectedId(noteId);
+  };
   const profileImageUrl = useShowImage(user?.profileUrl || null);
 
   useEffect(() => {

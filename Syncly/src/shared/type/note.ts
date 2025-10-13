@@ -5,4 +5,5 @@ export type TNotes = {
   name: string;
   date: string;
   user: TUser;
+  content: string;
 };

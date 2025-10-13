@@ -5,6 +5,7 @@ import TeamFileSkeleton from "../../shared/ui/Skeleton/TeamFileSkeleton";
 import { useEffect, useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import NoteInput from "../../components/Note/NoteInput";
+import DetailedNote from "../../components/Note/DetailedNote";
 
 const TeamNotePage = () => {
   const [showInput, setShowInput] = useState(false);
@@ -12,6 +13,7 @@ const TeamNotePage = () => {
   const [mq, setMq] = useState("");
   const useDebouncedValue = useDebounce(mq, 500);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -34,11 +36,26 @@ const TeamNotePage = () => {
           setShowInput={setShowInput}
           showInput={showInput}
         />
-        {showInput ? (
-          <NoteInput onAdd={() => {}} noteListRefetch={() => {}} />
-        ) : (
-          <NoteList searchValue={useDebouncedValue} sort={sort} />
-        )}
+        <div className="flex gap-5 w-full">
+          <div className="flex-1 h-[calc(70vh-56px)]">
+            <NoteList
+              searchValue={useDebouncedValue}
+              sort={sort}
+              setSelectedId={setSelectedId}
+            />
+          </div>
+          <div className="flex-1 h-[calc(70vh-56px)]">
+            {showInput ? (
+              <NoteInput onAdd={() => {}} noteListRefetch={() => {}} />
+            ) : selectedId ? (
+              <DetailedNote noteId={selectedId} />
+            ) : (
+              <div className="bg-white rounded-[8px] px-5 h-full flex items-center justify-center">
+                No selected note
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
