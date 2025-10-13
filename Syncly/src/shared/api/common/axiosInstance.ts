@@ -34,7 +34,7 @@ axiosInstance.interceptors.request.use(
 
 // 토큰 재발급 인터셉터 (강의 참고)
 //기존 코드
-/*
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -91,9 +91,8 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-*/
-
 //수정 버전
+/*
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -158,3 +157,4 @@ axiosInstance.interceptors.response.use(
     }
   }
 );
+*/
