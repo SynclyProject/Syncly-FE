@@ -10,9 +10,17 @@ interface INoteProps {
   user?: TUser;
   noteId: number;
   setSelectedId: (id: number) => void;
+  setShowInput: (show: boolean) => void;
 }
 
-const Note = ({ title, date, user, noteId, setSelectedId }: INoteProps) => {
+const Note = ({
+  title,
+  date,
+  user,
+  noteId,
+  setSelectedId,
+  setShowInput,
+}: INoteProps) => {
   const [modalShow, setModalShow] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -22,6 +30,7 @@ const Note = ({ title, date, user, noteId, setSelectedId }: INoteProps) => {
 
   const handleNoteClick = () => {
     setSelectedId(noteId);
+    setShowInput(false);
   };
   const profileImageUrl = useShowImage(user?.profileUrl || null);
 

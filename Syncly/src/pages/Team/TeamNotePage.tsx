@@ -42,6 +42,7 @@ const TeamNotePage = () => {
               searchValue={useDebouncedValue}
               sort={sort}
               setSelectedId={setSelectedId}
+              setShowInput={setShowInput}
             />
           </div>
           <div className="flex-1 h-[calc(70vh-56px)]">

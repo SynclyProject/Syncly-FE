@@ -7,10 +7,12 @@ const NoteList = ({
   searchValue,
   sort,
   setSelectedId,
+  setShowInput,
 }: {
   searchValue: string;
   sort: boolean;
   setSelectedId: (id: number) => void;
+  setShowInput: (show: boolean) => void;
 }) => {
   //   const { id } = useParams();
   //   const spaceId = Number(id);
@@ -58,6 +60,7 @@ const NoteList = ({
                 user={note.user}
                 noteId={note.id}
                 setSelectedId={setSelectedId}
+                setShowInput={setShowInput}
               />
             ))}
         </div>
@@ -73,6 +76,7 @@ const NoteList = ({
                   user={note.user}
                   noteId={note.id}
                   setSelectedId={setSelectedId}
+                  setShowInput={setShowInput}
                 />
               ))}
             </>
