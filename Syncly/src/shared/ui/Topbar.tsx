@@ -9,8 +9,8 @@ const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const hideIcon =
-    location.pathname === "/login" ||
-    location.pathname === "/signup" ||
+    //location.pathname === "/login" ||
+    //location.pathname === "/signup" ||
     location.pathname === "/createps";
   const [showAlarm, setShowAlarm] = useState(false);
   const { isLogin, checkLoginStatus } = useAuthContext();
