@@ -24,7 +24,12 @@ const TeamSpace = ({ showInput, setShowInput }: TeamSpaceProps) => {
     <div className="flex flex-col gap-[8px]">
       <p className="text-[#6E6E6E] font-[600]">TEAM SPACES</p>
       {teamSpaceList?.map((space: TTeamSpace) => {
-        const pathname = ["/team-urls", "/team-files", "/team-screen"];
+        const pathname = [
+          "/team-urls",
+          "/team-files",
+          "/team-screen",
+          "/team-note",
+        ];
         const isActive =
           pathname.some((path) => location.pathname.startsWith(path)) &&
           location.pathname.includes(`/${space.workspaceId}`);
