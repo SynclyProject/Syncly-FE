@@ -2,7 +2,7 @@ import { TUser } from "./FilesType";
 
 export type TNotes = {
   id: number;
-  name: string;
+  title: string;
   date: string;
   user: TUser;
   content: string;

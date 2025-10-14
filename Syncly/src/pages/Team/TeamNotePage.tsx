@@ -49,7 +49,7 @@ const TeamNotePage = () => {
             {showInput ? (
               <NoteInput onAdd={() => {}} noteListRefetch={() => {}} />
             ) : selectedId ? (
-              <DetailedNote noteId={selectedId} />
+              <DetailedNote noteId={selectedId} setShowInput={setShowInput} />
             ) : (
               <div className="bg-white rounded-[8px] px-5 h-full flex items-center justify-center">
                 No selected note

@@ -23,7 +23,7 @@ const NoteList = ({
   // });
 
   const filteredNotes = mockNotes.filter((note: TNotes) =>
-    note.name.toLowerCase().includes(searchValue.toLowerCase())
+    note.title.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const notesToShow = searchValue ? filteredNotes || [] : mockNotes || [];
@@ -50,12 +50,12 @@ const NoteList = ({
         <div className="overflow-y-auto h-full max-h-[calc(70vh-56px)]">
           {[...notesToShow]
             .sort((a, b) =>
-              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+              a.title.toLowerCase().localeCompare(b.title.toLowerCase())
             )
             .map((note: TNotes) => (
               <Note
                 key={note.id}
-                title={note.name}
+                title={note.title}
                 date={note.date}
                 user={note.user}
                 noteId={note.id}
@@ -71,7 +71,7 @@ const NoteList = ({
               {notesToShow.map((note: TNotes) => (
                 <Note
                   key={note.id}
-                  title={note.name}
+                  title={note.title}
                   date={note.date}
                   user={note.user}
                   noteId={note.id}

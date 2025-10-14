@@ -2,18 +2,20 @@ import Markdown from "react-markdown";
 import Icon from "../../shared/ui/Icon";
 import { useShowImage } from "../../hooks/useShowImage";
 import mockNotes from "./mock/data";
+import Button from "../../shared/ui/Button";
 
 interface INoteProps {
   noteId: number;
+  setShowInput: (show: boolean) => void;
 }
 
-const DetailedNote = ({ noteId }: INoteProps) => {
+const DetailedNote = ({ noteId, setShowInput }: INoteProps) => {
   const data = mockNotes.find((note) => note.id === noteId);
   const profileImageUrl = useShowImage(data?.user?.profileUrl || null);
 
   return (
     <div className="flex flex-col w-full h-full" data-color-mode="light">
-      <div className="flex items-center gap-5 bg-white rounded-[8px] p-3 border border-[#E0E0E0]">
+      <div className="h-[56px] flex items-center gap-5 bg-white rounded-[8px] p-3 border border-[#E0E0E0]">
         {profileImageUrl ? (
           <img
             src={profileImageUrl}
@@ -26,11 +28,18 @@ const DetailedNote = ({ noteId }: INoteProps) => {
           </div>
         )}
         <p>{data?.user?.name}</p>
-        <p className="text-[16px] font-semibold">{data?.name}</p>
-        <p>{data?.date}</p>
+        <p className="text-[16px] font-semibold flex-1 overflow-hidden text-ellipsis">
+          {data?.title}
+        </p>
+        <p className="text-[16px] text-[#828282] pr-[20px]">{data?.date}</p>
+        <Button
+          colorType="sub"
+          iconName="Pen"
+          onClick={() => setShowInput(true)}
+        />
       </div>
 
-      <div className="h-full bg-white rounded-[8px] p-3 border border-[#E0E0E0]">
+      <div className="h-full bg-white rounded-[8px] px-4 py-3 border border-[#E0E0E0]">
         <Markdown
           components={{
             h1: (props) => (
