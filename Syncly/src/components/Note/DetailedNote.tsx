@@ -15,7 +15,7 @@ const DetailedNote = ({ noteId, setShowInput }: INoteProps) => {
 
   return (
     <div className="flex flex-col w-full h-full" data-color-mode="light">
-      <div className="h-[56px] flex items-center gap-5 bg-white rounded-[8px] p-3 border border-[#E0E0E0]">
+      <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border border-[#E0E0E0]">
         {profileImageUrl ? (
           <img
             src={profileImageUrl}
@@ -39,7 +39,7 @@ const DetailedNote = ({ noteId, setShowInput }: INoteProps) => {
         />
       </div>
 
-      <div className="h-full bg-white rounded-[8px] px-4 py-3 border border-[#E0E0E0]">
+      <div className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0]">
         <Markdown
           components={{
             h1: (props) => (
