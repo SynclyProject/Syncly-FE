@@ -18,6 +18,8 @@ const NoteInput = ({ onAdd, noteListRefetch, noteId }: INoteInputProps) => {
   const data = mockNotes.find((note) => note.id === noteId);
   const profileImageUrl = useShowImage(data?.user?.profileUrl || null);
 
+  console.log("title : ", title);
+
   return (
     <div className="flex flex-col w-full h-full" data-color-mode="light">
       <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border-l border-r border-t border-[#E0E0E0]">
