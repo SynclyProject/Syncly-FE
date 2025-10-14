@@ -1,7 +1,7 @@
 import Icon from "../../shared/ui/Icon";
 import { useState, useRef, useEffect } from "react";
 import { TUser } from "../../shared/type/FilesType";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { useShowImage } from "../../hooks/useShowImage";
 
 interface INoteProps {
@@ -25,8 +25,8 @@ const Note = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const { id } = useParams();
-  const workspaceId = Number(id);
+  //const { id } = useParams();
+  //const workspaceId = Number(id);
 
   const handleNoteClick = () => {
     setSelectedId(noteId);
