@@ -93,11 +93,17 @@ const NoteSearch = ({
             </div>
           )}
         </div>
-        {!showInput && (
+        {!showInput ? (
           <Button
             colorType="main"
             iconName="add_circle"
             onClick={() => setShowInput(true)}
+          />
+        ) : (
+          <Button
+            colorType="main"
+            iconName="Check_round"
+            onClick={() => setShowInput(false)}
           />
         )}
       </div>
