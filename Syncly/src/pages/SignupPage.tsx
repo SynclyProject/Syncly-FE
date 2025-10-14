@@ -14,6 +14,7 @@ import { TSignUpSchema } from "../shared/type/sign";
 import { Social } from "../shared/api/Social";
 import  Loading  from "../shared/ui/Loading";
 
+
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
@@ -63,6 +64,8 @@ const SignupPage = () => {
       name: data.nickname,
     });
   };
+
+
 
   return (
     <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
