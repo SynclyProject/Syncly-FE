@@ -12,23 +12,23 @@ const comparisons = [
   {
     feature: "실시간 채팅",
     slack: true,
-    around: false,
+    around: true,
     syncly: true,
   },
   {
     feature: "화상회의",
-    slack: false,
+    slack: true,
     around: true,
     syncly: true,
   },
   {
     feature: "URL 관리",
-    slack: "partial",
+    slack: false,
     around: false,
     syncly: true,
   },
   {
-    feature: "발밑 중심",
+    feature: "협업 중심",
     slack: "채팅 중심",
     around: "화면 공유 중심",
     syncly: "기록 + 정리 중심 협업",
