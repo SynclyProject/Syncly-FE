@@ -1,7 +1,9 @@
 import { Button } from "../Landing/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function HeroSection() {
+  const navigate = useNavigate();
   return (
     <section className="relative overflow-hidden py-20 md:py-32">
       <div className="container">
@@ -15,7 +17,11 @@ export function HeroSection() {
             Syncly는 URL, 파일, 회의록, 화상통화, 채팅을 한 곳에서 실시간으로
             관리, 공유, 실행하는 스마트 협업 플랫폼입니다.
           </p>
-          <Button size="lg" className="gap-2">
+          <Button
+            size="lg"
+            className="gap-2 cursor-pointer"
+            onClick={() => navigate("/signup")}
+          >
             무료로 시작하기
             <ArrowRight className="h-4 w-4" />
           </Button>

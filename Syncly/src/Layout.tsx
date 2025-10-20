@@ -11,9 +11,9 @@ const RootLayout = () => {
     location.pathname === "/";
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-y-auto">
       <TopBar />
-      <div className="flex h-full overflow-hidden">
+      <div className="flex h-full overflow-y-auto">
         {!hideSidebar && <SideBar />}
         <Outlet />
       </div>

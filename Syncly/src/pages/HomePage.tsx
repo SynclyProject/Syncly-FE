@@ -8,7 +8,7 @@ import { Footer } from "../components/Landing/footer";
 
 const HomePage = () => {
   return (
-    <div className="w-full min-h-screen mx-[74px] flex flex-col items-center gap-5 overflow-y-auto font-sans antialiased">
+    <div className="w-full min-h-screen mx-[74px] flex flex-col items-center gap-5 font-sans antialiased">
       <main>
         <HeroSection />
         <FeaturesSection />
