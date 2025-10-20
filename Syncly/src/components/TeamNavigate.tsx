@@ -56,7 +56,9 @@ const TeamNavigate = ({ state }: TStateProp) => {
         onClick={() => navigate(`/team-screen/${id}`)}
       >
         <Icon name="Sharing" />
-        <p className="text-[16px] font-semibold">Screen Sharing</p>
+        <p className="text-[16px] font-semibold whitespace-nowrap">
+          Screen Sharing
+        </p>
       </div>
     </div>
   );
