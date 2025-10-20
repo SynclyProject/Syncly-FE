@@ -6,7 +6,7 @@ export function SolutionSection() {
       <div className="container">
         <div className="mx-auto max-w-3xl text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">
-            싱클리에서 모두 연결됩니다.
+            Syncly에서 모두 연결됩니다.
           </h2>
         </div>
 
@@ -19,7 +19,7 @@ export function SolutionSection() {
               <div>
                 <h3 className="text-xl font-bold mb-4">하나의 워크스페이스</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  싱클리에서는 모든 게 연결되어 있습니다. 하나의
+                  Syncly에서는 모든 게 연결되어 있습니다. 하나의
                   워크스페이스에서 URL, 노트, 채팅, 화상통화를 동시에 관리할 수
                   있습니다.
                 </p>
