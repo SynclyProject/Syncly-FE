@@ -5,20 +5,25 @@ const features = [
   {
     icon: Bookmark,
     title: "URL : 원클릭 북마크",
-    description: "한번에 모든 URL을 저장하고 켤 수 있습니다",
+    subtitle: "작업중인 링크를 모두 저장하고 한번에 열어보세요",
+    description:
+      "여러 개의 URL을 한번에 저장하고, 분류하여 체계적으로 관리합니다.",
     image: "/landing-url.png",
   },
   {
     icon: Video,
     title: "화면, 음성, 얼굴공유, 채팅, 회의록",
-    subtitle: "회의의 시작부터 끝까지",
-    description: "한 공간에서 소통하고, 기록까지 남기세요",
+    subtitle: "작업중인 파일도 함께 저장하고 관리해보세요",
+    description:
+      "회의나 리뷰 중 바로 화면과 파일을 공유하여 즉각적인 협업이 가능합니다.",
     image: "/landing-screen.png",
   },
   {
     icon: FolderOpen,
     title: "파일 : 통합 파일 드라이브",
-    description: "팀 파일, 이제 흩어지지 않아요.",
+    subtitle: "한 공간에서 모든 파일을 관리하세요",
+    description:
+      "손쉽게 파일을 업로드하고, 폴더별로 깔끔하게 정리할 수 있습니다. ",
     image: "/landing-file.png",
   },
 ];
