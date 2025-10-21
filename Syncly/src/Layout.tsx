@@ -8,7 +8,8 @@ const RootLayout = () => {
     location.pathname === "/login" ||
     location.pathname === "/signup" ||
     location.pathname === "/create-pw" ||
-    location.pathname === "/";
+    location.pathname === "/" ||
+    location.pathname === "/privacy-policy";
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">

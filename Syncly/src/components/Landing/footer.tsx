@@ -10,9 +10,12 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             © 2025 Syncly. 모든 권리 보유
           </p>
-          <p className="text-sm text-muted-foreground cursor-pointer">
+          <a
+            href="/privacy-policy"
+            className="text-sm text-muted-foreground cursor-pointer"
+          >
             개인정보처리방침
-          </p>
+          </a>
         </div>
       </div>
     </footer>

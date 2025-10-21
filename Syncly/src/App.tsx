@@ -23,6 +23,7 @@ import { WorkSpaceProvider } from "./context/workSpaceContext";
 import OAuthSuccessPage from "./shared/api/common/OAuthSuccessPage";
 import { LiveKitProvider } from "./context/LiveKitContext";
 import TeamNotePage from "./pages/Team/TeamNotePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +120,10 @@ const router = createBrowserRouter([
       {
         path: "/oauth2/success",
         element: <OAuthSuccessPage />,
+      },
+      {
+        path: "privacy-policy",
+        element: <PrivacyPolicyPage />,
       },
     ],
   },
