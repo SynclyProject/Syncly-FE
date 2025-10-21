@@ -2,7 +2,7 @@ import { Shield } from "lucide-react";
 
 export function SecuritySection() {
   return (
-    <section className="py-20 md:py-32">
+    <section className="py-20 md:py-32 bg-white">
       <div className="container">
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-accent/10 mb-6">

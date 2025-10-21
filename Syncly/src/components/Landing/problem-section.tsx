@@ -2,7 +2,7 @@ import { AlertCircle } from "lucide-react";
 
 export function ProblemSection() {
   return (
-    <section className="py-20 md:py-32">
+    <section className="py-20 md:py-32 bg-white">
       <div className="container">
         <div className="mx-auto max-w-3xl text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">
