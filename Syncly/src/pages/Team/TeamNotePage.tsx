@@ -1,7 +1,7 @@
 import NoteSearch from "../../components/Note/NoteSearch";
 import NoteList from "../../components/Note/NoteList";
 import TeamNavigate from "../../components/TeamNavigate";
-import TeamFileSkeleton from "../../shared/ui/Skeleton/TeamFileSkeleton";
+import TeamNoteSkeleton from "../../shared/ui/Skeleton/TeamNoteSkeleton";
 import { useEffect, useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import NoteInput from "../../components/Note/NoteInput";
@@ -21,7 +21,7 @@ const TeamNotePage = () => {
   }, []);
 
   if (isLoading) {
-    return <TeamFileSkeleton />;
+    return <TeamNoteSkeleton />;
   }
 
   return (

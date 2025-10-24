@@ -10,6 +10,7 @@ export default function MyUrlSkeleton() {
           <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
           <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
           <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
+          <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
         </div>
         {/* 맨 위 + 버튼 */}
         <Skeleton width="w-12" height="h-10" rounded="rounded-lg" />
