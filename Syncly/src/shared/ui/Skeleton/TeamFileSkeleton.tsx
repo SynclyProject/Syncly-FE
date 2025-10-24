@@ -11,6 +11,7 @@ export default function MyFilesSkeleton() {
           <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
           <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
           <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
+          <Skeleton width="w-44" height="h-8" rounded="rounded-md" />
         </div>
       </div>
 
