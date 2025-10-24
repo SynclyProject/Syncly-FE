@@ -5,7 +5,7 @@ type TTypeProps = {
   type: "folder" | "image" | "file" | "video";
 };
 interface IFileInputProps extends TTypeProps {
-  user: string;
+  user: string | null;
   onAdd: (text: string) => void;
   onCancel: () => void;
   initialValue?: string;
@@ -24,6 +24,7 @@ const FileInput = ({
     if (inputValue.trim()) {
       onAdd(inputValue);
       setInputValue("");
+      onCancel(); // 폴더 생성 후 input 숨기기
     }
   };
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -50,10 +51,16 @@ const FileInput = ({
         onBlur={handleBlur}
       />
       <p className="text-[#828282] text-nowrap">{today}</p>
-      {user && (
-        <div className="min-w-[24px] min-h-[24px]">
-          <Icon name={user} />
+      {!user ? (
+        <div className="w-[24px] h-[24px] rounded-full">
+          <Icon name="User_Default" />
         </div>
+      ) : (
+        <img
+          src={user ?? undefined}
+          alt="profile"
+          className="w-[24px] h-[24px] rounded-full"
+        />
       )}
       <div className="min-w-[24px] min-h-[24px]">
         <Icon name="more-horizontal" />

@@ -81,10 +81,11 @@ const Url = ({
       ) : (
         <>
           <a
-            className="flex-1 text-[16px] font-semibold overflow-hidden text-ellipsis whitespace-nowrap"
+            className=" flex-1 text-[16px] font-semibold overflow-hidden text-ellipsis whitespace-nowrap"
             href={text}
             target="_blank"
             rel="noopener noreferrer"
+            style={{ width: "calc(100vh - 250px)" }}
           >
             {text}
           </a>

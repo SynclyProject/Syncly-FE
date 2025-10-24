@@ -12,7 +12,7 @@ export const useWebSocket = (): UseWebSocketReturn => {
   const connect = useCallback(
     async (token: string, workspaceId: number): Promise<void> => {
       return new Promise((resolve, reject) => {
-        const socket = new WebSocket(`wss://www.syncly-io.com/ws-stomp`);
+        const socket = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
         const stompClient = Stomp.over(socket);
         stompClient.debug = () => {};
 

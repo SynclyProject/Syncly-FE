@@ -19,10 +19,9 @@ const Profile = ({
   profile: string | null;
   refetch: () => void;
 }) => {
-  const [nickname, setNickname] = useState(name || ""); // name이 undefined일 때 빈 문자열로 초기화
+  const [nickname, setNickname] = useState(name || "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string>("");
-  // const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const debouncedNickname = useDebounce(nickname, 200);
 
@@ -79,7 +78,7 @@ const Profile = ({
           },
         });
 
-        PatchProfileImage({
+        await PatchProfileImage({
           fileName: fileName,
           objectKey: objKey,
         });

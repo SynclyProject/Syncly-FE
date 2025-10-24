@@ -2,7 +2,7 @@ import Icon from "../shared/ui/Icon";
 import { useNavigate, useParams } from "react-router-dom";
 
 type TStateProp = {
-  state: "urls" | "files" | "screen";
+  state: "urls" | "files" | "screen" | "note";
 };
 
 const TeamNavigate = ({ state }: TStateProp) => {
@@ -10,6 +10,18 @@ const TeamNavigate = ({ state }: TStateProp) => {
   const { id } = useParams();
   return (
     <div className="flex">
+      <div
+        className={
+          `w-[173px] h-[32px] flex items-center px-3 gap-2 ` +
+          (state === "note"
+            ? "bg-white border-b border-b-[#028090] rounded-[4px] hover:cursor-pointer"
+            : "hover:cursor-pointer")
+        }
+        onClick={() => navigate(`/team-note/${id}`)}
+      >
+        <Icon name="Note" />
+        <p className="text-[16px] font-semibold">Note</p>
+      </div>
       <div
         className={
           `w-[173px] h-[32px] flex items-center px-3 gap-2 ` +
@@ -44,7 +56,9 @@ const TeamNavigate = ({ state }: TStateProp) => {
         onClick={() => navigate(`/team-screen/${id}`)}
       >
         <Icon name="Sharing" />
-        <p className="text-[16px] font-semibold">Screen Sharing</p>
+        <p className="text-[16px] font-semibold whitespace-nowrap">
+          Screen Sharing
+        </p>
       </div>
     </div>
   );

@@ -8,13 +8,15 @@ import { GetFolderFileList, GetRootFolder } from "../../shared/api/Folder/get";
 import { useParams } from "react-router-dom";
 import { useFileContext } from "../../context/FileContext";
 import { useEffect } from "react";
+import { GetMemberInfo } from "../../shared/api/Member/get_delete";
+import { useShowImage } from "../../hooks/useShowImage";
 
 interface IFileListProps {
   searchValue: string;
   setShowInput: (boolean: boolean) => void;
   showInput: boolean;
   sort: boolean;
-  type: "my" | "team";
+  type?: "my" | "team";
 }
 
 const FileList = ({
@@ -22,7 +24,7 @@ const FileList = ({
   setShowInput,
   showInput,
   sort,
-  type,
+  type = "my",
 }: IFileListProps) => {
   const { personalSpaceId } = useWorkSpaceContext();
   const { id } = useParams();
@@ -30,35 +32,31 @@ const FileList = ({
 
   const isSpaceIdReady = typeof spaceId === "number" && !Number.isNaN(spaceId);
 
-  const { data: rootFolder, isPending } = useQuery({
+  const { data: rootFolder } = useQuery({
     queryKey: ["rootFolder", spaceId],
     queryFn: () => GetRootFolder({ workspaceId: spaceId }),
     enabled: isSpaceIdReady,
   });
 
   const rootFolderId = rootFolder?.result?.rootFolderId as number;
-  const { folderId, setFolderId, setFolderPath } = useFileContext();
+  const { folderPath, setFolderPath } = useFileContext();
 
-  // rootFolderId가 변경될 때만 folderPath를 업데이트
   useEffect(() => {
     if (rootFolderId) {
       setFolderPath(new Map([[rootFolderId, "Root"]]));
     }
   }, [rootFolderId, setFolderPath]);
 
-  const selectedFolderId =
-    typeof folderId === "number" && folderId > 0 ? folderId : rootFolderId;
-
-  setFolderId(selectedFolderId);
+  const currentFolderId = Array.from(folderPath.keys()).pop();
 
   const { data: folderList, refetch: folderListRefetch } = useQuery({
-    queryKey: ["folderList", spaceId, selectedFolderId],
+    queryKey: ["folderList", spaceId, currentFolderId],
     queryFn: () =>
       GetFolderFileList({
         workspaceId: spaceId,
-        folderId: selectedFolderId as number,
+        folderId: currentFolderId as number,
       }),
-    enabled: isSpaceIdReady && typeof selectedFolderId === "number",
+    enabled: isSpaceIdReady && typeof currentFolderId === "number",
   });
 
   const filteredFiles = folderList?.result?.items.filter((folder: TFiles) =>
@@ -79,31 +77,48 @@ const FileList = ({
       console.log("폴더 생성 성공");
       folderListRefetch();
     },
+    onError: (error) => {
+      console.log("폴더 생성 실패", error);
+    },
   });
   const handleAddFolder = (text: string) => {
     if (!text.trim()) return;
+    const currentFolderId = Array.from(folderPath.keys()).pop();
+    console.log("folderPath:", currentFolderId);
 
     postFolderMutation({
       workspaceId: spaceId,
-      parentId: selectedFolderId,
+      parentId: currentFolderId as number,
       name: text,
     });
   };
 
+  const { data: memberInfo } = useQuery({
+    queryKey: ["memberInfo"],
+    queryFn: GetMemberInfo,
+  });
+
+  const profileImageUrl = useShowImage(
+    memberInfo?.result.profileImageObjectKey
+  );
+
   return (
-    <div className="flex flex-col w-full bg-white rounded-[8px] px-5">
+    <div
+      className="flex flex-col w-full bg-white rounded-[8px] px-5 "
+      style={{ maxHeight: "calc(70vh - 56px)" }}
+    >
       <div className="w-full h-[56px] bg-white flex items-center gap-[63px]">
         <p className="text-[16px] font-semibold text-[#828282]">Type</p>
         <p className="flex-1 text-[16px] font-semibold">Title</p>
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
       </div>
-      {isPending && (
+      {/* {isPending && (
         //나중에 스켈레톤 UI (컴포넌트 제작) 삽입
         <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
-      )}
+      )} */}
       {sort ? (
-        <div>
+        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
           {[...filesToShow]
             .sort((a, b) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -121,33 +136,46 @@ const FileList = ({
               />
             ))}
         </div>
-      ) : filesToShow.length > 0 ? (
-        filesToShow.map((file: TFiles) => (
-          <File
-            key={file.id}
-            type={file.type.toLowerCase() as TFilesType}
-            title={file.name}
-            date={file.date}
-            user={file.user}
-            fileId={file.id}
-            folderListRefetch={folderListRefetch}
-            trash={false}
-          />
-        ))
       ) : (
-        <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
-          {noDataMessage}
-        </p>
-      )}
-
-      {showInput && (
-        <FileInput
-          type="folder"
-          user={"userProfile"}
-          onAdd={handleAddFolder}
-          onCancel={() => setShowInput(false)}
-          folderListRefetch={folderListRefetch}
-        />
+        <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
+          {filesToShow.length > 0 ? (
+            <>
+              {filesToShow.map((file: TFiles) => (
+                <File
+                  key={file.id}
+                  type={file.type.toLowerCase() as TFilesType}
+                  title={file.name}
+                  date={file.date}
+                  user={file.user}
+                  fileId={file.id}
+                  folderListRefetch={folderListRefetch}
+                  trash={false}
+                />
+              ))}
+              {showInput && (
+                <FileInput
+                  type="folder"
+                  user={profileImageUrl}
+                  onAdd={handleAddFolder}
+                  onCancel={() => setShowInput(false)}
+                  folderListRefetch={folderListRefetch}
+                />
+              )}
+            </>
+          ) : showInput ? (
+            <FileInput
+              type="folder"
+              user={profileImageUrl}
+              onAdd={handleAddFolder}
+              onCancel={() => setShowInput(false)}
+              folderListRefetch={folderListRefetch}
+            />
+          ) : (
+            <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
+              {noDataMessage}
+            </p>
+          )}
+        </div>
       )}
     </div>
   );

@@ -9,7 +9,7 @@ export type TFiles = {
 export type TUser = {
   id: number;
   name: string;
-  profileUrl: string;
+  profileUrl: string | null;
 };
 
 export type TFilesType = "folder" | "file" | "image" | "video";

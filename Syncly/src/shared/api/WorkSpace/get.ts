@@ -1,5 +1,5 @@
 import { axiosInstance } from "../common/axiosInstance";
-import axios from "axios";
+//import axios from "axios";
 
 // 팀 워크스페이스 리스트 전체 조회
 export const GetSpaceList = async () => {

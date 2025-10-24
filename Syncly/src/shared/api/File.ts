@@ -23,6 +23,7 @@ export const PostFilePresignedUrl = async (data: {
   fileSize: number;
 }) => {
   try {
+    console.log(data);
     const response = await axiosInstance.post(
       `/api/workspaces/${data.workspaceId}/files/presigned-url`,
       {
@@ -33,7 +34,7 @@ export const PostFilePresignedUrl = async (data: {
     );
     return response.data;
   } catch (error) {
-    console.error("파일 업로드 실패", error);
+    return error;
   }
 };
 
@@ -53,7 +54,7 @@ export const PostFileUploadConfirm = async (data: {
     );
     return response.data;
   } catch (error) {
-    console.error("파일 업로드 완료 확인 실패", error);
+    return error;
   }
 };
 
@@ -103,5 +104,20 @@ export const GetFileDownload = async (data: {
     return response.data;
   } catch (error) {
     console.error("파일 다운로드 실패", error);
+  }
+};
+
+//파일 완전 삭제
+export const DeleteFilePermanently = async (data: {
+  workspaceId: number;
+  fileId: number;
+}) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/api/workspaces/${data.workspaceId}/files/${data.fileId}/hard`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("파일 완전 삭제 실패", error);
   }
 };

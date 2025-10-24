@@ -7,6 +7,8 @@ import { GetSpaceMember } from "../../shared/api/WorkSpace/get";
 import { TTeamMember } from "../../shared/type/teamSpaceType";
 import { PostSpaceInvite } from "../../shared/api/WorkSpace/post";
 import { AxiosError } from "axios";
+import Loading from "../../shared/ui/Loading";
+
 interface TeamInviteModelProps {
   onClose: () => void;
   spaceId: number;
@@ -23,7 +25,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
     queryFn: () => GetSpaceMember({ workspaceId: spaceId }),
   });
 
-  const { mutate: postSpaceInviteMutation } = useMutation({
+  const { mutate: postSpaceInviteMutation, isPending } = useMutation({
     mutationFn: PostSpaceInvite,
     onSuccess: () => {
       alert("이메일 초대가 완료되었습니다!");
@@ -62,12 +64,21 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
               onClick={() => {
                 postSpaceInviteMutation({ spaceId, email });
               }}
-            />
+              disabled={isPending}
+            >
+              {isPending ? "Sending..." : "Send"}
+            </Button>
+
+            {isPending && (
+              <div className="absolute inset-0 flex justify-center items-center bg-white/70 rounded-[8px] z-70">
+                <Loading fullScreen={false} size={80} />
+              </div>
+            )}
           </div>
 
           {/* 팀원 목록 */}
-          <p className="pb-4">팀원 목록</p>
-          <div className="flex flex-col gap-1 overflow-y-auto pb-10">
+
+          <div className="flex flex-col gap-1 overflow-y-auto pb-10 max-h-[160px]">
             {data?.result.map((member: TTeamMember) => (
               <TeamMemberCard
                 key={member.workspaceMemberId}
@@ -76,6 +87,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
                 email={member.memberEmail}
                 spaceId={spaceId}
                 memberId={member.workspaceMemberId}
+                memberObjectKey={member.memberObjectKey}
               />
             ))}
           </div>

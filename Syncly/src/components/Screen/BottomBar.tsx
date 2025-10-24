@@ -7,6 +7,7 @@ import { useChatList } from "../../hooks/useChatList";
 
 const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
   const [chatMessage, setChatMessage] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
   const { refetch: chatListRefetch } = useChatList();
 
   const {
@@ -110,11 +111,13 @@ const BottomBar = ({ isVoice }: { isVoice: boolean }) => {
         className="w-full border border-[#E0E0E0] bg-white rounded-[8px] p-[10px] outline-none"
         placeholder="Enter your Message"
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === "Enter" && !isComposing) {
             handleSendChat();
           }
         }}
         onChange={(e) => setChatMessage(e.target.value)}
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={() => setIsComposing(false)}
         value={chatMessage}
       />
     </div>

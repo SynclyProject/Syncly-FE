@@ -26,6 +26,7 @@ const URLsInput = ({
 }: IURLsInputProps) => {
   const [title, setTitle] = useState(initialValue);
   const [currentUrl, setCurrentUrl] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
 
   const { refetch } = useURLsList();
 
@@ -92,7 +93,9 @@ const URLsInput = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Enter" && !isComposing) {
+      handleSubmit();
+    }
   };
 
   const handleBlur = () => {
@@ -109,6 +112,8 @@ const URLsInput = ({
           onChange={(e) => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
         />
         <Button colorType="sub" iconName="add_circle" onClick={handleAddUrl} />
         <Button colorType="sub">Save Tabs</Button>

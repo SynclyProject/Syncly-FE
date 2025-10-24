@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { DeleteMember } from "../../shared/api/Member/get_delete";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 
 const REASONS = [
   { label: "서비스 이용이 불편해요", value: "INCONVENIENT_SERVICE" },
@@ -35,6 +36,7 @@ const DeleteForm = ({
   setShowDeleteForm: (show: boolean) => void;
 }) => {
   const navigate = useNavigate();
+  const { checkLoginStatus } = useAuthContext();
 
   const {
     register,
@@ -57,6 +59,9 @@ const DeleteForm = ({
     onSuccess: () => {
       alert("계정이 삭제되었습니다");
       setShowDeleteForm(false);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      checkLoginStatus(); // AuthContext 상태 업데이트
       navigate("/");
     },
   });
@@ -132,7 +137,7 @@ const DeleteForm = ({
 
           <button
             type="submit"
-            className="mt-4 w-full py-2 border border-rose-500 text-rose-500 text-sm font-medium rounded"
+            className="mt-4 w-full py-2 border border-rose-500 text-rose-500 text-sm font-medium rounded cursor-pointer"
           >
             계정 삭제
           </button>
