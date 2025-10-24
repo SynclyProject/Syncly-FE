@@ -22,7 +22,8 @@ import { AuthProvider, useAuthContext } from "./context/AuthContext";
 import { WorkSpaceProvider } from "./context/workSpaceContext";
 import OAuthSuccessPage from "./shared/api/common/OAuthSuccessPage";
 import { LiveKitProvider } from "./context/LiveKitContext";
-
+import TeamNotePage from "./pages/Team/TeamNotePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 const queryClient = new QueryClient();
 
@@ -105,12 +106,24 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "team-note/:id",
+        element: (
+          <AuthRoute>
+            <TeamNotePage />
+          </AuthRoute>
+        ),
+      },
+      {
         path: "api/workspaces/accept/:token",
         element: <AcceptWorkspacePage />,
       },
       {
         path: "/oauth2/success",
         element: <OAuthSuccessPage />,
+      },
+      {
+        path: "privacy-policy",
+        element: <PrivacyPolicyPage />,
       },
     ],
   },
