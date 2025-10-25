@@ -38,6 +38,7 @@ export const PostEmailSend = async (data: { email: string }) => {
     return response.data;
   } catch (error) {
     console.error("이메일 인증코드 전송 실패", error);
+    throw error;
   }
 };
 

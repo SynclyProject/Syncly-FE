@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { TSignUpSchema } from "../shared/type/sign";
 import { Social } from "../shared/api/Social";
 import Loading from "../shared/ui/Loading";
+import { AxiosError } from "axios";
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -25,6 +26,9 @@ const SignupPage = () => {
     onSuccess: () => {
       alert("인증메일이 전송되었습니다!");
       setShowCodeInput(true);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      alert(error.response?.data?.message);
     },
   });
   const { mutate: postEmailVerify } = useMutation({
