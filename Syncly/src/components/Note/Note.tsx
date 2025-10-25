@@ -116,13 +116,12 @@ const Note = ({
             className="z-10 w-[160px] absolute top-6 right-0 flex flex-col gap-2 rounded-[8px] bg-white p-4 border border-[#E0E0E0] shadow-lg"
             ref={modalRef}
           >
-            <button
-              className="text-[#828282] cursor-pointer text-left px-2 py-1 rounded hover:text-[#F45B69] hover:bg-[#FEF0F0] font-medium transition"
+            <p
+              className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"
               onClick={handleDelete}
-              disabled={isDeleting}
             >
-              {isDeleting ? "삭제 중..." : "삭제하기"}
-            </button>
+              삭제하기
+            </p>
           </div>
         )}
       </div>
