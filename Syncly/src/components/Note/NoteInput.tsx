@@ -24,7 +24,7 @@ const NoteInput = ({ onCancel, setTitle, title }: INoteInputProps) => {
         />
 
         {/* 버튼 */}
-        <Button colorType="sub" iconName="Close" onClick={onCancel} />
+        <Button colorType="sub" iconName="Close_White" onClick={onCancel} />
       </div>
 
       {/* 프리뷰 (선택사항) */}
