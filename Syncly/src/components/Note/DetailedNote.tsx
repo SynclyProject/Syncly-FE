@@ -10,9 +10,14 @@ import { TEnterPayload, TEditPayload } from "../../shared/type/note";
 interface IDetailedNoteProps {
   noteId: number;
   setShowInput: (show: boolean) => void;
+  setTitle?: (title: string) => void;
 }
 
-const DetailedNote = ({ noteId, setShowInput }: IDetailedNoteProps) => {
+const DetailedNote = ({
+  noteId,
+  setShowInput,
+  setTitle,
+}: IDetailedNoteProps) => {
   const { memberId } = useAuthContext();
   const {
     currentNote,
@@ -524,7 +529,12 @@ const DetailedNote = ({ noteId, setShowInput }: IDetailedNoteProps) => {
         <Button
           colorType="sub"
           iconName="Pen"
-          onClick={() => setShowInput(true)}
+          onClick={() => {
+            if (currentNote?.title && setTitle) {
+              setTitle(currentNote.title);
+            }
+            setShowInput(true);
+          }}
         />
       </div>
 

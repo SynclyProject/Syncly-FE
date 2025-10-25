@@ -129,7 +129,11 @@ const TeamNotePage = () => {
                 title={title}
               />
             ) : selectedId ? (
-              <DetailedNote noteId={selectedId} setShowInput={setShowInput} />
+              <DetailedNote
+                noteId={selectedId}
+                setShowInput={setShowInput}
+                setTitle={setTitle}
+              />
             ) : (
               <div className="bg-white rounded-[8px] px-5 h-full flex items-center justify-center text-[#828282]">
                 노트를 선택하거나 새로 생성하세요
