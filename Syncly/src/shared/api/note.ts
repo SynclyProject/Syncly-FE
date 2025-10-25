@@ -172,7 +172,13 @@ export const handleNoteApiError = (error: unknown): string => {
   console.error("🔍 handleNoteApiError 호출:", error);
 
   if (error instanceof Error) {
-    const axiosError = error as any;
+    const axiosError = error as {
+      response?: {
+        status: number;
+        data: { data?: { message?: string }; message?: string };
+      };
+      message?: string;
+    };
 
     // 서버 응답 에러
     if (axiosError.response) {

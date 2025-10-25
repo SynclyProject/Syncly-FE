@@ -108,36 +108,47 @@ const NoteList = ({
       console.log(`📡 노트 목록 구독 시작: workspaceId=${workspaceId}`);
 
       // 노트 생성/삭제 실시간 업데이트 구독
-      wsService.subscribeToNoteListUpdates(workspaceId, (message: any) => {
-        console.log("📨 노트 목록 업데이트 메시지:", message);
+      wsService.subscribeToNoteListUpdates(
+        workspaceId,
+        (message: { type: string; payload: unknown }) => {
+          console.log("📨 노트 목록 업데이트 메시지:", message);
 
-        if (message.type === "NOTE_CREATED") {
-          // 새로운 노트가 생성됨
-          const payload = message.payload;
-          const newNote: TNotes = {
-            id: payload.noteId,
-            title: payload.title,
-            content: "", // 초기값
-            workspaceId: payload.workspaceId,
-            creatorId: 0, // 브로드캐스트에서는 받을 수 없음
-            creatorName: payload.creatorName,
-            creatorProfileImage: payload.creatorProfileImage,
-            lastModifiedAt: payload.createdAt,
-            createdAt: payload.createdAt,
-            participantCount: 1, // 생성자 본인만 포함
-          };
+          if (message.type === "NOTE_CREATED") {
+            // 새로운 노트가 생성됨
+            const payload = message.payload as {
+              noteId: number;
+              title: string;
+              workspaceId: number;
+              creatorName: string;
+              creatorProfileImage?: string;
+              createdAt: string;
+            };
+            const newNote: TNotes = {
+              id: payload.noteId,
+              title: payload.title,
+              content: "", // 초기값
+              workspaceId: payload.workspaceId,
+              creatorId: 0, // 브로드캐스트에서는 받을 수 없음
+              creatorName: payload.creatorName,
+              creatorProfileImage: payload.creatorProfileImage,
+              lastModifiedAt: payload.createdAt,
+              createdAt: payload.createdAt,
+              participantCount: 1, // 생성자 본인만 포함
+            };
 
-          console.log("✨ 새 노트 추가:", newNote);
-          setNotes((prevNotes) => [newNote, ...prevNotes]);
-        } else if (message.type === "NOTE_DELETED") {
-          // 노트가 삭제됨
-          const deletedNoteId = message.payload.noteId;
-          console.log("🗑️ 노트 삭제됨:", deletedNoteId);
-          setNotes((prevNotes) =>
-            prevNotes.filter((note) => note.id !== deletedNoteId)
-          );
+            console.log("✨ 새 노트 추가:", newNote);
+            setNotes((prevNotes) => [newNote, ...prevNotes]);
+          } else if (message.type === "NOTE_DELETED") {
+            // 노트가 삭제됨
+            const payload = message.payload as { noteId: number };
+            const deletedNoteId = payload.noteId;
+            console.log("🗑️ 노트 삭제됨:", deletedNoteId);
+            setNotes((prevNotes) =>
+              prevNotes.filter((note) => note.id !== deletedNoteId)
+            );
+          }
         }
-      });
+      );
 
       return () => {
         // cleanup: 구독 해제

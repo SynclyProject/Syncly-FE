@@ -21,7 +21,7 @@ export class NoteWebSocketService {
    * @param token JWT 토큰
    * @param onError 에러 콜백
    */
-  connect(token: string, onError?: (error: any) => void): Promise<void> {
+  connect(token: string, onError?: (error: unknown) => void): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         const socket = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
@@ -370,7 +370,7 @@ export class NoteWebSocketService {
   createNote(
     workspaceId: number,
     title: string,
-    onCreated: (payload: any) => void
+    onCreated: (payload: unknown) => void
   ): void {
     if (!this.stompClient?.connected) {
       throw new Error("WebSocket이 연결되지 않았습니다.");
@@ -422,7 +422,7 @@ export class NoteWebSocketService {
     size: number = 20,
     sortBy: string = "lastModifiedAt",
     direction: string = "desc",
-    onListReceived: (payload: any) => void
+    onListReceived: (payload: unknown) => void
   ): void {
     if (!this.stompClient?.connected) {
       throw new Error("WebSocket이 연결되지 않았습니다.");
@@ -466,7 +466,7 @@ export class NoteWebSocketService {
    */
   getNoteDetail(
     noteId: number,
-    onDetailReceived: (payload: any) => void
+    onDetailReceived: (payload: unknown) => void
   ): void {
     if (!this.stompClient?.connected) {
       throw new Error("WebSocket이 연결되지 않았습니다.");
@@ -508,7 +508,7 @@ export class NoteWebSocketService {
    * @param noteId 노트 ID
    * @param onDeleted 삭제 완료 핸들러
    */
-  deleteNote(noteId: number, onDeleted: (payload: any) => void): void {
+  deleteNote(noteId: number, onDeleted: (payload: unknown) => void): void {
     if (!this.stompClient?.connected) {
       throw new Error("WebSocket이 연결되지 않았습니다.");
     }
@@ -572,7 +572,7 @@ export class NoteWebSocketService {
    */
   subscribeToNoteListUpdates(
     workspaceId: number,
-    onListUpdate: (message: any) => void
+    onListUpdate: (message: { type: string; payload: unknown }) => void
   ): void {
     if (!this.stompClient?.connected) {
       console.error("❌ WebSocket 미연결 - 구독 실패");
@@ -597,7 +597,7 @@ export class NoteWebSocketService {
           console.error("❌ 노트 목록 업데이트 메시지 파싱 오류:", error);
         }
       },
-      (error: any) => {
+      (error: unknown) => {
         console.error(`❌ 구독 오류 (${topic}):`, error);
       }
     );

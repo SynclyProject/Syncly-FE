@@ -31,7 +31,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     if (token) {
       try {
         console.log("🔓 JWT 토큰 decode 시작");
-        const decoded = jwtDecode<{ sub?: string; [key: string]: any }>(token);
+        const decoded = jwtDecode<{ sub?: string; [key: string]: unknown }>(
+          token
+        );
         console.log("🔓 JWT decode 완료:", decoded);
 
         // JWT 표준에서 subject는 'sub' 필드에 저장됨

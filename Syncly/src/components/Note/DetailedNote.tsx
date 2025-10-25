@@ -104,39 +104,54 @@ const DetailedNote = ({
 
         console.log("🔌 WebSocket 연결 중...");
 
-        const handleWebSocketError = (error) => {
+        const handleWebSocketError = (error: unknown) => {
           console.error("❌ WebSocket 에러:", error);
 
-          if (
-            error?.payload?.code === "Note409_1" ||
-            error?.payload?.code === "Note409_2"
-          ) {
-            console.log("🔄 OT 충돌 감지");
+          // 타입 가드를 사용한 안전한 접근
+          const isErrorWithPayload = (
+            err: unknown
+          ): err is {
+            payload: { code?: string; content?: string; revision?: number };
+          } => {
+            return (
+              typeof err === "object" &&
+              err !== null &&
+              "payload" in err &&
+              typeof (err as Record<string, unknown>).payload === "object" &&
+              (err as Record<string, unknown>).payload !== null
+            );
+          };
 
-            if (
-              error.payload.content !== undefined &&
-              error.payload.revision !== undefined
-            ) {
-              isResyncingRef.current = true;
+          if (isErrorWithPayload(error)) {
+            const payload = error.payload;
+            if (payload.code === "Note409_1" || payload.code === "Note409_2") {
+              console.log("🔄 OT 충돌 감지");
 
-              try {
-                useNoteStore.setState({
-                  content: error.payload.content,
-                  revision: error.payload.revision,
-                  pendingOperations: [],
-                  syncStatus: "synced",
-                });
+              if (
+                payload.content !== undefined &&
+                payload.revision !== undefined
+              ) {
+                isResyncingRef.current = true;
 
-                if (textEditorRef.current) {
-                  textEditorRef.current.value = error.payload.content;
-                  lastContentRef.current = error.payload.content;
+                try {
+                  useNoteStore.setState({
+                    content: payload.content,
+                    revision: payload.revision,
+                    pendingOperations: [],
+                    syncStatus: "synced",
+                  });
+
+                  if (textEditorRef.current) {
+                    textEditorRef.current.value = payload.content;
+                    lastContentRef.current = payload.content;
+                  }
+
+                  setError(
+                    "편집 충돌이 발생했습니다. 최신 버전으로 복구되었습니다."
+                  );
+                } finally {
+                  isResyncingRef.current = false;
                 }
-
-                setError(
-                  "편집 충돌이 발생했습니다. 최신 버전으로 복구되었습니다."
-                );
-              } finally {
-                isResyncingRef.current = false;
               }
             }
           } else {
@@ -286,7 +301,7 @@ const DetailedNote = ({
           // onChange가 트리거되지 않았으면 수동으로 처리
           handleTextChange({
             currentTarget: textEditorRef.current,
-          } as any);
+          } as React.ChangeEvent<HTMLTextAreaElement>);
         }
       }
     });
