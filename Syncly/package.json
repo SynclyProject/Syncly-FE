@@ -29,6 +29,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "livekit-client": "^2.15.6",
     "lucide-react": "^0.546.0",
     "radix-ui": "^1.4.3",
