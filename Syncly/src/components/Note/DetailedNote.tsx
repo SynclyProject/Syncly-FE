@@ -507,7 +507,7 @@ const DetailedNote = ({
           </div>
         )}
         {/* <p className="text-[14px] text-[#828282]">{currentNote.creatorName}</p> */}
-        <p className="text-[16px] font-semibold flex-1 overflow-hidden text-ellipsis ">
+        <p className="text-[16px] font-semibold flex-1 overflow-hidden text-ellipsis text-nowrap">
           {currentNote.title}
         </p>
 

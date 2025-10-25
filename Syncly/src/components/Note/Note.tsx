@@ -83,7 +83,7 @@ const Note = ({
   return (
     <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-t border-t-[#E0E0E0] hover:cursor-pointer hover:bg-[#F9F9F9]">
       <p
-        className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold"
+        className="flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold text-nowrap"
         onClick={handleNoteClick}
       >
         {title}
