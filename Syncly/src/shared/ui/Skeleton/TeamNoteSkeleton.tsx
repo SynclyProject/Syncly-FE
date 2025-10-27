@@ -1,7 +1,7 @@
 import Skeleton from "./Skeleton";
 
 
-export default function MyFilesSkeleton() {
+export default function TeamNoteSkeleton() {
   return (
     <div className="w-full mx-[74px] flex flex-col items-center gap-5">
       {/* 상단 탭 + 버튼 */}
@@ -16,8 +16,7 @@ export default function MyFilesSkeleton() {
       </div>
 
       <div className="w-full flex flex-col gap-5">
-        <p className="font-medium text-[32px]">Note</p>
-      
+        <p className="font-medium text-[32px] invisible">Note</p>
       </div>
 
       {/* Search / Filter / Delete */}
@@ -56,11 +55,7 @@ export default function MyFilesSkeleton() {
 
     {/* 오른쪽 상세 보기 영역 */}
     <div className="w-1/2 bg-white rounded-lg border border-neutral-200 p-4 flex items-center justify-center">
-    <Skeleton
-                width="w-full"
-                height="h-full"        
-                rounded="rounded-md"
-              />
+
     </div>
     </div>
 
