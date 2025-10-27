@@ -685,14 +685,29 @@ const DetailedNote = ({
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button colorType="white" onClick={() => setIsMarkDownMode(true)}>
-              Markdown
-            </Button>
-
-            <Button colorType="white" onClick={() => setIsMarkDownMode(false)}>
-              Text
-            </Button>
+          <div className="flex items-center justify-between gap-2 p-2 bg-white border-r border-l border-b border-[#E0E0E0]">
+            <div className="flex items-center">
+              <p
+                className={`w-[60px] text-center text-[12px] cursor-pointer  border-[#E0E0E0]   rounded-[4px] rounded-r-none px-2 py-1 ${
+                  isMarkDownMode
+                    ? "font-bold bg-white border"
+                    : "text-[#828282] border-l border-t border-b"
+                }`}
+                onClick={() => setIsMarkDownMode(true)}
+              >
+                Preview
+              </p>
+              <p
+                className={`w-[60px] text-center text-[12px] cursor-pointer  border-[#E0E0E0]  rounded-[4px] rounded-l-none px-2 py-1 ${
+                  isMarkDownMode
+                    ? "text-[#828282] border-r border-t border-b"
+                    : "font-bold bg-white border"
+                }`}
+                onClick={() => setIsMarkDownMode(false)}
+              >
+                Text
+              </p>
+            </div>
           </div>
 
           {/* 에디터 */}
