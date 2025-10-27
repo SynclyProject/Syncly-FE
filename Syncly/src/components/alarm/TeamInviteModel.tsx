@@ -65,9 +65,7 @@ const TeamInviteModel: React.FC<TeamInviteModelProps> = ({
                 postSpaceInviteMutation({ spaceId, email });
               }}
               disabled={isPending}
-            >
-              {isPending ? "Sending..." : "Send"}
-            </Button>
+            />
 
             {isPending && (
               <div className="absolute inset-0 flex justify-center items-center bg-white/70 rounded-[8px] z-70">

@@ -12,23 +12,23 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { TSignUpSchema } from "../shared/type/sign";
 import { Social } from "../shared/api/Social";
-import  Loading  from "../shared/ui/Loading";
-
+import Loading from "../shared/ui/Loading";
+import { AxiosError } from "axios";
 
 const SignupPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const navigate = useNavigate();
   //이메일 인증 & 코드 인증
   const [isVerified, setIsVerified] = useState(false);
-  
 
-
-  const { mutate: postEmailSend, 
-    isPending} = useMutation({
+  const { mutate: postEmailSend, isPending } = useMutation({
     mutationFn: PostEmailSend,
     onSuccess: () => {
       alert("인증메일이 전송되었습니다!");
       setShowCodeInput(true);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      alert(error.response?.data?.message);
     },
   });
   const { mutate: postEmailVerify } = useMutation({
@@ -65,8 +65,6 @@ const SignupPage = () => {
     });
   };
 
-
-
   return (
     <div className="w-full min-h-screen bg-white flex justify-center overflow-auto">
       <div className="w-full max-w-md px-4 pt-10">
@@ -95,7 +93,7 @@ const SignupPage = () => {
                 onClick={() => postEmailSend({ email: getValues("email") })}
                 disabled={isPending}
               >
-                {isPending ? "Sending..." : "Send"}
+                Send
               </Button>
 
               {isPending && (
@@ -231,9 +229,10 @@ const SignupPage = () => {
         <div className="w-[459px] h-px bg-[#E6E6E6] mt-4 " />
 
         {/* Google Sign-In */}
-        <button 
+        <button
           onClick={() => Social()}
-          className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']">
+          className="w-[459px] flex items-center justify-center gap-4 border border-[#E6E6E6] mt-4 px-4 py-2 rounded-[8px] bg-white cursor-pointer gap-2 text-black text-sm font-medium leading-6 font-['inter']"
+        >
           <img src="/google-logo.png" className="w-6 h-6" alt="Google" />{" "}
           <p>Continue with Google</p>
         </button>

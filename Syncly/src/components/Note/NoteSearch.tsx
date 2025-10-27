@@ -1,22 +1,34 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Button from "../../shared/ui/Button";
 import Icon from "../../shared/ui/Icon";
+import { createNote, handleNoteApiError } from "../../shared/api/note";
 
 const NoteSearch = ({
   setSearchValue,
   setSort,
   setShowInput,
   showInput,
+  onAdd,
+  setTitle,
+  title,
 }: {
   setSearchValue: (value: string) => void;
   setSort: (value: boolean) => void;
   setShowInput: (value: boolean) => void;
   showInput: boolean;
+  onAdd?: (noteId: number, title: string) => void;
+  setTitle: (title: string) => void;
+  title: string;
 }) => {
+  const { id: workspaceIdStr } = useParams<{ id: string }>();
+  const workspaceId = Number(workspaceIdStr) || 0;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [inputValue, setInputValue] = useState(searchParams.get("mq") ?? "");
   const [showFilter, setShowFilter] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -45,6 +57,49 @@ const NoteSearch = ({
 
   const onChangeSearchValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+    setTitle(e.target.value);
+  };
+
+  // 📝 노트 생성 (HTTP API)
+  const handleCreateNote = async () => {
+    console.log("🚀 handleCreateNote 시작:", { title, workspaceId });
+
+    if (!title.trim()) {
+      console.log("❌ 제목이 비어있음");
+      setError("제목을 입력해주세요.");
+      return;
+    }
+
+    if (!workspaceId) {
+      console.log("❌ workspaceId가 없음");
+      setError("워크스페이스를 선택해주세요.");
+      return;
+    }
+
+    try {
+      setIsCreating(true);
+      setError(null);
+
+      // HTTP API로 노트 생성 요청
+      const response = await createNote(workspaceId, { title });
+      console.log("✅ 노트 생성 완료:", response);
+
+      // NoteList에서 이미 WebSocket 구독을 처리하므로 여기서는 추가 구독하지 않음
+      console.log(
+        "📝 노트 생성 완료 - NoteList에서 WebSocket을 통해 자동 업데이트됨"
+      );
+
+      // 콜백 실행 (부모에서 목록 새로고침)
+      onAdd?.(response.id, response.title);
+
+      // 입력 초기화
+      setTitle("");
+    } catch (err) {
+      console.error("❌ 노트 생성 실패:", err);
+      setError(handleNoteApiError(err));
+    } finally {
+      setIsCreating(false);
+    }
   };
   return (
     <div className="flex flex-col gap-5 mt-5">
@@ -93,6 +148,7 @@ const NoteSearch = ({
             </div>
           )}
         </div>
+        {error && <span className="text-[12px] text-[#F45B69]">{error}</span>}
         {!showInput ? (
           <Button
             colorType="main"
@@ -103,7 +159,11 @@ const NoteSearch = ({
           <Button
             colorType="main"
             iconName="Check_round"
-            onClick={() => setShowInput(false)}
+            onClick={() => {
+              handleCreateNote();
+              setShowInput(false);
+            }}
+            disabled={!title.trim() || isCreating}
           />
         )}
       </div>

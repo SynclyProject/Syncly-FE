@@ -2,6 +2,7 @@ import Icon from "../../shared/ui/Icon";
 import { useState, useRef, useEffect } from "react";
 import { TFilesType, TUser } from "../../shared/type/FilesType";
 import FileInput from "./FileInput";
+import FileModal from "./FileModal";
 import { useFileContext } from "../../context/FileContext";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
@@ -270,63 +271,23 @@ const File = ({
               <Icon name="more-horizontal" />
             </button>
 
-            {modalShow &&
-              (trash ? (
-                <div
-                  className="z-10 w-[160px] absolute top-0 right-[30px] flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
-                  ref={modalRef}
-                >
-                  <p
-                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
-                    onClick={() => {
-                      handleRestoreFolder();
-                    }}
-                  >
-                    복원하기
-                  </p>
-                  <p
-                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"
-                    onClick={() => {
-                      handleDeleteFilePermanently();
-                    }}
-                  >
-                    완전 삭제
-                  </p>
-                </div>
-              ) : (
-                <div
-                  className="z-10 w-[160px] absolute top-0 right-[30px] flex flex-col gap-5 rounded-[8px] min-w-[120px] bg-white p-4 border border-[#E0E0E0]"
-                  ref={modalRef}
-                >
-                  {type !== "folder" && (
-                    <p
-                      className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
-                      onClick={() => {
-                        getFileDownloadMutation({
-                          workspaceId: workspaceId,
-                          fileId: fileId as number,
-                        });
-                      }}
-                    >
-                      다운로드
-                    </p>
-                  )}
-                  <p
-                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#181818]"
-                    onClick={() => setEditTitle(true)}
-                  >
-                    이름 변경
-                  </p>
-                  <p
-                    className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"
-                    onClick={() => {
-                      handleDeleteFolder();
-                    }}
-                  >
-                    휴지통으로 이동
-                  </p>
-                </div>
-              ))}
+            <FileModal
+              isOpen={modalShow}
+              onClose={() => setModalShow(false)}
+              type={finalType}
+              trash={trash}
+              onDownload={() => {
+                getFileDownloadMutation({
+                  workspaceId: workspaceId,
+                  fileId: fileId as number,
+                });
+              }}
+              onRename={() => setEditTitle(true)}
+              onDelete={handleDeleteFolder}
+              onRestore={handleRestoreFolder}
+              onDeletePermanently={handleDeleteFilePermanently}
+              ref={modalRef}
+            />
           </div>
         </div>
       )}

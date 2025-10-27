@@ -5,9 +5,11 @@ import {
   useEffect,
   PropsWithChildren,
 } from "react";
+import { jwtDecode } from "jwt-decode";
 
 type TAuthContext = {
   isLogin: boolean;
+  memberId: number | null;
   setIsLogin: (state: boolean) => void;
   checkLoginStatus: () => void;
 };
@@ -18,10 +20,42 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [isLogin, setIsLogin] = useState<boolean>(
     !!localStorage.getItem("accessToken")
   );
+  const [memberId, setMemberId] = useState<number | null>(null);
 
   const checkLoginStatus = () => {
     const token = localStorage.getItem("accessToken");
+    console.log("🔐 checkLoginStatus: 토큰 확인", { hasToken: !!token });
     setIsLogin(!!token);
+
+    // Extract memberId from JWT token
+    if (token) {
+      try {
+        console.log("🔓 JWT 토큰 decode 시작");
+        const decoded = jwtDecode<{ sub?: string; [key: string]: unknown }>(
+          token
+        );
+        console.log("🔓 JWT decode 완료:", decoded);
+
+        // JWT 표준에서 subject는 'sub' 필드에 저장됨
+        const memberId = decoded.sub ? Number(decoded.sub) : null;
+        console.log("👤 추출된 memberId (from sub):", memberId);
+
+        if (memberId) {
+          setMemberId(memberId);
+          console.log("✅ memberId 설정 완료:", memberId);
+        } else {
+          console.warn("⚠️ 토큰에 sub 필드가 없거나 파싱할 수 없습니다");
+          console.log("⚠️ 토큰 전체 내용:", decoded);
+          setMemberId(null);
+        }
+      } catch (error) {
+        console.error("❌ JWT decode 실패:", error);
+        setMemberId(null);
+      }
+    } else {
+      console.log("⚠️ accessToken이 localStorage에 없습니다");
+      setMemberId(null);
+    }
   };
 
   useEffect(() => {
@@ -55,6 +89,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     <AuthContext.Provider
       value={{
         isLogin,
+        memberId,
         setIsLogin,
         checkLoginStatus,
       }}

@@ -1,72 +1,90 @@
-import { useState } from "react";
-import MDEditor from "@uiw/react-md-editor";
-import mockNotes from "./mock/data";
-import { useShowImage } from "../../hooks/useShowImage";
 import Icon from "../../shared/ui/Icon";
+import Button from "../../shared/ui/Button";
+import { useShowImage } from "../../hooks/useShowImage";
+import { GetMemberInfo } from "../../shared/api/Member/get_delete";
+import { useQuery } from "@tanstack/react-query";
 
 interface INoteInputProps {
-  onAdd: (text: string) => void;
-  noteListRefetch: () => void;
-  noteId?: number;
+  onAdd?: (noteId: number, title: string) => void;
+  onCancel?: () => void;
+  onSave?: (title: string) => void; // 제목 수정 모드용
+  setTitle: (title: string) => void;
+  title: string;
+  mode?: "create" | "edit"; // 모드 추가
 }
 
-const NoteInput = ({ onAdd, noteListRefetch, noteId }: INoteInputProps) => {
-  const [title, setTitle] = useState<string>("");
-  const [inputValue, setInputValue] = useState<string>("");
-  const [isComposing, setIsComposing] = useState(false);
+const NoteInput = ({
+  onCancel,
+  onSave,
+  setTitle,
+  title,
+  mode = "create",
+}: INoteInputProps) => {
+  const { data: memberInfo } = useQuery({
+    queryKey: ["memberInfo"],
+    queryFn: GetMemberInfo,
+  });
+  const creatorProfileUrl = useShowImage(
+    memberInfo?.result.profileImageObjectKey
+  );
 
-  const data = mockNotes.find((note) => note.id === noteId);
-  const profileImageUrl = useShowImage(data?.user?.profileUrl || null);
+  const handleSave = () => {
+    if (mode === "edit" && onSave && title.trim()) {
+      onSave(title);
+    }
+  };
 
-  console.log("title : ", title);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && mode === "edit" && onSave && title.trim()) {
+      onSave(title);
+    }
+  };
 
   return (
     <div className="flex flex-col w-full h-full" data-color-mode="light">
+      {/* 헤더 */}
       <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border-l border-r border-t border-[#E0E0E0]">
-        {profileImageUrl ? (
-          <img
-            src={profileImageUrl}
-            alt="profile"
-            className="w-[24px] h-[24px] rounded-full"
-          />
-        ) : (
-          <div className="w-[24px] h-[24px] rounded-full">
+        <div className="w-[24px] h-[24px] rounded-full">
+          {creatorProfileUrl ? (
+            <img
+              src={creatorProfileUrl}
+              alt="creator"
+              className="w-[24px] h-[24px] rounded-full"
+            />
+          ) : (
             <Icon name="User_Default" />
-          </div>
-        )}
-        <p>{data?.user?.name}</p>
+          )}
+        </div>
         <input
-          className="text-[16px] font-semibold outline-none"
-          value={data?.title}
+          placeholder="노트 제목을 입력하세요"
+          className="text-[16px] font-semibold outline-none flex-1 placeholder:text-[#C0C0C0]"
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={handleKeyDown}
+          autoFocus
         />
-        <p>{data?.date}</p>
+
+        {/* 버튼 */}
+        {mode === "edit" && (
+          <Button
+            colorType="sub"
+            onClick={handleSave}
+            disabled={!title.trim()}
+            iconName="Check_round"
+            title="저장"
+          />
+        )}
+        <Button colorType="sub" iconName="Close_White" onClick={onCancel} />
       </div>
-      <MDEditor
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !isComposing && (e.metaKey || e.ctrlKey)) {
-            e.preventDefault();
-            onAdd(inputValue);
-            noteListRefetch();
-          }
-          if (!inputValue.trim()) return;
-        }}
-        value={inputValue}
-        onChange={(val) => setInputValue(val || "")}
-        onCompositionStart={() => setIsComposing(true)}
-        onCompositionEnd={() => setIsComposing(false)}
-        className="w-full flex-1 overflow-hidden text-ellipsis text-[16px] font-semibold outline-none rounded-[8px]"
-        preview="live"
-        data-color-mode="light"
-        hideToolbar={false}
-        visibleDragbar={false}
-        textareaProps={{
-          style: {
-            fontSize: 16,
-            lineHeight: 1.5,
-          },
-        }}
-      />
+
+      {/* 프리뷰 (선택사항) */}
+      <div className="flex-1 bg-white rounded-b-[8px] p-4 border-l border-r border-b border-[#E0E0E0] overflow-auto text-[#828282] text-center flex items-center justify-center">
+        <p>
+          {mode === "edit"
+            ? "노트 제목을 수정합니다"
+            : "새로운 노트를 생성합니다"}
+        </p>
+      </div>
     </div>
   );
 };
