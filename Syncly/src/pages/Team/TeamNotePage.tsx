@@ -133,6 +133,7 @@ const TeamNotePage = () => {
                 noteId={selectedId}
                 setTitle={setTitle}
                 title={title}
+                onTitleUpdated={() => setNoteListKey((prev) => prev + 1)}
               />
             ) : (
               <div className="bg-white rounded-[8px] px-5 h-full flex items-center justify-center text-[#828282]">

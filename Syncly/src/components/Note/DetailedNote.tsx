@@ -13,9 +13,15 @@ interface IDetailedNoteProps {
   noteId: number;
   setTitle?: (title: string) => void;
   title?: string;
+  onTitleUpdated?: () => void; // 목록 새로고침용 콜백
 }
 
-const DetailedNote = ({ noteId, setTitle, title = "" }: IDetailedNoteProps) => {
+const DetailedNote = ({
+  noteId,
+  setTitle,
+  title = "",
+  onTitleUpdated,
+}: IDetailedNoteProps) => {
   const { memberId } = useAuthContext();
   const { id: workspaceIdStr } = useParams<{ id: string }>();
   const workspaceId = Number(workspaceIdStr) || 0;
@@ -520,6 +526,11 @@ const DetailedNote = ({ noteId, setTitle, title = "" }: IDetailedNoteProps) => {
       // 부모 컴포넌트의 title 상태도 업데이트
       if (setTitle) {
         setTitle(newTitle);
+      }
+
+      // 목록 새로고침 콜백 호출
+      if (onTitleUpdated) {
+        onTitleUpdated();
       }
     } catch (error) {
       console.error("❌ 제목 변경 실패:", error);
