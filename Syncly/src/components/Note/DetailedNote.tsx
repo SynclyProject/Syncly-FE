@@ -65,6 +65,14 @@ const DetailedNote = ({
     }
   }, [noteId]);
 
+  // Preview 모드에서 Text 모드로 전환 시 textarea 업데이트
+  useEffect(() => {
+    if (!isMarkDownMode && textEditorRef.current && content) {
+      textEditorRef.current.value = content;
+      lastContentRef.current = content;
+    }
+  }, [isMarkDownMode, content]);
+
   // 상대방 편집 반영
   useEffect(() => {
     if (
