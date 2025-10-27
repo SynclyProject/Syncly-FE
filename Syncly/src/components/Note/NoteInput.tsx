@@ -4,11 +4,31 @@ import Button from "../../shared/ui/Button";
 interface INoteInputProps {
   onAdd?: (noteId: number, title: string) => void;
   onCancel?: () => void;
+  onSave?: (title: string) => void; // 제목 수정 모드용
   setTitle: (title: string) => void;
   title: string;
+  mode?: "create" | "edit"; // 모드 추가
 }
 
-const NoteInput = ({ onCancel, setTitle, title }: INoteInputProps) => {
+const NoteInput = ({
+  onCancel,
+  onSave,
+  setTitle,
+  title,
+  mode = "create",
+}: INoteInputProps) => {
+  const handleSave = () => {
+    if (mode === "edit" && onSave && title.trim()) {
+      onSave(title);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && mode === "edit" && onSave && title.trim()) {
+      onSave(title);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full h-full" data-color-mode="light">
       {/* 헤더 */}
@@ -21,15 +41,30 @@ const NoteInput = ({ onCancel, setTitle, title }: INoteInputProps) => {
           className="text-[16px] font-semibold outline-none flex-1 placeholder:text-[#C0C0C0]"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={handleKeyDown}
+          autoFocus
         />
 
         {/* 버튼 */}
+        {mode === "edit" && (
+          <Button
+            colorType="sub"
+            onClick={handleSave}
+            disabled={!title.trim()}
+            iconName="Check_round"
+            title="저장"
+          />
+        )}
         <Button colorType="sub" iconName="Close_White" onClick={onCancel} />
       </div>
 
       {/* 프리뷰 (선택사항) */}
       <div className="flex-1 bg-white rounded-b-[8px] p-4 border-l border-r border-b border-[#E0E0E0] overflow-auto text-[#828282] text-center flex items-center justify-center">
-        <p>새로운 노트를 생성합니다</p>
+        <p>
+          {mode === "edit"
+            ? "노트 제목을 수정합니다"
+            : "새로운 노트를 생성합니다"}
+        </p>
       </div>
     </div>
   );

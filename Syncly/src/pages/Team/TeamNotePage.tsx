@@ -131,8 +131,8 @@ const TeamNotePage = () => {
             ) : selectedId ? (
               <DetailedNote
                 noteId={selectedId}
-                setShowInput={setShowInput}
                 setTitle={setTitle}
+                title={title}
               />
             ) : (
               <div className="bg-white rounded-[8px] px-5 h-full flex items-center justify-center text-[#828282]">

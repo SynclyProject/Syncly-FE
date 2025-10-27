@@ -7,19 +7,15 @@ import { getNoteWebSocketService } from "../../shared/api/webSocketService";
 import { useAuthContext } from "../../context/AuthContext";
 import { TEnterPayload, TEditPayload } from "../../shared/type/note";
 import { useParams } from "react-router-dom";
-import { getNoteDetail } from "../../shared/api/note";
+import { getNoteDetail, patchNoteTitle } from "../../shared/api/note";
 
 interface IDetailedNoteProps {
   noteId: number;
-  setShowInput: (show: boolean) => void;
   setTitle?: (title: string) => void;
+  title?: string;
 }
 
-const DetailedNote = ({
-  noteId,
-  setShowInput,
-  setTitle,
-}: IDetailedNoteProps) => {
+const DetailedNote = ({ noteId, setTitle, title = "" }: IDetailedNoteProps) => {
   const { memberId } = useAuthContext();
   const { id: workspaceIdStr } = useParams<{ id: string }>();
   const workspaceId = Number(workspaceIdStr) || 0;
@@ -40,6 +36,7 @@ const DetailedNote = ({
     ""
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
   const textEditorRef = useRef<HTMLTextAreaElement>(null);
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isComposingRef = useRef<boolean>(false);
@@ -500,6 +497,51 @@ const DetailedNote = ({
     }
   };
 
+  // 제목 수정 핸들러
+  const handleTitleSave = async (newTitle: string) => {
+    if (!newTitle.trim()) {
+      setError("제목을 입력해주세요.");
+      return;
+    }
+
+    try {
+      console.log("📝 제목 변경 요청:", { workspaceId, noteId, newTitle });
+      await patchNoteTitle(workspaceId, noteId, newTitle);
+      console.log("✅ 제목 변경 성공");
+
+      // currentNote 업데이트
+      const updatedNote = {
+        ...currentNote!,
+        title: newTitle,
+      };
+      setCurrentNote(updatedNote, workspaceId);
+
+      // 제목 수정 모드 종료
+      setIsEditingTitle(false);
+
+      // 부모 컴포넌트의 title 상태도 업데이트
+      if (setTitle) {
+        setTitle(newTitle);
+      }
+    } catch (error) {
+      console.error("❌ 제목 변경 실패:", error);
+      setError("제목을 변경할 수 없습니다.");
+    }
+  };
+
+  // 제목 수정 시작
+  const handleStartEditingTitle = () => {
+    if (currentNote?.title && setTitle) {
+      setTitle(currentNote.title);
+    }
+    setIsEditingTitle(true);
+  };
+
+  // 제목 수정 취소
+  const handleCancelEditingTitle = () => {
+    setIsEditingTitle(false);
+  };
+
   if (!currentNote) {
     return (
       <div className="bg-white rounded-[8px] px-5 h-full flex items-center justify-center text-[#828282]">
@@ -509,80 +551,126 @@ const DetailedNote = ({
   }
 
   return (
-    <div className="flex flex-col w-full h-full">
-      {/* 헤더 */}
-      <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border border-[#E0E0E0]">
-        {creatorProfileUrl ? (
-          <img
-            src={creatorProfileUrl}
-            alt="creator"
-            className="w-[24px] h-[24px] rounded-full"
-          />
-        ) : (
-          <div className="w-[24px] h-[24px] rounded-full">
-            <Icon name="User_Default" />
+    <>
+      {isEditingTitle ? (
+        <div className="flex flex-col w-full h-full" data-color-mode="light">
+          {/* 헤더 */}
+          <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border-l border-r border-t border-[#E0E0E0]">
+            <div className="w-[24px] h-[24px] rounded-full">
+              <Icon name="User_Default" />
+            </div>
+            <input
+              placeholder="노트 제목을 입력하세요"
+              className="text-[16px] font-semibold outline-none flex-1 placeholder:text-[#C0C0C0]"
+              value={setTitle ? title : currentNote.title}
+              onChange={(e) => {
+                if (setTitle) setTitle(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  const newTitle = setTitle ? title : currentNote.title;
+                  handleTitleSave(newTitle);
+                }
+              }}
+              autoFocus
+            />
+
+            {/* 버튼 */}
+            <Button
+              colorType="sub"
+              onClick={() =>
+                handleTitleSave(setTitle ? title : currentNote.title)
+              }
+              disabled={!(setTitle ? title : currentNote.title).trim()}
+              iconName="Check_round"
+              title="저장"
+            />
+            <Button
+              colorType="sub"
+              iconName="Close_White"
+              onClick={handleCancelEditingTitle}
+            />
           </div>
-        )}
-        <p className="text-[14px] text-[#828282]">{currentNote.creatorName}</p>
-        <p className="text-[16px] font-semibold flex-1 overflow-hidden text-ellipsis text-nowrap">
-          {currentNote.title}
-        </p>
 
-        {/* 상태 표시 */}
-        <div className="flex items-center gap-2">
-          {autoSaveStatus === "saving" && (
-            <span className="text-[12px] text-[#FF9500]">저장 중...</span>
-          )}
-          {autoSaveStatus === "saved" && (
-            <span className="text-[12px] text-[#4CAF50]">저장됨</span>
-          )}
-          {syncStatus === "conflict" && (
-            <span className="text-[12px] text-[#F45B69]">충돌 발생</span>
-          )}
-          {error && (
-            <span className="text-[12px] text-[#F45B69]" title={error}>
-              ⚠️ 오류
-            </span>
-          )}
+          {/* 프리뷰 */}
+          <div className="flex-1 bg-white rounded-b-[8px] p-4 border-l border-r border-b border-[#E0E0E0] overflow-auto text-[#828282] text-center flex items-center justify-center">
+            <p>노트 제목을 수정합니다</p>
+          </div>
         </div>
+      ) : (
+        <div className="flex flex-col w-full h-full">
+          {/* 헤더 */}
+          <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border border-[#E0E0E0]">
+            {creatorProfileUrl ? (
+              <img
+                src={creatorProfileUrl}
+                alt="creator"
+                className="w-[24px] h-[24px] rounded-full"
+              />
+            ) : (
+              <div className="w-[24px] h-[24px] rounded-full">
+                <Icon name="User_Default" />
+              </div>
+            )}
+            <p className="text-[14px] text-[#828282]">
+              {currentNote.creatorName}
+            </p>
+            <p className="text-[16px] font-semibold flex-1 overflow-hidden text-ellipsis text-nowrap">
+              {currentNote.title}
+            </p>
 
-        <p className="text-[16px] text-[#828282] pr-[20px]">
-          {currentNote.createdAt &&
-            new Date(currentNote.createdAt).toLocaleDateString("ko-KR")}
-        </p>
-        <Button
-          colorType="sub"
-          onClick={handleManualSave}
-          disabled={isSaving}
-          title="노트를 수동으로 저장합니다"
-        >
-          {isSaving ? "Saving..." : "Save"}
-        </Button>
-        <Button
-          colorType="sub"
-          iconName="Pen"
-          onClick={() => {
-            if (currentNote?.title && setTitle) {
-              setTitle(currentNote.title);
-            }
-            setShowInput(true);
-          }}
-        />
-      </div>
+            {/* 상태 표시 */}
+            <div className="flex items-center gap-2">
+              {autoSaveStatus === "saving" && (
+                <span className="text-[12px] text-[#FF9500]">저장 중...</span>
+              )}
+              {autoSaveStatus === "saved" && (
+                <span className="text-[12px] text-[#4CAF50]">저장됨</span>
+              )}
+              {syncStatus === "conflict" && (
+                <span className="text-[12px] text-[#F45B69]">충돌 발생</span>
+              )}
+              {error && (
+                <span className="text-[12px] text-[#F45B69]" title={error}>
+                  ⚠️ 오류
+                </span>
+              )}
+            </div>
 
-      {/* 에디터 */}
-      <textarea
-        ref={textEditorRef}
-        onChange={handleTextChange}
-        onCompositionStart={handleCompositionStart}
-        onCompositionEnd={handleCompositionEnd}
-        className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0] overflow-auto resize-none font-mono"
-        style={{
-          whiteSpace: "pre-wrap",
-          wordWrap: "break-word",
-        }}
-      />
-    </div>
+            <p className="text-[16px] text-[#828282] pr-[20px]">
+              {currentNote.createdAt &&
+                new Date(currentNote.createdAt).toLocaleDateString("ko-KR")}
+            </p>
+            <Button
+              colorType="sub"
+              onClick={handleManualSave}
+              disabled={isSaving}
+              title="노트를 수동으로 저장합니다"
+            >
+              {isSaving ? "Saving..." : "Save"}
+            </Button>
+            <Button
+              colorType="sub"
+              iconName="Pen"
+              onClick={handleStartEditingTitle}
+            />
+          </div>
+
+          {/* 에디터 */}
+          <textarea
+            ref={textEditorRef}
+            onChange={handleTextChange}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0] overflow-auto resize-none font-mono"
+            style={{
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+            }}
+          />
+        </div>
+      )}
+    </>
   );
 };
 
