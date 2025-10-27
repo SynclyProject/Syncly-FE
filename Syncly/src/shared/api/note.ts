@@ -166,6 +166,36 @@ export const saveNote = async (
 };
 
 /**
+ * 노트 제목 변경
+ * @param workspaceId 워크스페이스 ID
+ * @param noteId 노트 ID
+ * @param title 노트 제목
+ * @returns 노트 제목 변경 결과
+ */
+
+export const patchNoteTitle = async (
+  workspaceId: number,
+  noteId: number,
+  title: string
+): Promise<{ success: boolean; message: string }> => {
+  const { data } = await axiosInstance.patch(
+    `${API_BASE}/${workspaceId}/notes/${noteId}/title`,
+    { title }
+  );
+
+  console.log("📨 patchNoteTitle 응답:", data);
+
+  if (data?.result) {
+    return data.result;
+  }
+  if (data?.data) {
+    return data.data;
+  }
+
+  throw new Error("노트 제목 변경 응답 형식이 예상과 다릅니다");
+};
+
+/**
  * 에러 처리 유틸리티
  */
 export const handleNoteApiError = (error: unknown): string => {
