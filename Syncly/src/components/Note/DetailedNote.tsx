@@ -532,6 +532,11 @@ const DetailedNote = ({
       if (onTitleUpdated) {
         onTitleUpdated();
       }
+
+      // title 상태 초기화
+      if (setTitle) {
+        setTitle("");
+      }
     } catch (error) {
       console.error("❌ 제목 변경 실패:", error);
       setError("제목을 변경할 수 없습니다.");
@@ -549,6 +554,11 @@ const DetailedNote = ({
   // 제목 수정 취소
   const handleCancelEditingTitle = () => {
     setIsEditingTitle(false);
+
+    // title 상태 초기화
+    if (setTitle) {
+      setTitle("");
+    }
   };
 
   if (!currentNote) {
@@ -566,7 +576,15 @@ const DetailedNote = ({
           {/* 헤더 */}
           <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border-l border-r border-t border-[#E0E0E0]">
             <div className="w-[24px] h-[24px] rounded-full">
-              <Icon name="User_Default" />
+              {creatorProfileUrl ? (
+                <img
+                  src={creatorProfileUrl}
+                  alt="creator"
+                  className="w-[24px] h-[24px] rounded-full"
+                />
+              ) : (
+                <Icon name="User_Default" />
+              )}
             </div>
             <input
               placeholder="노트 제목을 입력하세요"

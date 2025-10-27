@@ -80,6 +80,7 @@ const TeamNotePage = () => {
     setShowInput(false);
     // NoteList를 리마운트하여 최신 목록을 로드
     setNoteListKey((prev) => prev + 1);
+    setSelectedId(null);
   };
 
   // ❌ 취소 핸들러
