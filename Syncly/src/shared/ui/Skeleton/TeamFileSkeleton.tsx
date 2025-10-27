@@ -59,11 +59,12 @@ export default function MyFilesSkeleton() {
 
             {/* 파일 부분 */}
             <div className="p-4">
-              <Skeleton
-                width="w-full"
-                height="h-[260px]"        // 필요에 따라 220~320px로 조절
-                rounded="rounded-md"
-              />
+              <div className="flex flex-col gap-2 overflow-y-auto">
+              <Skeleton width="w-full" height="h-12" rounded="rounded-md" />
+              <Skeleton width="w-full" height="h-12" rounded="rounded-md" />
+              <Skeleton width="w-full" height="h-12" rounded="rounded-md" />
+              <Skeleton width="w-full" height="h-12" rounded="rounded-md" />
+              </div>
             </div>
 
           
