@@ -1,5 +1,8 @@
 import Icon from "../../shared/ui/Icon";
 import Button from "../../shared/ui/Button";
+import { useShowImage } from "../../hooks/useShowImage";
+import { GetMemberInfo } from "../../shared/api/Member/get_delete";
+import { useQuery } from "@tanstack/react-query";
 
 interface INoteInputProps {
   onAdd?: (noteId: number, title: string) => void;
@@ -17,6 +20,14 @@ const NoteInput = ({
   title,
   mode = "create",
 }: INoteInputProps) => {
+  const { data: memberInfo } = useQuery({
+    queryKey: ["memberInfo"],
+    queryFn: GetMemberInfo,
+  });
+  const creatorProfileUrl = useShowImage(
+    memberInfo?.result.profileImageObjectKey
+  );
+
   const handleSave = () => {
     if (mode === "edit" && onSave && title.trim()) {
       onSave(title);
@@ -34,7 +45,15 @@ const NoteInput = ({
       {/* 헤더 */}
       <div className="h-[56px] flex items-center gap-5 bg-white rounded-t-[8px] p-3 border-l border-r border-t border-[#E0E0E0]">
         <div className="w-[24px] h-[24px] rounded-full">
-          <Icon name="User_Default" />
+          {creatorProfileUrl ? (
+            <img
+              src={creatorProfileUrl}
+              alt="creator"
+              className="w-[24px] h-[24px] rounded-full"
+            />
+          ) : (
+            <Icon name="User_Default" />
+          )}
         </div>
         <input
           placeholder="노트 제목을 입력하세요"
