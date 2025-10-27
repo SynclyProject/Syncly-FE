@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { getNoteWebSocketService } from "../../shared/api/webSocketService";
 import { useAuthContext } from "../../context/AuthContext";
 import { TEnterPayload, TEditPayload } from "../../shared/type/note";
+import { useParams } from "react-router-dom";
+import { getNoteDetail } from "../../shared/api/note";
 
 interface IDetailedNoteProps {
   noteId: number;
@@ -19,6 +21,8 @@ const DetailedNote = ({
   setTitle,
 }: IDetailedNoteProps) => {
   const { memberId } = useAuthContext();
+  const { id: workspaceIdStr } = useParams<{ id: string }>();
+  const workspaceId = Number(workspaceIdStr) || 0;
   const {
     currentNote,
     content,
@@ -163,30 +167,42 @@ const DetailedNote = ({
 
         console.log("✅ WebSocket 연결 성공");
 
-        const handleEnter = (payload: TEnterPayload) => {
-          setCurrentNote(
-            {
-              id: payload.noteId,
-              title: payload.title,
-              content: payload.content,
-              workspaceId: 0,
-              creatorId: 0,
-              creatorName: "Unknown",
-              lastModifiedAt: new Date().toISOString(),
-              createdAt: new Date().toISOString(),
-              participantCount: payload.activeUsers.length,
-              activeParticipants: [],
-            },
-            0
-          );
-
+        const handleEnter = async (payload: TEnterPayload) => {
+          // revision 정보만 설정
           useNoteStore.setState({
             revision: payload.revision,
           });
 
-          if (textEditorRef.current) {
-            textEditorRef.current.value = payload.content;
-            lastContentRef.current = payload.content;
+          // getNoteDetail로 노트 내용 조회
+          try {
+            console.log("📋 노트 상세 조회 시작:", { workspaceId, noteId });
+            const noteData = await getNoteDetail(workspaceId, noteId);
+            console.log("✅ 노트 상세 조회 성공:", noteData);
+
+            setCurrentNote(
+              {
+                id: noteData.id,
+                title: noteData.title,
+                content: noteData.content,
+                workspaceId: noteData.workspaceId,
+                creatorId: noteData.creatorId,
+                creatorName: noteData.creatorName,
+                creatorProfileImage: noteData.creatorProfileImage,
+                lastModifiedAt: noteData.lastModifiedAt,
+                createdAt: noteData.createdAt,
+                participantCount: payload.activeUsers.length,
+                activeParticipants: [],
+              },
+              workspaceId
+            );
+
+            if (textEditorRef.current) {
+              textEditorRef.current.value = noteData.content;
+              lastContentRef.current = noteData.content;
+            }
+          } catch (error) {
+            console.error("❌ 노트 상세 조회 실패:", error);
+            setError("노트 내용을 불러올 수 없습니다.");
           }
         };
 
@@ -253,6 +269,7 @@ const DetailedNote = ({
     };
   }, [
     noteId,
+    workspaceId,
     memberId,
     setCurrentNote,
     handleRemoteEdit,

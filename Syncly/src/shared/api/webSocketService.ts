@@ -545,6 +545,52 @@ export class NoteWebSocketService {
   }
 
   /**
+   * 노트 제목 변경 요청 (PATCH_TITLE)
+   * @param noteId 노트 ID
+   * @param title 노트 제목
+   * @param onTitleChanged 제목 변경 완료 핸들러
+   */
+  patchNoteTitle(
+    noteId: number,
+    title: string,
+    onTitleChanged: (payload: unknown) => void
+  ): void {
+    if (!this.stompClient?.connected) {
+      throw new Error("WebSocket이 연결되지 않았습니다.");
+    }
+
+    const destination = "/app/notes/patch-title";
+    const message = { noteId, title };
+
+    console.log(`📤 노트 제목 변경 요청: ${destination}`, message);
+
+    this.stompClient?.send(destination, {}, JSON.stringify(message));
+
+    // 응답 구독 (유니캐스트)
+    const userQueueTopic = `/user/queue/notes/${noteId}/patch-title`;
+    if (this.subscriptions.has(userQueueTopic)) {
+      this.subscriptions.get(userQueueTopic)?.unsubscribe();
+    }
+
+    const subscription = this.stompClient?.subscribe(
+      userQueueTopic,
+      (message) => {
+        try {
+          const response = JSON.parse(message.body);
+          console.log("📨 PATCH_TITLE 응답 수신:", response);
+          onTitleChanged(response.payload);
+        } catch (error) {
+          console.error("❌ PATCH_TITLE 메시지 파싱 오류:", error);
+        }
+      }
+    );
+
+    if (subscription) {
+      this.subscriptions.set(userQueueTopic, subscription);
+    }
+  }
+
+  /**
    * 노트 수동 저장 요청
    * @param noteId 노트 ID
    */

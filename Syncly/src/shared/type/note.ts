@@ -121,8 +121,8 @@ export type TWebSocketMessage<T = unknown> = {
  */
 export type TEnterPayload = {
   noteId: number;
-  title: string;
-  content: string;
+  creatorName: string;
+  creatorProfileImage: string;
   revision: number;
   activeUsers: number[];
   cursors: Record<number, TCursorPosition>;
