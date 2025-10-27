@@ -45,8 +45,6 @@ const DetailedNote = ({ noteId, setTitle, title = "" }: IDetailedNoteProps) => {
   const pendingRemoteEditsRef = useRef<TEditPayload[]>([]);
   const lastContentRef = useRef<string>("");
 
-  console.log("currentNote: ", currentNote);
-
   const creatorProfileUrl = useShowImage(
     currentNote?.creatorProfileImage || null
   );
