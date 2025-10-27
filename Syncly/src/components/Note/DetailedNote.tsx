@@ -720,8 +720,8 @@ const DetailedNote = ({
 
           {/* 에디터 */}
           {isMarkDownMode ? (
-            <div className="flex-1 border-l border-[#E0E0E0]">
-              <div className="h-full bg-white rounded-br-[8px] px-4 py-3 overflow-auto">
+            <div className="flex-1">
+              <div className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0] overflow-auto">
                 <Markdown
                   components={{
                     h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
