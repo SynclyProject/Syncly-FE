@@ -1,7 +1,7 @@
 import Skeleton from "./Skeleton";
 
 
-export default function MyFilesSkeleton() {
+export default function TeamNoteSkeleton() {
   return (
     <div className="w-full mx-[74px] flex flex-col items-center gap-5">
       {/* 상단 탭 + 버튼 */}
