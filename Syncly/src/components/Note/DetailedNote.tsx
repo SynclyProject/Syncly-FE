@@ -8,6 +8,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import { TEnterPayload, TEditPayload } from "../../shared/type/note";
 import { useParams } from "react-router-dom";
 import { getNoteDetail, patchNoteTitle } from "../../shared/api/note";
+import Markdown from "react-markdown";
 
 interface IDetailedNoteProps {
   noteId: number;
@@ -43,6 +44,7 @@ const DetailedNote = ({
   );
   const [isSaving, setIsSaving] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [isMarkDownMode, setIsMarkDownMode] = useState(false);
   const textEditorRef = useRef<HTMLTextAreaElement>(null);
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isComposingRef = useRef<boolean>(false);
@@ -683,18 +685,73 @@ const DetailedNote = ({
             />
           </div>
 
+          <div className="flex items-center gap-2">
+            <Button colorType="white" onClick={() => setIsMarkDownMode(true)}>
+              Markdown
+            </Button>
+
+            <Button colorType="white" onClick={() => setIsMarkDownMode(false)}>
+              Text
+            </Button>
+          </div>
+
           {/* 에디터 */}
-          <textarea
-            ref={textEditorRef}
-            onChange={handleTextChange}
-            onCompositionStart={handleCompositionStart}
-            onCompositionEnd={handleCompositionEnd}
-            className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0] overflow-auto resize-none font-mono"
-            style={{
-              whiteSpace: "pre-wrap",
-              wordWrap: "break-word",
-            }}
-          />
+          {isMarkDownMode ? (
+            <div className="flex-1 border-l border-[#E0E0E0]">
+              <div className="h-full bg-white rounded-br-[8px] px-4 py-3 overflow-auto">
+                <Markdown
+                  components={{
+                    h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+                      <h1 className="text-[20px] font-bold my-2" {...props} />
+                    ),
+                    h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+                      <h2 className="text-[18px] font-bold my-2" {...props} />
+                    ),
+                    p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
+                      <p className="my-2 leading-6" {...props} />
+                    ),
+                    ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
+                      <ul className="list-disc pl-5 my-2" {...props} />
+                    ),
+                    ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
+                      <ol className="list-decimal pl-5 my-2" {...props} />
+                    ),
+                    li: (props: React.HTMLAttributes<HTMLLIElement>) => (
+                      <li className="my-1" {...props} />
+                    ),
+                    code: (props: React.HTMLAttributes<HTMLElement>) => (
+                      <code
+                        className="bg-[#f5f5f5] px-1 py-0.5 rounded"
+                        {...props}
+                      />
+                    ),
+                    blockquote: (
+                      props: React.HTMLAttributes<HTMLQuoteElement>
+                    ) => (
+                      <blockquote
+                        className="border-l-4 border-[#E0E0E0] pl-3 italic text-[#4f4f4f] my-2"
+                        {...props}
+                      />
+                    ),
+                  }}
+                >
+                  {content || ""}
+                </Markdown>
+              </div>
+            </div>
+          ) : (
+            <textarea
+              ref={textEditorRef}
+              onChange={handleTextChange}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
+              className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0] overflow-auto resize-none font-mono"
+              style={{
+                whiteSpace: "pre-wrap",
+                wordWrap: "break-word",
+              }}
+            />
+          )}
         </div>
       )}
     </>
