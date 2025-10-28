@@ -18,7 +18,7 @@ const VoicePeopleWrapper = ({
   onSelect,
   size = "default",
 }: {
-  onSelect: (participantId: string | null) => void;
+  onSelect: (participantId: string | null, source?: Track.Source) => void;
   size?: "small" | "large" | "default";
 }) => {
   const participants = useParticipants();
@@ -32,7 +32,9 @@ const VoicePeopleWrapper = ({
   return (
     <VoicePeople
       participantId={String(participantId)}
-      onClick={() => onSelect(trackRef?.participant.sid || null)}
+      onClick={() =>
+        onSelect(trackRef?.participant.sid || null, trackRef?.source)
+      }
       size={size}
       showTracks={true}
     />
@@ -61,10 +63,13 @@ const VoiceListContent = ({
   setIsVoice: (isVoice: boolean) => void;
   leaveRoom: () => void;
 }) => {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<{
+    sid: string;
+    source?: Track.Source;
+  } | null>(null);
   const participants = useParticipants();
-  const selected = participants.find(
-    (participant) => participant.sid === selectedId
+  const selectedParticipant = participants.find(
+    (participant) => participant.sid === selected?.sid
   );
 
   const tracks = useTracks(
@@ -76,10 +81,7 @@ const VoiceListContent = ({
   );
 
   return (
-    <div
-      className="w-full flex flex-col gap-3 relative"
-      style={{ height: "calc(100vh - 250px)" }}
-    >
+    <div className="w-full flex flex-col gap-3 relative">
       <div className="w-full flex justify-between items-center">
         <p className="text-[20px] font-bold">Title</p>
         <Button
@@ -95,30 +97,50 @@ const VoiceListContent = ({
       {/* 참가자 목록 */}
       {selected ? (
         <div className="w-full h-full flex flex-col gap-3">
-          <div className="w-full h-full flex justify-center items-center">
+          <div className="w-full h-[60vh] flex justify-center items-center">
             <TrackRefContextIfNeeded
-              trackRef={tracks.find((t) => t.participant.sid === selectedId)}
+              trackRef={tracks.find(
+                (t) =>
+                  t.participant.sid === selected.sid &&
+                  (selected.source ? t.source === selected.source : true)
+              )}
             >
               <VoicePeople
-                participantId={selected.identity}
-                onClick={() => setSelectedId(null)}
+                participantId={selectedParticipant?.identity || ""}
+                onClick={() => setSelected(null)}
                 size="large"
                 showTracks={true}
               />
             </TrackRefContextIfNeeded>
           </div>
-          <div className="w-full flex gap-3 overflow-x-auto max-h-[120px]">
+          <div className="w-full grid grid-cols-4 gap-3 md:grid-cols-3 sm:grid-cols-2">
             <TrackLoop
-              tracks={tracks.filter((t) => t.participant.sid !== selectedId)}
+              tracks={tracks.filter(
+                (t) =>
+                  !(
+                    t.participant.sid === selected.sid &&
+                    (selected.source ? t.source === selected.source : false)
+                  )
+              )}
             >
-              <VoicePeopleWrapper onSelect={setSelectedId} size="small" />
+              <VoicePeopleWrapper
+                onSelect={(sid, source) =>
+                  sid ? setSelected({ sid, source }) : setSelected(null)
+                }
+                size="small"
+              />
             </TrackLoop>
           </div>
         </div>
       ) : (
-        <div className="w-full h-full grid grid-cols-2 gap-3 justify-center md:grid-cols-1 lg:grid-cols-2 overflow-y-auto">
+        <div className="w-full h-full grid grid-cols-2 gap-3 justify-center md:grid-cols-1 lg:grid-cols-2">
           <TrackLoop tracks={tracks}>
-            <VoicePeopleWrapper onSelect={setSelectedId} size="default" />
+            <VoicePeopleWrapper
+              onSelect={(sid, source) =>
+                sid ? setSelected({ sid, source }) : setSelected(null)
+              }
+              size="default"
+            />
           </TrackLoop>
         </div>
       )}

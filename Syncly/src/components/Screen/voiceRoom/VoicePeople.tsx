@@ -139,7 +139,7 @@ const VoicePeople = ({
   if (hasCameraTrack) {
     return (
       <div
-        className={`w-full ${cardHeightSize[size]} rounded-lg cursor-pointer relative`}
+        className={`w-full ${cardHeightSize[size]} rounded-lg cursor-pointer relative overflow-hidden`}
         onClick={onClick}
       >
         {renderTrack()}
@@ -149,7 +149,7 @@ const VoicePeople = ({
   if (hasScreenTrack) {
     return (
       <div
-        className={`w-full ${cardHeightSize[size]} rounded-lg cursor-pointer relative`}
+        className={`w-full ${cardHeightSize[size]} rounded-lg cursor-pointer relative overflow-hidden`}
         onClick={onClick}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
