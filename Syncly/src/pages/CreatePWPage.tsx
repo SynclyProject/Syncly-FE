@@ -15,6 +15,7 @@ import Loading from "../shared/ui/Loading";
 
 const CreatePWPage = () => {
   const [showCodeInput, setShowCodeInput] = useState(false);
+  const [showNewPWInput, setShowNewPWInput] = useState(false);
   const navigate = useNavigate();
 
   //이메일 인증 & 코드 인증
@@ -32,8 +33,10 @@ const CreatePWPage = () => {
     onSuccess: () => {
       alert("인증되었습니다.");
       setIsVerified(true);
+      setShowNewPWInput(true);
     },
   });
+
   const { mutate: PatchPasswordMutate } = useMutation({
     mutationFn: PatchPasswordEmail,
     onSuccess: () => {
@@ -143,65 +146,51 @@ const CreatePWPage = () => {
             </>
           )}
 
-          {/* Password */}
-          <label className="text-[#585858] text-sm font-light mt-2">
-            Password
-          </label>
-          <input
-            {...register("currentPassword")}
-            type="password"
-            placeholder="Enter your current password..."
-            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault(); // Enter로 인한 submit 방지
-              }
-            }}
-          />
-          {/*에러메세지*/}
-          {errors.currentPassword && (
-            <p className="text-red-500 text-xs">
-              {errors.currentPassword.message}
-            </p>
-          )}
+          
 
-          {/* newPassword */}
-          <label className="text-[#585858] text-sm font-light mt-2">
-            New Password
-          </label>
-          <input
-            {...register("newPassword")}
-            type="password"
-            placeholder="Enter your new password..."
-            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault(); // Enter로 인한 submit 방지
-              }
-            }}
-          />
-          {/*에러메세지*/}
-          {errors.newPassword && (
-            <p className="text-red-500 text-xs">{errors.newPassword.message}</p>
-          )}
+          {showNewPWInput && (
+            <>
+              {/* newPassword */}
+              <label className="text-[#585858] text-sm font-light mt-2">
+                New Password
+              </label>
+              <input
+                {...register("newPassword")}
+                type="password"
+                placeholder="Enter your new password..."
+                className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // Enter로 인한 submit 방지
+                  }
+                }}
+              />
+            
+        
+                {/*에러메세지*/}
+                {errors.newPassword && (
+                  <p className="text-red-500 text-xs">{errors.newPassword.message}</p>
+                )}
 
-          {/* Confirm Password */}
-          <input
-            {...register("confirmPassword")}
-            type="password"
-            placeholder="Confirm your password..."
-            className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault(); // Enter로 인한 submit 방지
-              }
-            }}
-          />
-          {/*에러메세지*/}
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-xs">
-              {errors.confirmPassword.message}
-            </p>
+                {/* Confirm Password */}
+                <input
+                  {...register("confirmPassword")}
+                  type="password"
+                  placeholder="Confirm your password..."
+                  className="px-4 py-2 border border-[#E0E0E0] rounded-[8px] bg-[#FDFDFD] text-sm outline-none"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // Enter로 인한 submit 방지
+                    }
+                  }}
+                />
+                {/*에러메세지*/}
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-xs">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+              </>
           )}
 
           {/* Submit */}
