@@ -3,6 +3,8 @@ import Button from "../../shared/ui/Button";
 import { useShowImage } from "../../hooks/useShowImage";
 import { GetMemberInfo } from "../../shared/api/Member/get_delete";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { createNote } from "../../shared/api/note";
 
 interface INoteInputProps {
   onAdd?: (noteId: number, title: string) => void;
@@ -14,12 +16,15 @@ interface INoteInputProps {
 }
 
 const NoteInput = ({
+  onAdd,
   onCancel,
   onSave,
   setTitle,
   title,
   mode = "create",
 }: INoteInputProps) => {
+  const { id: workspaceIdStr } = useParams<{ id: string }>();
+  const workspaceId = Number(workspaceIdStr) || 0;
   const { data: memberInfo } = useQuery({
     queryKey: ["memberInfo"],
     queryFn: GetMemberInfo,
@@ -35,8 +40,27 @@ const NoteInput = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && mode === "edit" && onSave && title.trim()) {
+    if (e.key !== "Enter") return;
+
+    // 편집 모드: 제목 저장
+    if (mode === "edit" && onSave && title.trim()) {
+      e.preventDefault();
       onSave(title);
+      return;
+    }
+
+    // 생성 모드: 새 노트 생성
+    if (mode === "create" && onAdd && title.trim()) {
+      e.preventDefault();
+      (async () => {
+        try {
+          const created = await createNote(workspaceId, { title });
+          onAdd(created.id, created.title);
+          setTitle("");
+        } catch (err) {
+          console.error("노트 생성 실패", err);
+        }
+      })();
     }
   };
 
