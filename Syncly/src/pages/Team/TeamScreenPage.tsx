@@ -18,7 +18,7 @@ const TeamScreenPage = () => {
     }
   }, [workspaceId, setWorkspaceId]);
 
-  // 페이지 진입 시 스크롤을 맨 위로 초기화
+  // 페이지 진입 시 스크롤을 맨 위로 초기화 (레이아웃 외의 스크롤 컨테이너)
   useEffect(() => {
     const scrollToTop = () => {
       window.scrollTo(0, 0);
@@ -41,9 +41,13 @@ const TeamScreenPage = () => {
     };
 
     // 컴포넌트가 완전히 마운트된 후에 실행
-    const timeoutId = setTimeout(scrollToTop, 0);
+    const timeoutId = setTimeout(scrollToTop, 100);
+    const timeoutId2 = setTimeout(scrollToTop, 200);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId);
+      clearTimeout(timeoutId2);
+    };
   }, [workspaceId]);
 
   return (
