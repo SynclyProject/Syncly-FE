@@ -5,6 +5,7 @@ import { GetMemberInfo } from "../../shared/api/Member/get_delete";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { createNote } from "../../shared/api/note";
+import { useState } from "react";
 
 interface INoteInputProps {
   onAdd?: (noteId: number, title: string) => void;
@@ -23,6 +24,8 @@ const NoteInput = ({
   title,
   mode = "create",
 }: INoteInputProps) => {
+  const [isComposing, setIsComposing] = useState(false);
+
   const { id: workspaceIdStr } = useParams<{ id: string }>();
   const workspaceId = Number(workspaceIdStr) || 0;
   const { data: memberInfo } = useQuery({
@@ -43,14 +46,14 @@ const NoteInput = ({
     if (e.key !== "Enter") return;
 
     // 편집 모드: 제목 저장
-    if (mode === "edit" && onSave && title.trim()) {
+    if (mode === "edit" && onSave && title.trim() && !isComposing) {
       e.preventDefault();
       onSave(title);
       return;
     }
 
     // 생성 모드: 새 노트 생성
-    if (mode === "create" && onAdd && title.trim()) {
+    if (mode === "create" && onAdd && title.trim() && !isComposing) {
       e.preventDefault();
       (async () => {
         try {
@@ -86,6 +89,8 @@ const NoteInput = ({
           onChange={(e) => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           autoFocus
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
         />
 
         {/* 버튼 */}
