@@ -74,7 +74,7 @@ const VoicePeople = ({
     default: "w-[100px]",
   };
   const cardHeightSize = {
-    small: "h-[150px]",
+    small: "flex-1",
     large: "h-full",
     default: "h-full",
   };
@@ -168,7 +168,7 @@ const VoicePeople = ({
   // 기본 아이콘 표시 (캠이 꺼져있거나 트랙이 없을 때)
   return (
     <div
-      className={`w-full ${cardHeightSize[size]} flex justify-center items-center rounded-lg cursor-pointer relative`}
+      className={`min-w-[70px] w-full ${cardHeightSize[size]} flex justify-center items-center rounded-lg cursor-pointer relative`}
       style={{ backgroundColor: bgColor }}
       onClick={onClick}
     >
