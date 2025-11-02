@@ -113,7 +113,7 @@ const VoiceListContent = ({
               />
             </TrackRefContextIfNeeded>
           </div>
-          <div className="w-full grid grid-cols-4 gap-3 md:grid-cols-3 sm:grid-cols-2">
+          <div className="w-full flex-1 grid grid-cols-4 gap-3 md:grid-cols-3 sm:grid-cols-2">
             <TrackLoop
               tracks={tracks.filter(
                 (t) =>
