@@ -5,10 +5,11 @@ import { useNoteStore } from "../../store/useNoteStore";
 import { useEffect, useRef, useState } from "react";
 import { getNoteWebSocketService } from "../../shared/api/webSocketService";
 import { useAuthContext } from "../../context/AuthContext";
-import { TEnterPayload, TEditPayload } from "../../shared/type/note";
+import { TEnterPayload } from "../../shared/type/note";
 import { useParams } from "react-router-dom";
 import { getNoteDetail, patchNoteTitle } from "../../shared/api/note";
 import Markdown from "react-markdown";
+import * as Y from "yjs";
 
 interface IDetailedNoteProps {
   noteId: number;
@@ -31,11 +32,15 @@ const DetailedNote = ({
     content,
     syncStatus,
     error,
+    cursors,
+    localCursorPosition,
     setCurrentNote,
-    applyLocalOperation,
-    handleRemoteEdit,
+    initializeYjs,
+    getYtext,
+    getYdoc,
     setError,
     setLoading,
+    setLocalCursorPosition,
   } = useNoteStore();
 
   const wsServiceRef = useRef(getNoteWebSocketService());
@@ -45,25 +50,35 @@ const DetailedNote = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isMarkDownMode, setIsMarkDownMode] = useState(false);
+  const [isEnterComplete, setIsEnterComplete] = useState(false);
+  const [currentUserWorkspaceMemberId, setCurrentUserWorkspaceMemberId] = useState<number | null>(null);
   const textEditorRef = useRef<HTMLTextAreaElement>(null);
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isComposingRef = useRef<boolean>(false);
-  const isResyncingRef = useRef<boolean>(false);
-  const isLocalEditRef = useRef<boolean>(false);
-  const pendingRemoteEditsRef = useRef<TEditPayload[]>([]);
   const lastContentRef = useRef<string>("");
 
   const creatorProfileUrl = useShowImage(
     currentNote?.creatorProfileImage || null
   );
 
-  // 초기 content 설정
+  // Yjs content 변경 감시 (자동 동기화)
+  // ⚠️ 중요: lastContentRef 비교를 통해 무한 루프 방지
   useEffect(() => {
-    if (textEditorRef.current && content) {
+    if (!textEditorRef.current || isComposingRef.current) return;
+
+    // lastContentRef는 사용자 입력 후 업데이트되므로
+    // 여기서 lastContentRef와 content가 다르면 원격 변경임을 의미
+    if (content !== lastContentRef.current) {
+      console.log("📝 Yjs 편집 반영 (원격 변경)");
+
+      const cursorPos = textEditorRef.current.selectionStart;
       textEditorRef.current.value = content;
       lastContentRef.current = content;
+
+      const newCursorPos = Math.min(cursorPos, content.length);
+      textEditorRef.current.setSelectionRange(newCursorPos, newCursorPos);
     }
-  }, [noteId]);
+  }, [content]);
 
   // Preview 모드에서 Text 모드로 전환 시 textarea 업데이트
   useEffect(() => {
@@ -73,34 +88,7 @@ const DetailedNote = ({
     }
   }, [isMarkDownMode, content]);
 
-  // 상대방 편집 반영
-  useEffect(() => {
-    if (
-      textEditorRef.current &&
-      !isComposingRef.current &&
-      !isLocalEditRef.current
-    ) {
-      const currentDOM = textEditorRef.current.value;
-      if (content !== currentDOM) {
-        console.log("📝 상대방 편집 반영");
-
-        const cursorPos = textEditorRef.current.selectionStart;
-
-        isResyncingRef.current = true;
-        try {
-          textEditorRef.current.value = content;
-          lastContentRef.current = content;
-
-          const newCursorPos = Math.min(cursorPos, content.length);
-          textEditorRef.current.setSelectionRange(newCursorPos, newCursorPos);
-        } finally {
-          isResyncingRef.current = false;
-        }
-      }
-    }
-  }, [content]);
-
-  // 🔌 WebSocket 연결 및 노트 입장
+  // 🔌 WebSocket 연결 및 Yjs 초기화
   useEffect(() => {
     const connectAndSubscribe = async () => {
       try {
@@ -121,57 +109,7 @@ const DetailedNote = ({
 
         const handleWebSocketError = (error: unknown) => {
           console.error("❌ WebSocket 에러:", error);
-
-          // 타입 가드를 사용한 안전한 접근
-          const isErrorWithPayload = (
-            err: unknown
-          ): err is {
-            payload: { code?: string; content?: string; revision?: number };
-          } => {
-            return (
-              typeof err === "object" &&
-              err !== null &&
-              "payload" in err &&
-              typeof (err as Record<string, unknown>).payload === "object" &&
-              (err as Record<string, unknown>).payload !== null
-            );
-          };
-
-          if (isErrorWithPayload(error)) {
-            const payload = error.payload;
-            if (payload.code === "Note409_1" || payload.code === "Note409_2") {
-              console.log("🔄 OT 충돌 감지");
-
-              if (
-                payload.content !== undefined &&
-                payload.revision !== undefined
-              ) {
-                isResyncingRef.current = true;
-
-                try {
-                  useNoteStore.setState({
-                    content: payload.content,
-                    revision: payload.revision,
-                    pendingOperations: [],
-                    syncStatus: "synced",
-                  });
-
-                  if (textEditorRef.current) {
-                    textEditorRef.current.value = payload.content;
-                    lastContentRef.current = payload.content;
-                  }
-
-                  setError(
-                    "편집 충돌이 발생했습니다. 최신 버전으로 복구되었습니다."
-                  );
-                } finally {
-                  isResyncingRef.current = false;
-                }
-              }
-            }
-          } else {
-            setError("실시간 연결 오류");
-          }
+          setError("실시간 연결 오류");
         };
 
         await wsService.connect(token, handleWebSocketError);
@@ -179,74 +117,117 @@ const DetailedNote = ({
         console.log("✅ WebSocket 연결 성공");
 
         const handleEnter = async (payload: TEnterPayload) => {
-          // revision 정보만 설정
-          useNoteStore.setState({
-            revision: payload.revision,
-          });
-
-          // getNoteDetail로 노트 내용 조회
           try {
-            console.log("📋 노트 상세 조회 시작:", { workspaceId, noteId });
-            const noteData = await getNoteDetail(workspaceId, noteId);
-            console.log("✅ 노트 상세 조회 성공:", noteData);
+            console.log("📋 노트 입장 ENTER 메시지 수신:", { noteId, payload });
 
-            setCurrentNote(
-              {
+            // ENTER payload에서 activeUsers 정보로 activeParticipants 구성
+            const activeParticipants = payload.activeUsers.map((user) => ({
+              memberId: user.workspaceMemberId,
+              memberName: user.userName,
+              profileImage: user.profileImage,
+              isOnline: true,
+              joinedAt: new Date().toISOString(),
+              color: user.color,
+            }));
+
+            // 현재 입장한 사용자의 WorkspaceMemberId는 payload에서 직접 가져옴
+            const workspaceMemberId = payload.currentUserWorkspaceMemberId;
+            setCurrentUserWorkspaceMemberId(workspaceMemberId);
+
+            console.log("👤 현재 사용자:", {
+              memberId,
+              workspaceMemberId,
+            });
+
+            // ⚠️ 중요: ENTER 메시지에서 ydocBinary를 먼저 확인
+            // Redis에 저장된 최신 상태가 있으면 그것을 사용하고,
+            // 없으면 API에서 받은 content로 fallback
+            console.log("📊 ENTER 메시지 분석:", {
+              hasYdocBinary: !!payload.ydocBinary,
+              ydocBinaryLength: payload.ydocBinary?.length || 0,
+            });
+
+            // Yjs 초기화 (payload.ydocBinary를 우선적으로 사용)
+            initializeYjs(noteId, payload.ydocBinary || null, workspaceMemberId);
+
+            // HTTP API로 노트 메타데이터 조회 (title, creator 정보 등)
+            // ⚠️ 주의: noteData.content는 실제로 ydocBinary(Base64)가 전달됨
+            try {
+              const noteData = await getNoteDetail(workspaceId, noteId);
+              console.log("✅ 노트 메타데이터 조회 성공:", {
                 id: noteData.id,
                 title: noteData.title,
-                content: noteData.content,
-                workspaceId: noteData.workspaceId,
-                creatorId: noteData.creatorId,
-                creatorName: noteData.creatorName,
-                creatorProfileImage: noteData.creatorProfileImage,
-                lastModifiedAt: noteData.lastModifiedAt,
-                createdAt: noteData.createdAt,
-                participantCount: payload.activeUsers.length,
-                activeParticipants: [],
-              },
-              workspaceId
-            );
+                // ✅ API의 content는 ydocBinary(Base64) → 저장 완료 여부만 확인
+                contentLength: noteData.content?.length || 0,
+                contentPreview: noteData.content?.substring(0, 50) || "(빈 노트)",
+              });
 
-            if (textEditorRef.current) {
-              textEditorRef.current.value = noteData.content;
-              lastContentRef.current = noteData.content;
+              // 🔍 ydocBinary가 없는 경우 API content로 fallback
+              let contentToUse = useNoteStore.getState().content;
+              if (!payload.ydocBinary && noteData.content) {
+                console.log(
+                  "⚠️ ydocBinary 없음 - API content로 fallback:",
+                  noteData.content.substring(0, 50)
+                );
+                // API content로 Yjs를 초기화
+                const ytext = useNoteStore.getState().getYtext();
+                const ydoc = useNoteStore.getState().getYdoc();
+                if (ydoc && ytext) {
+                  ydoc.transact(() => {
+                    ytext.insert(0, noteData.content || "");
+                  }, "init");
+                  contentToUse = noteData.content;
+                  console.log("✅ Yjs에 API content 입력 완료");
+                }
+              }
+
+              setCurrentNote(
+                {
+                  id: noteData.id,
+                  title: noteData.title,
+                  content: contentToUse, // ydocBinary 또는 API content 사용
+                  workspaceId: noteData.workspaceId,
+                  creatorId: noteData.creatorId,
+                  creatorName: noteData.creatorName,
+                  creatorProfileImage: noteData.creatorProfileImage,
+                  lastModifiedAt: noteData.lastModifiedAt,
+                  createdAt: noteData.createdAt,
+                  participantCount: payload.activeUsers.length,
+                  activeParticipants,
+                },
+                workspaceId
+              );
+            } catch (metaError) {
+              console.warn("⚠️ 노트 메타데이터 조회 실패, 기본값 사용:", metaError);
+              setCurrentNote(
+                {
+                  id: noteId,
+                  title: payload.title || "Untitled",
+                  content: useNoteStore.getState().content, // 이미 설정된 content 사용
+                  workspaceId,
+                  creatorId: 0,
+                  creatorName: "Unknown",
+                  creatorProfileImage: undefined,
+                  lastModifiedAt: new Date().toISOString(),
+                  createdAt: new Date().toISOString(),
+                  participantCount: payload.activeUsers.length,
+                  activeParticipants,
+                },
+                workspaceId
+              );
             }
+
+            // ⚠️ 주의: textarea.value는 updateContentFromYjs useEffect에서 자동 동기화됨
+            // initializeYjs() 이후 Yjs content가 변경되면 useEffect에서 자동으로 업데이트됨
+
+            // ✅ ENTER가 완전히 완료되었음을 표시
+            // 이제 커서 업데이트를 안전하게 보낼 수 있음
+            setIsEnterComplete(true);
           } catch (error) {
-            console.error("❌ 노트 상세 조회 실패:", error);
-            setError("노트 내용을 불러올 수 없습니다.");
+            console.error("❌ ENTER 메시지 처리 실패:", error);
+            setError("노트 입장에 실패했습니다.");
+            setIsEnterComplete(false);
           }
-        };
-
-        const handleEdit = (payload: TEditPayload) => {
-          const currentState = useNoteStore.getState();
-
-          if (isLocalEditRef.current || isComposingRef.current) {
-            console.log("📋 로컬 편집 중 - remote edit 큐에 저장");
-            pendingRemoteEditsRef.current.push(payload);
-            return;
-          }
-
-          if (payload.operation.workspaceMemberId === memberId) {
-            const receivedRevision = payload.operation.revision;
-            const newPending = currentState.pendingOperations.filter(
-              (op) => op.revision > receivedRevision
-            );
-
-            console.log("🔄 자신의 편집 확인됨:", {
-              receivedRevision,
-              removed:
-                currentState.pendingOperations.length - newPending.length,
-            });
-
-            useNoteStore.setState({
-              pendingOperations: newPending,
-              revision: receivedRevision + 1,
-              syncStatus: newPending.length === 0 ? "synced" : "pending",
-            });
-            return;
-          }
-
-          handleRemoteEdit(payload.operation);
         };
 
         const handleSave = () => {
@@ -256,8 +237,76 @@ const DetailedNote = ({
         };
 
         await wsService.subscribeToNoteEnter(noteId, handleEnter);
-        wsService.subscribeToEdits(noteId, handleEdit);
         wsService.subscribeToSave(noteId, handleSave);
+
+        // Yjs Update 브로드캐스트 구독
+        wsService.subscribeToYjsUpdates(noteId, (base64Update, userName) => {
+          console.log(`📨 Yjs Update 수신: ${userName}`);
+          const state = useNoteStore.getState();
+          const ydoc = state.getYdoc();
+
+          if (ydoc) {
+            try {
+              // Base64를 Uint8Array로 디코딩
+              const binaryStr = atob(base64Update);
+              const bytes = new Uint8Array(binaryStr.length);
+              for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+              }
+
+              // Y.Doc에 Update 적용
+              console.log(`🔄 원격 Update 적용: ${userName}`);
+              Y.applyUpdate(ydoc, bytes);
+            } catch (error) {
+              console.error("❌ 원격 Update 적용 실패:", error);
+            }
+          }
+        });
+
+        // 원격 커서 위치 구독
+        wsService.subscribeToCursors(noteId, (cursor) => {
+          // ⚠️ 자신의 커서는 저장하지 않음 (자신은 localCursorPosition으로 관리)
+          if (cursor.workspaceMemberId === currentUserWorkspaceMemberId) {
+            console.log(`⏭️ 자신의 커서이므로 무시:`, cursor.workspaceMemberId);
+            return;
+          }
+
+          console.log(`📍 다른 사용자 커서 수신:`, cursor);
+          const state = useNoteStore.getState();
+          state.updateCursorPosition(
+            cursor.workspaceMemberId,
+            cursor.position,
+            cursor.range,
+            cursor.color
+          );
+        });
+
+        // Yjs Update 전송 이벤트 리스너 등록
+        const handleYjsUpdateReady = (event: Event) => {
+          const customEvent = event as CustomEvent;
+          const { base64Update, noteId: eventNoteId } = customEvent.detail;
+          console.log(`✅ CustomEvent 'yjsUpdateReady' 수신`, {
+            noteId: eventNoteId,
+            updateSize: base64Update?.length,
+            connected: wsService.getIsConnected()
+          });
+
+          if (!wsService.getIsConnected()) {
+            console.warn("⚠️ WebSocket 미연결 - Update 전송 불가");
+            return;
+          }
+
+          if (base64Update) {
+            console.log(`📤 Yjs Update 서버 전송: ${base64Update.length} bytes`);
+            wsService.sendYjsUpdate(noteId, base64Update);
+          } else {
+            console.warn("⚠️ base64Update가 없음");
+          }
+        };
+        window.addEventListener("yjsUpdateReady", handleYjsUpdateReady);
+
+        // cleanup 함수에서 제거할 수 있도록 ref에 저장
+        (wsServiceRef as any).handleYjsUpdateReady = handleYjsUpdateReady;
 
         setLoading(false);
       } catch (err) {
@@ -274,6 +323,17 @@ const DetailedNote = ({
     connectAndSubscribe();
 
     return () => {
+      // Yjs Update 이벤트 리스너 제거
+      if ((wsServiceRef as any).handleYjsUpdateReady) {
+        window.removeEventListener(
+          "yjsUpdateReady",
+          (wsServiceRef as any).handleYjsUpdateReady
+        );
+      }
+
+      // ENTER 완료 상태 초기화
+      setIsEnterComplete(false);
+
       wsServiceRef.current.unsubscribeFromNote(noteId, () => {
         console.log("🔌 노트 퇴장 완료");
       });
@@ -283,18 +343,18 @@ const DetailedNote = ({
     workspaceId,
     memberId,
     setCurrentNote,
-    handleRemoteEdit,
+    initializeYjs,
     setError,
     setLoading,
   ]);
 
-  // 자동 저장
+  // 자동 저장 (Yjs 동기화 상태에 따른 UI 업데이트)
   useEffect(() => {
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
     }
 
-    if (syncStatus === "pending") {
+    if (syncStatus === "syncing") {
       setAutoSaveStatus("saving");
 
       autoSaveTimerRef.current = setTimeout(() => {
@@ -335,20 +395,32 @@ const DetailedNote = ({
     });
   };
 
-  // 텍스트 변경 핸들러
+  // 로컬 커서 위치 추적
+  const handleCursorChange = () => {
+    if (!textEditorRef.current) return;
+
+    const position = textEditorRef.current.selectionStart;
+    const range = textEditorRef.current.selectionEnd - position;
+
+    console.log(`📍 로컬 커서 위치: position=${position}, range=${range}, isEnterComplete=${isEnterComplete}`);
+    setLocalCursorPosition(position, range);
+
+    // ⚠️ ENTER가 완전히 완료되지 않았으면 커서 전송을 스킵
+    // 이렇게 하면 "노트에 먼저 입장해주세요" 에러를 피할 수 있음
+    if (!isEnterComplete) {
+      console.warn("⏳ ENTER가 아직 완료되지 않아 커서 전송 미연기: position=" + position);
+      return;
+    }
+
+    // 서버로 커서 위치 전송 (다른 사용자가 내 커서를 볼 수 있도록)
+    console.log(`📤 커서 서버로 전송: position=${position}, range=${range}`);
+    wsServiceRef.current.sendCursor(noteId, position, range);
+  };
+
+  // 텍스트 변경 핸들러 (Yjs 직접 편집)
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (isComposingRef.current) {
       console.log("⏭️ IME 조합 중 - 무시");
-      return;
-    }
-
-    if (isResyncingRef.current) {
-      console.log("⏭️ OT 복구 중 - 무시");
-      return;
-    }
-
-    if (!memberId) {
-      console.warn("⚠️ memberId 없음");
       return;
     }
 
@@ -359,10 +431,7 @@ const DetailedNote = ({
       return;
     }
 
-    console.log("📝 텍스트 변경:", {
-      old: oldContent.substring(0, 30),
-      new: newContent.substring(0, 30),
-    });
+    console.log("📝 텍스트 변경 감지");
 
     const diff = calculateDiff(oldContent, newContent);
     if (!diff) {
@@ -373,50 +442,84 @@ const DetailedNote = ({
     console.log("🎯 Diff:", diff);
     lastContentRef.current = newContent;
 
-    const currentState = useNoteStore.getState();
-    const operationRevision = currentState.revision;
+    // Yjs에 직접 적용 (WebsocketProvider가 자동으로 전송)
+    const ydoc = getYdoc();
+    const ytext = getYtext();
 
-    const operation = {
-      type: diff.type as "insert" | "delete",
-      position: diff.position,
-      length: diff.length,
-      content: diff.content,
-      workspaceMemberId: memberId,
-      revision: operationRevision,
-      timestamp: new Date().toISOString(),
-    };
-
-    isLocalEditRef.current = true;
+    if (!ydoc || !ytext) {
+      console.warn("⚠️ Yjs 초기화되지 않음");
+      return;
+    }
 
     try {
-      console.log("📤 operation 생성:", operation);
-      applyLocalOperation(operation);
 
-      try {
-        wsServiceRef.current.sendEdit(noteId, operation);
-      } catch (err) {
-        console.error("❌ 전송 실패:", err);
-        setError("편집 전송 실패");
+      if (diff.type === "insert") {
+        console.log(
+          `📤 Yjs insert: position=${diff.position}, content="${diff.content}"`
+        );
+        // ⚠️ ydoc.transact()를 사용하여 로컬 변경임을 표시
+        // transact 내의 모든 변경이 origin='local'이 됨
+        ydoc.transact(() => {
+          ytext!.insert(diff.position, diff.content!);
+        }, 'local');
+      } else if (diff.type === "delete") {
+        console.log(
+          `📤 Yjs delete: position=${diff.position}, length=${diff.length}`
+        );
+        // ⚠️ ydoc.transact()를 사용하여 로컬 변경임을 표시
+        ydoc.transact(() => {
+          ytext!.delete(diff.position, diff.length);
+        }, 'local');
       }
-    } finally {
-      Promise.resolve().then(() => {
-        isLocalEditRef.current = false;
-
-        if (pendingRemoteEditsRef.current.length > 0) {
-          console.log(
-            `📤 ${pendingRemoteEditsRef.current.length}개 remote edit 처리`
-          );
-          const queuedEdits = pendingRemoteEditsRef.current;
-          pendingRemoteEditsRef.current = [];
-
-          queuedEdits.forEach((payload) => {
-            if (payload.operation.workspaceMemberId !== memberId) {
-              handleRemoteEdit(payload.operation);
-            }
-          });
-        }
-      });
+    } catch (err) {
+      console.error("❌ Yjs 편집 실패:", err);
+      setError("편집 중 오류 발생");
     }
+  };
+
+  // TextArea 위치에서 픽셀 좌표 계산
+  const getCoordinatesForPosition = (
+    position: number,
+    textareaElement: HTMLTextAreaElement
+  ): { x: number; y: number } => {
+    const { scrollTop } = textareaElement;
+    const styles = window.getComputedStyle(textareaElement);
+
+    // 보이지 않는 div를 생성하여 좌표 계산
+    const div = document.createElement("div");
+    const span = document.createElement("span");
+
+    // TextArea와 동일한 스타일 적용
+    div.style.position = "absolute";
+    div.style.visibility = "hidden";
+    div.style.whiteSpace = "pre-wrap";
+    div.style.wordWrap = "break-word";
+    div.style.font = styles.font;
+    div.style.padding = styles.padding;
+    div.style.lineHeight = styles.lineHeight;
+    div.style.letterSpacing = styles.letterSpacing;
+    div.style.width = textareaElement.offsetWidth -
+      (parseFloat(styles.paddingLeft) || 0) -
+      (parseFloat(styles.paddingRight) || 0) + "px";
+
+    // position까지의 텍스트 + span 추가
+    const textBeforeCursor = content.substring(0, position);
+    div.textContent = textBeforeCursor;
+    div.appendChild(span);
+
+    document.body.appendChild(div);
+
+    const coordinates = {
+      x: span.offsetLeft || 0,
+      y: span.offsetTop || 0,
+    };
+
+    document.body.removeChild(div);
+
+    return {
+      x: coordinates.x,
+      y: coordinates.y - scrollTop,
+    };
   };
 
   // Diff 계산
@@ -664,9 +767,6 @@ const DetailedNote = ({
               {autoSaveStatus === "saved" && (
                 <span className="text-[12px] text-[#4CAF50]">저장됨</span>
               )}
-              {syncStatus === "conflict" && (
-                <span className="text-[12px] text-[#F45B69]">충돌 발생</span>
-              )}
               {error && (
                 <span className="text-[12px] text-[#F45B69]" title={error}>
                   ⚠️ 오류
@@ -763,17 +863,173 @@ const DetailedNote = ({
               </div>
             </div>
           ) : (
-            <textarea
-              ref={textEditorRef}
-              onChange={handleTextChange}
-              onCompositionStart={handleCompositionStart}
-              onCompositionEnd={handleCompositionEnd}
-              className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0] overflow-auto resize-none font-mono"
-              style={{
-                whiteSpace: "pre-wrap",
-                wordWrap: "break-word",
-              }}
-            />
+            <div className="relative flex-1 bg-white rounded-b-[8px] border-l border-r border-b border-[#E0E0E0]">
+              {/* 모든 사용자 커서 표시 (자신 포함) */}
+              <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-20">
+                {/* 자신의 커서 */}
+                {currentUserWorkspaceMemberId && currentNote && (
+                  (() => {
+                    const currentUser = currentNote.activeParticipants?.find(
+                      (p) => p.memberId === currentUserWorkspaceMemberId
+                    );
+                    if (!currentUser) return null;
+
+                    const coordinates = textEditorRef.current
+                      ? getCoordinatesForPosition(
+                          localCursorPosition || 0,
+                          textEditorRef.current
+                        )
+                      : { x: 0, y: 0 };
+
+                    return (
+                      <div
+                        key={`cursor-${currentUserWorkspaceMemberId}`}
+                        className="absolute flex items-center gap-2 pointer-events-auto"
+                        style={{
+                          left: `${coordinates.x}px`,
+                          top: `${coordinates.y}px`,
+                          transform: "translateY(-50%)",
+                        }}
+                        title={currentUser.memberName}
+                      >
+                        {/* 커서 라인 */}
+                        <div
+                          className="w-[2px] h-[20px] animate-pulse"
+                          style={{ backgroundColor: currentUser.color }}
+                        />
+                        {/* 프로필 사진 아바타 */}
+                        <div
+                          className="w-[28px] h-[28px] rounded-full border-2 flex-shrink-0 overflow-hidden bg-gray-100 flex items-center justify-center shadow-md relative"
+                          style={{ borderColor: currentUser.color }}
+                        >
+                          {currentUser.profileImage ? (
+                            <img
+                              src={currentUser.profileImage}
+                              alt={currentUser.memberName}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                                const fallback =
+                                  e.currentTarget.parentElement?.querySelector(
+                                    '[data-fallback="true"]'
+                                  );
+                                if (fallback) {
+                                  (fallback as HTMLElement).style.display =
+                                    "flex";
+                                }
+                              }}
+                            />
+                          ) : null}
+                          {/* 프로필 이미지 없거나 로드 실패 시 표시 */}
+                          <div
+                            data-fallback="true"
+                            className="absolute inset-0 rounded-full flex items-center justify-center"
+                            style={{
+                              display: currentUser.profileImage ? "none" : "flex",
+                              background: `linear-gradient(135deg, ${currentUser.color}44 0%, ${currentUser.color}88 100%)`,
+                            }}
+                          >
+                            <span className="text-white text-[12px] font-bold">
+                              {currentUser.memberName.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                        {/* 사용자 이름 배지 */}
+                        <div
+                          className="px-2 py-1 rounded text-white text-[11px] font-semibold whitespace-nowrap max-w-[120px] truncate"
+                          style={{ backgroundColor: currentUser.color }}
+                        >
+                          {currentUser.memberName}
+                        </div>
+                      </div>
+                    );
+                  })()
+                )}
+
+                {/* 다른 사용자들의 커서 */}
+                {Array.from(cursors.values()).map((cursor) => {
+                  const coordinates = textEditorRef.current
+                    ? getCoordinatesForPosition(cursor.position, textEditorRef.current)
+                    : { x: 0, y: 0 };
+
+                  return (
+                    <div
+                      key={`cursor-${cursor.workspaceMemberId}`}
+                      className="absolute flex items-center gap-2 pointer-events-auto"
+                      style={{
+                        left: `${coordinates.x}px`,
+                        top: `${coordinates.y}px`,
+                        transform: "translateY(-50%)",
+                      }}
+                      title={cursor.userName}
+                    >
+                      {/* 커서 라인 */}
+                      <div
+                        className="w-[2px] h-[20px] animate-pulse"
+                        style={{ backgroundColor: cursor.color }}
+                      />
+                      {/* 프로필 사진 아바타 */}
+                      <div
+                        className="w-[28px] h-[28px] rounded-full border-2 flex-shrink-0 overflow-hidden bg-gray-100 flex items-center justify-center shadow-md relative"
+                        style={{ borderColor: cursor.color }}
+                      >
+                        {cursor.profileImage ? (
+                          <img
+                            src={cursor.profileImage}
+                            alt={cursor.userName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // 이미지 로드 실패 시 폴백 - 다음 요소로 대체
+                              e.currentTarget.style.display = "none";
+                              // 첫글자 아바타 표시
+                              const fallback = e.currentTarget.parentElement?.querySelector('[data-fallback="true"]');
+                              if (fallback) {
+                                (fallback as HTMLElement).style.display = "flex";
+                              }
+                            }}
+                          />
+                        ) : null}
+                        {/* 프로필 이미지 없거나 로드 실패 시 표시 */}
+                        <div
+                          data-fallback="true"
+                          className="absolute inset-0 rounded-full flex items-center justify-center"
+                          style={{
+                            display: cursor.profileImage ? "none" : "flex",
+                            background: `linear-gradient(135deg, ${cursor.color}44 0%, ${cursor.color}88 100%)`,
+                          }}
+                        >
+                          <span className="text-white text-[12px] font-bold">
+                            {cursor.userName.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      {/* 사용자 이름 배지 */}
+                      <div
+                        className="px-2 py-1 rounded text-white text-[11px] font-semibold whitespace-nowrap max-w-[120px] truncate"
+                        style={{ backgroundColor: cursor.color }}
+                      >
+                        {cursor.userName}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <textarea
+                ref={textEditorRef}
+                onChange={handleTextChange}
+                onSelect={handleCursorChange}
+                onMouseUp={handleCursorChange}
+                onKeyUp={handleCursorChange}
+                onCompositionStart={handleCompositionStart}
+                onCompositionEnd={handleCompositionEnd}
+                className="h-full w-full bg-white px-4 py-3 overflow-auto resize-none font-mono outline-none relative z-10"
+                style={{
+                  whiteSpace: "pre-wrap",
+                  wordWrap: "break-word",
+                }}
+              />
+            </div>
           )}
         </div>
       )}
