@@ -184,7 +184,7 @@ const NoteList = ({
       style={{ maxHeight: "calc(70vh - 56px)" }}
     >
       {/* 헤더 */}
-      <div className="w-full h-[56px] bg-white flex items-center gap-[63px] border-b border-b-[#E0E0E0]">
+      <div className="w-full h-[56px] bg-white flex items-center gap-[63px]">
         <p className="flex-1 text-[16px] font-semibold pl-[20px]">Title</p>
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
@@ -207,7 +207,7 @@ const NoteList = ({
 
       {/* 리스트 */}
       {!isLoading && !error && (
-        <div className="flex flex-col justify-center overflow-y-auto h-full max-h-[calc(70vh-56px)]">
+        <div className="overflow-y-auto h-full max-h-[calc(70vh-56px)]">
           {sortedNotes.length > 0 ? (
             <>
               {sortedNotes.map((note: TNotes) => (
@@ -226,7 +226,7 @@ const NoteList = ({
               ))}
             </>
           ) : (
-            <p className="h-[56px] flex  justify-center text-[16px] font-semibold text-[#828282] ">
+            <p className="h-[56px] flex items-center  justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0] ">
               {noDataMessage}
             </p>
           )}
