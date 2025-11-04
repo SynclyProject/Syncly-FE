@@ -113,10 +113,6 @@ const FileList = ({
         <p className="text-[16px] font-semibold">Date</p>
         <p className="text-[16px] font-semibold pr-[80px]">User</p>
       </div>
-      {/* {isPending && (
-        //나중에 스켈레톤 UI (컴포넌트 제작) 삽입
-        <div className="w-full h-[56px] bg-gray-200 flex items-center gap-[63px] border-t border-t-[#E0E0E0]"></div>
-      )} */}
       {sort ? (
         <div className="overflow-y-auto max-h-[calc(70vh-56px)]">
           {[...filesToShow]
