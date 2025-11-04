@@ -776,7 +776,7 @@ const DetailedNote = ({
                 <Icon name="User_Default" />
               </div>
             )}
-            <p className="text-[14px] text-[#828282]">
+            <p className="text-[14px] text-[#828282] text-nowrap">
               {currentNote.creatorName}
             </p>
             <p className="text-[16px] font-semibold flex-1 overflow-hidden text-ellipsis text-nowrap">
