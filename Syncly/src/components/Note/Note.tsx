@@ -30,6 +30,7 @@ const Note = ({
 
   const [modalShow, setModalShow] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [position, setPosition] = useState({ top: 0, right: 0 });
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -61,6 +62,34 @@ const Note = ({
       setIsDeleting(false);
     }
   };
+
+  // 모달 위치 계산 (버튼 위치 기준)
+  useEffect(() => {
+    const updatePosition = () => {
+      if (modalShow && buttonRef.current) {
+        // 버튼의 위치를 기준으로 모달 위치 계산
+        const buttonRect = buttonRef.current.getBoundingClientRect();
+        if (buttonRect) {
+          setPosition({
+            top: buttonRect.bottom - 20,
+            right: window.innerWidth - buttonRect.right + 10,
+          });
+        }
+      }
+    };
+
+    if (modalShow) {
+      updatePosition();
+      // 스크롤 및 리사이즈 시 위치 업데이트
+      window.addEventListener("scroll", updatePosition, true);
+      window.addEventListener("resize", updatePosition);
+
+      return () => {
+        window.removeEventListener("scroll", updatePosition, true);
+        window.removeEventListener("resize", updatePosition);
+      };
+    }
+  }, [modalShow]);
 
   // 외부 클릭 감지
   useEffect(() => {
@@ -113,8 +142,12 @@ const Note = ({
 
         {modalShow && (
           <div
-            className="z-10 w-[160px] absolute top-6 right-0 flex flex-col gap-2 rounded-[8px] bg-white p-4 border border-[#E0E0E0] shadow-lg"
+            className="z-50 w-[160px] fixed flex flex-col gap-2 rounded-[8px] bg-white p-4 border border-[#E0E0E0] shadow-lg"
             ref={modalRef}
+            style={{
+              top: `${position.top}px`,
+              right: `${position.right}px`,
+            }}
           >
             <p
               className="text-[#828282] cursor-pointer flex-nowrap hover:text-[#F45B69] hover:font-bold"

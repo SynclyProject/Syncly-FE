@@ -1,12 +1,15 @@
-import { TUser } from "./FilesType";
-
 /**
- * Note 기본 타입 (목록, 상세 조회)
+ * Note 기본 타입 (목록, 상세 조회) - Yjs CRDT 기반
+ *
+ * <p>Yjs CRDT로 전환되면서:
+ * - content 필드는 API의 ydocBinary(Base64)가 전달됨 (HTTP는 binary를 직접 전송 불가)
+ * - 프론트엔드에서 content ← ydocBinary → Yjs로 복원
+ * - OT 기반 revision/version 개념 제거
  */
 export type TNotes = {
   id: number;
   title: string;
-  content: string;
+  content: string; // ✅ 실제로는 ydocBinary(Base64)가 전달됨
   workspaceId: number;
   creatorId: number;
   creatorName: string;
@@ -15,9 +18,6 @@ export type TNotes = {
   createdAt: string;
   participantCount: number;
   activeParticipants?: TNoteParticipant[];
-  // 레거시 호환성
-  date?: string;
-  user?: TUser;
 };
 
 /**
@@ -61,26 +61,15 @@ export type TNoteListResponse = {
 };
 
 /**
- * 노트 저장 응답
+ * 노트 저장 응답 (Yjs CRDT 기반)
+ *
+ * <p>Yjs는 CRDT 기반이므로 revision 개념이 없습니다.
+ * 자동으로 충돌을 해결하므로 버전 관리가 필요 없습니다.
  */
 export type TNoteSaveResponse = {
   success: boolean;
-  revision: number;
   savedAt: string;
   message: string;
-};
-
-/**
- * 편집 연산 (OT)
- */
-export type TEditOperation = {
-  type: "insert" | "delete";
-  position: number;
-  length: number;
-  content?: string; // insert 시만
-  revision: number;
-  workspaceMemberId: number;
-  timestamp: string;
 };
 
 /**
@@ -117,28 +106,25 @@ export type TWebSocketMessage<T = unknown> = {
 };
 
 /**
+ * 활성 사용자 정보
+ */
+export type TActiveUserInfo = {
+  workspaceMemberId: number;
+  userName: string;
+  profileImage?: string;
+  color: string;
+};
+
+/**
  * ENTER 페이로드
  */
 export type TEnterPayload = {
   noteId: number;
-  creatorName: string;
-  creatorProfileImage: string;
-  revision: number;
-  activeUsers: number[];
-  cursors: Record<number, TCursorPosition>;
+  title: string;
+  ydocBinary: string;
+  activeUsers: TActiveUserInfo[];
+  currentUserWorkspaceMemberId: number; // 현재 입장한 사용자의 WorkspaceMember ID
   timestamp: string;
-};
-
-/**
- * EDIT 페이로드
- */
-export type TEditPayload = {
-  operation: TEditOperation;
-  content?: string; // 10번째 연산마다만
-  revision: number;
-  userName: string;
-  timestamp: string;
-  includesFullContent: boolean;
 };
 
 /**
@@ -152,7 +138,6 @@ export type TCursorPayload = TCursorPosition & {
  * SAVE 페이로드
  */
 export type TSavePayload = {
-  revision: number;
   savedAt: string;
   message: string;
 };
@@ -164,6 +149,5 @@ export type TErrorPayload = {
   code: string;
   message: string;
   content?: string; // 동기화용
-  revision?: number;
   timestamp: string;
 };
