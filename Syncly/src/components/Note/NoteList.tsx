@@ -226,7 +226,7 @@ const NoteList = ({
               ))}
             </>
           ) : (
-            <p className="h-[56px] flex items-center justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0]">
+            <p className="h-[56px] flex items-center  justify-center text-[16px] font-semibold text-[#828282] border-t border-t-[#E0E0E0] ">
               {noDataMessage}
             </p>
           )}

@@ -18,6 +18,55 @@ interface IDetailedNoteProps {
   onTitleUpdated?: () => void; // 목록 새로고침용 콜백
 }
 
+// 원격 커서 아바타: profileImage(objectKey)가 있으면 useShowImage로 이미지 표시, 없으면 이니셜 폴백
+const CursorAvatar = ({
+  objectKey,
+  userName,
+  color,
+}: {
+  objectKey?: string;
+  userName: string;
+  color: string;
+}) => {
+  const profileUrl = useShowImage(objectKey ?? null);
+
+  return (
+    <div
+      className="w-[28px] h-[28px] rounded-full border-2 flex-shrink-0 overflow-hidden bg-gray-100 flex items-center justify-center shadow-md relative"
+      style={{ borderColor: color }}
+    >
+      {profileUrl ? (
+        <img
+          src={profileUrl}
+          alt={userName}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+            const fallback = e.currentTarget.parentElement?.querySelector(
+              '[data-fallback="true"]'
+            );
+            if (fallback) {
+              (fallback as HTMLElement).style.display = "flex";
+            }
+          }}
+        />
+      ) : null}
+      <div
+        data-fallback="true"
+        className="absolute inset-0 rounded-full flex items-center justify-center"
+        style={{
+          display: profileUrl ? "none" : "flex",
+          background: `linear-gradient(135deg, ${color}44 0%, ${color}88 100%)`,
+        }}
+      >
+        <span className="text-white text-[12px] font-bold">
+          {userName.charAt(0).toUpperCase()}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 const DetailedNote = ({
   noteId,
   setTitle,
@@ -923,44 +972,11 @@ const DetailedNote = ({
                           style={{ backgroundColor: cursor.color }}
                         />
                         {/* 프로필 사진 아바타 */}
-                        <div
-                          className="w-[28px] h-[28px] rounded-full border-2 flex-shrink-0 overflow-hidden bg-gray-100 flex items-center justify-center shadow-md relative"
-                          style={{ borderColor: cursor.color }}
-                        >
-                          {cursor.profileImage ? (
-                            <img
-                              src={cursor.profileImage}
-                              alt={cursor.userName}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                // 이미지 로드 실패 시 폴백 - 다음 요소로 대체
-                                e.currentTarget.style.display = "none";
-                                // 첫글자 아바타 표시
-                                const fallback =
-                                  e.currentTarget.parentElement?.querySelector(
-                                    '[data-fallback="true"]'
-                                  );
-                                if (fallback) {
-                                  (fallback as HTMLElement).style.display =
-                                    "flex";
-                                }
-                              }}
-                            />
-                          ) : null}
-                          {/* 프로필 이미지 없거나 로드 실패 시 표시 */}
-                          <div
-                            data-fallback="true"
-                            className="absolute inset-0 rounded-full flex items-center justify-center"
-                            style={{
-                              display: cursor.profileImage ? "none" : "flex",
-                              background: `linear-gradient(135deg, ${cursor.color}44 0%, ${cursor.color}88 100%)`,
-                            }}
-                          >
-                            <span className="text-white text-[12px] font-bold">
-                              {cursor.userName.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                        </div>
+                        <CursorAvatar
+                          objectKey={cursor.profileImage}
+                          userName={cursor.userName}
+                          color={cursor.color}
+                        />
                         {/* 사용자 이름 배지 */}
                         <div
                           className="px-2 py-1 rounded text-white text-[11px] font-semibold whitespace-nowrap max-w-[120px] truncate"
