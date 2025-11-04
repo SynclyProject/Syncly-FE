@@ -1,12 +1,5 @@
 import * as Stomp from "stompjs";
-import {
-  TWebSocketMessage,
-  TEditOperation,
-  TEnterPayload,
-  TEditPayload,
-  TCursorPayload,
-  TSavePayload,
-} from "../type/note";
+import { TWebSocketMessage, TEnterPayload, TSavePayload } from "../type/note";
 
 /**
  * WebSocket 서비스 - Note 실시간 편집
@@ -185,13 +178,38 @@ export class NoteWebSocketService {
   }
 
   /**
-   * 실시간 편집 메시지 구독 (EDIT)
+   * Yjs Update 전송 (STOMP를 통한 수동 동기화)
    * @param noteId 노트 ID
-   * @param onEdit 편집 메시지 핸들러
+   * @param base64Update Base64 인코딩된 Yjs Update
    */
-  subscribeToEdits(
+  sendYjsUpdate(noteId: number, base64Update: string): void {
+    if (!this.stompClient?.connected) {
+      console.warn("⚠️ WebSocket이 연결되지 않았습니다. Update 전송 생략");
+      return;
+    }
+
+    const destination = `/app/notes/${noteId}/edit`;
+    const message = { base64Update };
+
+    console.log(`📤 Yjs Update 전송: ${destination}`, {
+      updateSize: base64Update.length,
+    });
+
+    try {
+      this.stompClient?.send(destination, {}, JSON.stringify(message));
+    } catch (error) {
+      console.error("❌ Yjs Update 전송 실패:", error);
+    }
+  }
+
+  /**
+   * Yjs Update 브로드캐스트 메시지 구독
+   * @param noteId 노트 ID
+   * @param onUpdate Update 수신 핸들러
+   */
+  subscribeToYjsUpdates(
     noteId: number,
-    onEdit: (payload: TEditPayload) => void
+    onUpdate: (base64Update: string, userName: string) => void
   ): void {
     if (!this.stompClient?.connected) {
       throw new Error("WebSocket이 연결되지 않았습니다.");
@@ -199,96 +217,104 @@ export class NoteWebSocketService {
 
     const topic = `/topic/notes/${noteId}/edits`;
     if (this.subscriptions.has(topic)) {
+      console.log(`♻️ 기존 Update 구독 해제: ${topic}`);
       this.subscriptions.get(topic)?.unsubscribe();
     }
 
     const subscription = this.stompClient?.subscribe(topic, (message) => {
       try {
         const response = JSON.parse(message.body);
-        console.log("📨 EDIT 메시지 수신:", response);
-        onEdit(response.payload);
+        console.log("📨 Yjs Update 브로드캐스트 수신:", {
+          type: response.type,
+          payloadSize: JSON.stringify(response.payload).length,
+          userName: response.payload?.userName,
+        });
+        const payload = response.payload;
+        if (!payload.base64Update) {
+          console.warn("⚠️ base64Update 필드 없음:", payload);
+          return;
+        }
+        onUpdate(payload.base64Update, payload.userName);
       } catch (error) {
-        console.error("❌ EDIT 메시지 파싱 오류:", error);
+        console.error("❌ Yjs Update 메시지 파싱 오류:", error, message.body);
       }
     });
 
     if (subscription) {
       this.subscriptions.set(topic, subscription);
-      console.log(`📨 편집 구독 시작: ${topic}`);
+      console.log(`✅ Yjs Update 구독 시작: ${topic}`);
+    } else {
+      console.error(`❌ Yjs Update 구독 실패: ${topic}`);
     }
   }
 
   /**
-   * 편집 연산 전송 (EDIT)
+   * 원격 커서 위치 변경 메시지 구독 (STOMP)
    * @param noteId 노트 ID
-   * @param operation 편집 연산
-   */
-  sendEdit(noteId: number, operation: TEditOperation): void {
-    if (!this.stompClient?.connected) {
-      throw new Error("WebSocket이 연결되지 않았습니다.");
-    }
-
-    const destination = `/app/notes/${noteId}/edit`;
-    const message = { operation };
-
-    console.log(`📤 편집 전송:`, message);
-    try {
-      this.stompClient?.send(destination, {}, JSON.stringify(message));
-    } catch (error) {
-      console.error("❌ EDIT 메시지 전송 실패:", error);
-      throw new Error("편집 전송 실패");
-    }
-  }
-
-  /**
-   * 커서 위치 메시지 구독 (CURSOR)
-   * @param noteId 노트 ID
-   * @param onCursor 커서 메시지 핸들러
+   * @param onCursorChange 커서 변경 핸들러
    */
   subscribeToCursors(
     noteId: number,
-    onCursor: (payload: TCursorPayload) => void
+    onCursorChange: (cursor: {
+      position: number;
+      range: number;
+      workspaceMemberId: number;
+      userName: string;
+      profileImage?: string;
+      color: string;
+    }) => void
   ): void {
     if (!this.stompClient?.connected) {
-      throw new Error("WebSocket이 연결되지 않았습니다.");
+      console.warn("⚠️ WebSocket이 연결되지 않았습니다.");
+      return;
     }
 
     const topic = `/topic/notes/${noteId}/cursors`;
     if (this.subscriptions.has(topic)) {
+      console.log(`♻️ 기존 커서 구독 해제: ${topic}`);
       this.subscriptions.get(topic)?.unsubscribe();
     }
 
     const subscription = this.stompClient?.subscribe(topic, (message) => {
       try {
-        const response = JSON.parse(message.body);
-        console.log("📨 CURSOR 메시지 수신:", response);
-        onCursor(response.payload);
+        const cursor = JSON.parse(message.body);
+        console.log("📍 원격 커서 수신:", {
+          userName: cursor.userName,
+          position: cursor.position,
+          range: cursor.range,
+        });
+        onCursorChange(cursor);
       } catch (error) {
-        console.error("❌ CURSOR 메시지 파싱 오류:", error);
+        console.error("❌ 커서 메시지 파싱 오류:", error);
       }
     });
 
     if (subscription) {
       this.subscriptions.set(topic, subscription);
-      console.log(`📨 커서 구독 시작: ${topic}`);
+      console.log(`✅ 커서 구독 시작: ${topic}`);
     }
   }
 
   /**
-   * 커서 위치 업데이트 전송 (CURSOR)
+   * 로컬 커서 위치 전송
    * @param noteId 노트 ID
    * @param position 커서 위치
    * @param range 선택 범위
    */
-  sendCursor(noteId: number, position: number, range: number = 0): void {
+  sendCursor(noteId: number, position: number, range: number): void {
     if (!this.stompClient?.connected) {
-      throw new Error("WebSocket이 연결되지 않았습니다.");
+      console.warn("⚠️ WebSocket이 연결되지 않았습니다.");
+      return;
     }
 
     const destination = `/app/notes/${noteId}/cursor`;
     const message = { position, range };
 
-    this.stompClient?.send(destination, {}, JSON.stringify(message));
+    try {
+      this.stompClient?.send(destination, {}, JSON.stringify(message));
+    } catch (error) {
+      console.error("❌ 커서 전송 실패:", error);
+    }
   }
 
   /**
