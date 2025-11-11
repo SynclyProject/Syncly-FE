@@ -103,7 +103,10 @@ const Space = ({
                 <Icon name="Vector" />
               </button>
               {modalShow && (
-                <div className="absolute top-[-9px] left-8" ref={modalRef}>
+                <div
+                  className="absolute top-[-9px] left-8 z-[50]"
+                  ref={modalRef}
+                >
                   {spaceId && (
                     <SideModal
                       editTeam={editTeam}
