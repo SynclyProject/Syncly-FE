@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { getNoteDetail, patchNoteTitle } from "../../shared/api/note";
 import Markdown from "react-markdown";
 import * as Y from "yjs";
+import rehypeSanitize from "rehype-sanitize";
 
 interface IDetailedNoteProps {
   noteId: number;
@@ -896,6 +897,7 @@ const DetailedNote = ({
             <div className="flex-1">
               <div className="h-full bg-white rounded-b-[8px] px-4 py-3 border-l border-r border-b border-[#E0E0E0] overflow-auto">
                 <Markdown
+                  rehypePlugins={[rehypeSanitize]}
                   components={{
                     h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
                       <h1 className="text-[20px] font-bold my-2" {...props} />
